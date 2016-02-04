@@ -1,0 +1,17 @@
+# .cppと.h以外をignoreに設定している
+
+# フォルダ内全て
+Resources/
+Debug/
+Release/
+
+# Visual Studio 関連データ
+*.ilk
+*.exe
+*.pdb
+*.sln
+*.suo
+*.vcxproj
+*.filters
+*.user
+*.opensdf
