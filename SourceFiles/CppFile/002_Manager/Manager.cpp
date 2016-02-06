@@ -15,9 +15,9 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
+#include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "002_Manager/Manager.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
 #include "004_Component/0041_RenderGL/RenderManagerGL.h"
 

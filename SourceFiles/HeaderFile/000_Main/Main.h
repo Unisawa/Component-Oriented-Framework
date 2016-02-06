@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Main.h ] UniverseEngine のシステムを全て管理するメインクラス
+ @File   : [ Main.h ] 【 UniverseEngine 】のシステムを全て管理するメインクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -23,10 +23,6 @@
 //***********************************************************************************************//
 #pragma comment (lib, "winmm.lib")     // Windows システム関連
 
-#pragma comment (lib, "d3d9.lib")      // DirectX 本体
-#pragma comment (lib, "d3dx9.lib")     // DirectX 拡張ライブラリ
-#pragma comment (lib, "dxguid.lib")    // DirectX コンポーネント使用に必要
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Include File                                                                                //
@@ -39,24 +35,17 @@
 #include <crtdbg.h>
 
 //-----Default Include-----//
-#include <stdio.h>
 #include <windows.h>
+#include <stdio.h>
 #include <math.h>
 #include <time.h>
-
-//-----DirectX-----//
-#define  D3D_DEBUG_INFO
-#include "d3dx9.h"
 
 //-----STL-----//
 #include <String>
 #include <list>
 
 //-----Manager-----//
-
-
-//-----Object-----//
-
+#include "002_Manager/Manager.h"
 
 //***********************************************************************************************//
 //                                                                                               //

@@ -22,9 +22,6 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "000_Main/Main.h"
-
 //-----Object-----//
 #include "004_Component/Component.h"
 
@@ -53,7 +50,6 @@ private:
     D3DXVECTOR3 position;      // ワールド空間の Transform の位置
     D3DXVECTOR3 rotation;      // ワールド空間の Transform の回転
     D3DXVECTOR3 lossyScale;    // オブジェクトのグローバルスケール
-
 };
 
 #endif
