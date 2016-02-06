@@ -39,8 +39,8 @@
 class RenderManagerDX
 {
 public:
-             RenderManagerDX();
-    virtual ~RenderManagerDX();
+     RenderManagerDX() {}
+    ~RenderManagerDX() {}
 
     static RenderManagerDX* Create();
 

@@ -74,16 +74,13 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevinstance, LPSTR lpCmdLine
 
     // ウィンドウの生成
 #ifdef _DEBUG
-    Main::windowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPEDWINDOW, (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
+    Main::windowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPEDWINDOW,
+                                        (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
                                         (Rect.right - Rect.left), (Rect.bottom - Rect.top), NULL, NULL, hinstance, NULL);
 #else if _RELEASE
-    Main::windowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPEDWINDOW, (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
+    Main::windowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
+                                        (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
                                         (Rect.right - Rect.left), (Rect.bottom - Rect.top), NULL, NULL, hinstance, NULL);
-
-    // ウィンドウサイズの固定化
-    LONG Style = GetWindowLong(Main::windowHandle, GWL_STYLE);
-    Style &= ~WS_THICKFRAME;
-    Style  = SetWindowLong(Main::windowHandle, GWL_STYLE, Style);
 #endif
 
     // ウィンドウの表示

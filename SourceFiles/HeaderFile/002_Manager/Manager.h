@@ -39,6 +39,7 @@
 //                                                                                               //
 //***********************************************************************************************//
 class RenderManagerDX;
+class RenderManagerGL;
 
 class Manager
 {
@@ -52,9 +53,11 @@ public:
     void    Draw();
 
     static RenderManagerDX* GetRenderManagerDX() { return pRenderManagerDX; }
+    static RenderManagerGL* GetRenderManagerGL() { return pRenderManagerGL; }
 
 private:
     static RenderManagerDX* pRenderManagerDX;
+    static RenderManagerGL* pRenderManagerGL;
 };
 
 #endif
