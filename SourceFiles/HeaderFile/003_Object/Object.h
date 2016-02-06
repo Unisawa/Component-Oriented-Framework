@@ -1,11 +1,20 @@
 /**************************************************************************************************
 
- @File   : [ Constant.cpp ] 
+ @File   : [ Object.h ] 全てのオブジェクトの基本クラス
  @Auther : Unisawa
 
 **************************************************************************************************/
 
 
+
+//***********************************************************************************************//
+//                                                                                               //
+//  @Include Guard                                                                               //
+//                                                                                               //
+//***********************************************************************************************//
+#pragma once
+#ifndef _OBJECT_H_
+#define _OBJECT_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -16,9 +25,6 @@
 //-----MainSetting-----//
 #include "000_Main/Main.h"
 
-//-----Object-----//
-#include "001_Constant/Constant.h"
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -27,46 +33,28 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Static Variable                                                                             //
+//  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class Object
+{
+public:
+             Object();
+    virtual ~Object();
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+    static Object Instantiate(Object original);
+    static Object Instantiate(Object original, D3DXVECTOR3 position, D3DXVECTOR3 rotation);
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+    static void Destroy(Object Object, float time = 0.0f);
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+    void        SetName(std::string value) { name = value; }
+    std::string GetName() { return name; }
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+private:
+    std::string name;    // オブジェクト名
+};
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
-
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
-
-const std::string Constant::PATH_NETWORK  = "Network/";
-
-const std::string Constant::PATH_MAP      = "Map/";
-
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
-
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
-
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
-
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

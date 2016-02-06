@@ -1,11 +1,20 @@
 /**************************************************************************************************
 
- @File   : [ Constant.cpp ] 
+ @File   : [ RenderManagerDX.h ] DirectXの描画を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
 
 
+
+//***********************************************************************************************//
+//                                                                                               //
+//  @Include Guard                                                                               //
+//                                                                                               //
+//***********************************************************************************************//
+#pragma once
+#ifndef _RENDERMANAGERDX_H_
+#define _RENDERMANAGERDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -16,9 +25,6 @@
 //-----MainSetting-----//
 #include "000_Main/Main.h"
 
-//-----Object-----//
-#include "001_Constant/Constant.h"
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -27,46 +33,35 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Static Variable                                                                             //
+//  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class RenderManagerDX
+{
+public:
+             RenderManagerDX();
+    virtual ~RenderManagerDX();
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+    static RenderManagerDX* Create();
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+    HRESULT Init();
+    void    Uninit();
+    void    Update();
+    void    Draw();
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+    static LPDIRECT3DDEVICE9 GetDevice() { return pD3DDevice; }
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+    static void      SetClearColor(D3DXCOLOR Color) { clearColor = Color; }
+    static D3DXCOLOR GetClearColor() { return clearColor; }
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
+private:
+    static LPDIRECT3D9       pD3DObject;    // Direct3Dオブジェクト
+    static LPDIRECT3DDEVICE9 pD3DDevice;    // デバイスオブジェクト
 
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
+    static D3DXCOLOR clearColor;            // 背景クリア色
+};
 
-const std::string Constant::PATH_NETWORK  = "Network/";
-
-const std::string Constant::PATH_MAP      = "Map/";
-
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
-
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
-
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
-
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

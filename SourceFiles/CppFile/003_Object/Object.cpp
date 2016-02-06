@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Constant.cpp ] 
+ @File   : [ Object.cpp ] 全てのオブジェクトの基本クラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -17,7 +17,7 @@
 #include "000_Main/Main.h"
 
 //-----Object-----//
-#include "001_Constant/Constant.h"
+#include "003_Object/Object.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -31,41 +31,59 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+/*=================================================================================================
+  @Summary: コンストラクタ
+  @Details: None
+=================================================================================================*/
+Object::Object()
+{
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+}
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+/*===============================================================================================* 
+  @Summary: デストラクタ
+  @Details: None
+ *===============================================================================================*/
+Object::~Object()
+{
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+}
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
+/*===============================================================================================* 
+  @Summary: originalオブジェクトの複製
+  @Details: None
+ *===============================================================================================*/
+Object Object::Instantiate(Object original)
+{
+    Object Copy = original;
 
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
+    return Copy;
+}
 
-const std::string Constant::PATH_NETWORK  = "Network/";
+/*===============================================================================================* 
+  @Summary: originalオブジェクトの複製
+  @Details: None
+ *===============================================================================================*/
+Object Object::Instantiate(Object original, D3DXVECTOR3 position, D3DXVECTOR3 rotation)
+{
+    Object Copy = original;
 
-const std::string Constant::PATH_MAP      = "Map/";
+    return Copy;
+}
 
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
+/*===============================================================================================* 
+  @Summary: GameObject, Componentの削除
+  @Details: None
+ *===============================================================================================*/
+void Object::Destroy(Object Object, float time)
+{
+    delete &Object;
+}
 
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
-
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //

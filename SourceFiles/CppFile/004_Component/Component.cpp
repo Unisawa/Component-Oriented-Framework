@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Constant.cpp ] 
+ @File   : [ Component.cpp ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -14,10 +14,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "000_Main/Main.h"
-
-//-----Object-----//
-#include "001_Constant/Constant.h"
+#include "004_Component/Component.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -31,41 +28,55 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+/*=================================================================================================
+  @Summary: コンストラクタ
+  @Details: None
+=================================================================================================*/
+Component::Component(ComponentType type, GameObject* gameObject)
+{
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+}
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+/*===============================================================================================* 
+  @Summary: デストラクタ
+  @Details: None
+ *===============================================================================================*/
+Component::~Component()
+{
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+}
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
+/*===============================================================================================* 
+  @Summary: 初期化処理
+  @Details: None
+ *===============================================================================================*/
+void Component::Init()
+{
 
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
+}
 
-const std::string Constant::PATH_NETWORK  = "Network/";
+/*===============================================================================================* 
+  @Summary: 終了処理
+  @Details: None
+ *===============================================================================================*/
+void Component::Uninit()
+{
 
-const std::string Constant::PATH_MAP      = "Map/";
+}
 
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
+/*===============================================================================================* 
+  @Summary: 更新処理
+  @Details: None
+ *===============================================================================================*/
+void Component::Update()
+{
 
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
+}
 
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //

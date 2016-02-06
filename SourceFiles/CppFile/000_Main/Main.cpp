@@ -1,7 +1,7 @@
 /**************************************************************************************************
 
- @File   : [ Main.cpp ] 
- @Auther : Nagasawa
+ @File   : [ Main.cpp ] UniverseEngine のシステムを全て管理するメインクラス
+ @Auther : Unisawa
 
 **************************************************************************************************/
 
@@ -16,6 +16,7 @@
 //-----MainSetting-----//
 #include "000_Main/Main.h"
 #include "001_Constant/Constant.h"
+#include "002_Manager/Manager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -29,15 +30,17 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-HWND         Main::WindowHandle = NULL;
-HINSTANCE    Main::Instance = NULL;
-unsigned int Main::FrameRate = 0;
+HWND         Main::windowHandle = NULL;
+HINSTANCE    Main::instance     = NULL;
+bool         Main::isWindow     = false;
+
+unsigned int Main::frameRate    = 0;
 
 /*===============================================================================================* 
   @Summary: プログラム起動時に最初に呼ばれ、Windowを生成、管理、破棄する
   @Details: None
  *===============================================================================================*/
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevinstance, LPSTR lpCmdLine, int nCmdShow)
 {
     RECT  Rect;       // 画面サイズ
     MSG   Message;    // メッセージ情報
@@ -53,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // ウインドウクラスの設定
     WNDCLASSEX wcex =
     {
-        sizeof(WNDCLASSEX), CS_CLASSDC, Main::WindowProcedure, 0, 0, hInstance, NULL,
+        sizeof(WNDCLASSEX), CS_CLASSDC, Main::WindowProcedure, 0, 0, hinstance, NULL,
         LoadCursor(NULL, IDC_ARROW), (HBRUSH)(COLOR_WINDOW + 1), NULL, CLASS_NAME, NULL
     };
 
@@ -66,31 +69,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     // ウィンドウ生成位置を中央に調整する
     RECT rcRect;
-    Main::WindowHandle = GetDesktopWindow();
-    GetWindowRect(Main::WindowHandle, &rcRect);
+    Main::windowHandle = GetDesktopWindow();
+    GetWindowRect(Main::windowHandle, &rcRect);
 
     // ウィンドウの生成
 #ifdef _DEBUG
-    Main::WindowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPEDWINDOW, (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
-                                        (Rect.right - Rect.left), (Rect.bottom - Rect.top), NULL, NULL, hInstance, NULL);
+    Main::windowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPEDWINDOW, (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
+                                        (Rect.right - Rect.left), (Rect.bottom - Rect.top), NULL, NULL, hinstance, NULL);
 #else if _RELEASE
-    Main::WindowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPEDWINDOW, (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
-                                        (Rect.right - Rect.left), (Rect.bottom - Rect.top), NULL, NULL, hInstance, NULL);
+    Main::windowHandle = CreateWindowEx(0, CLASS_NAME, Constant::WINDOW_NAME.c_str(), WS_OVERLAPPEDWINDOW, (rcRect.right - (int)Constant::SCREEN_WIDTH) / 2 , (Rect.bottom - (int)Constant::SCREEN_HEIGHT) / 2,
+                                        (Rect.right - Rect.left), (Rect.bottom - Rect.top), NULL, NULL, hinstance, NULL);
 
     // ウィンドウサイズの固定化
-    LONG Style = GetWindowLong(Main::WindowHandle, GWL_STYLE);
+    LONG Style = GetWindowLong(Main::windowHandle, GWL_STYLE);
     Style &= ~WS_THICKFRAME;
-    Style  = SetWindowLong(Main::WindowHandle, GWL_STYLE, Style);
+    Style  = SetWindowLong(Main::windowHandle, GWL_STYLE, Style);
 #endif
 
     // ウィンドウの表示
-    ShowWindow(Main::WindowHandle, nCmdShow);
-    UpdateWindow(Main::WindowHandle);
+    ShowWindow(Main::windowHandle, nCmdShow);
+    UpdateWindow(Main::windowHandle);
 
     // 初期化処理
-    Main::Instance = hInstance;
+    Main::instance = hinstance;
     pMain = new Main();
-    pMain->Init();
+    if (pMain->Init() == E_FAIL)    // 初期化失敗 プログラム終了
+    {
+        //-----終了処理-----//
+        SafeDeleteUninit(pMain);
+
+        // 分解能設定の解除
+        timeEndPeriod(1);
+
+        return NULL;
+    }
 
     // Message Loop
     Message = pMain->MessageLoop();
@@ -111,12 +123,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-void Main::Init()
+HRESULT Main::Init()
 {
-    Main::FrameRate = 60;
+    Main::frameRate = 60;
 
-    //pManager = new Manager();
-    //pManager->Init();
+    pManager = new Manager();
+    if (pManager->Init() == E_FAIL) return E_FAIL;
+
+    return S_OK;
 }
 
 /*===============================================================================================* 
@@ -125,7 +139,7 @@ void Main::Init()
  *===============================================================================================*/
 void Main::Uninit()
 {
-    //SafeDeleteUninit(pManager);
+    SafeDeleteUninit(pManager);
 }
 
 /*===============================================================================================* 
@@ -134,7 +148,7 @@ void Main::Uninit()
  *===============================================================================================*/
 void Main::Update()
 {
-    //pManager->Update();
+    pManager->Update();
 
     // FPS表示用カウンタの更新
     //DebugManager::AddFrameCount();
@@ -146,7 +160,7 @@ void Main::Update()
  *===============================================================================================*/
 void Main::Draw()
 {
-    //pManager->Draw();
+    pManager->Draw();
 }
 
 /*===============================================================================================* 
@@ -186,7 +200,7 @@ MSG Main::MessageLoop()
             // FPS 計算
             //DebugManager::CheckFPS(dwCurrentTime);
 
-            if ((dwCurrentTime - dwExecLastTime) >= (1000 / Main::FrameRate))
+            if ((dwCurrentTime - dwExecLastTime) >= (1000 / Main::frameRate))
             {
                 dwExecLastTime = dwCurrentTime;
 

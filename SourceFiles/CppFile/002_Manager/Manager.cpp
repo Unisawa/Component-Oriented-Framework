@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Constant.cpp ] 
+ @File   : [ Manager.cpp ] ゲーム全般に必要な各種管理クラスを管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -17,7 +17,8 @@
 #include "000_Main/Main.h"
 
 //-----Object-----//
-#include "001_Constant/Constant.h"
+#include "002_Manager/Manager.h"
+#include "004_Component/0040_RenderDX/RenderManagerDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -30,42 +31,54 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
+RenderManagerDX* Manager::pRenderManagerDX = NULL;
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+/*===============================================================================================* 
+  @Summary: 初期化処理
+  @Details: None
+ *===============================================================================================*/
+HRESULT Manager::Init()
+{
+#ifdef _DIRECTX
+    pRenderManagerDX = RenderManagerDX::Create();
+    if (pRenderManagerDX == NULL) return E_FAIL;    // DirectX の初期化に失敗
+#endif
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+    return S_OK;
+}
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+/*===============================================================================================* 
+  @Summary: 終了処理
+  @Details: None
+ *===============================================================================================*/
+void Manager::Uninit()
+{
+#ifdef _DIRECTX
+    SafeDeleteUninit(pRenderManagerDX);
+#endif
+}
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+/*===============================================================================================* 
+  @Summary: 更新処理
+  @Details: None
+ *===============================================================================================*/
+void Manager::Update()
+{
+#ifdef _DIRECTX
+    pRenderManagerDX->Update();
+#endif
+}
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
-
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
-
-const std::string Constant::PATH_NETWORK  = "Network/";
-
-const std::string Constant::PATH_MAP      = "Map/";
-
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
-
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
-
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
+/*===============================================================================================* 
+  @Summary: 描画処理
+  @Details: None
+ *===============================================================================================*/
+void Manager::Draw()
+{
+#ifdef _DIRECTX
+    pRenderManagerDX->Draw();
+#endif
+}
 
 //===============================================================================================//
 //                                                                                               //

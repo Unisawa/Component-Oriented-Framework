@@ -1,11 +1,20 @@
 /**************************************************************************************************
 
- @File   : [ Constant.cpp ] 
+ @File   : [ Transform.h ] オブジェクトの位置、回転、スケールを扱うクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
 
 
+
+//***********************************************************************************************//
+//                                                                                               //
+//  @Include Guard                                                                               //
+//                                                                                               //
+//***********************************************************************************************//
+#pragma once
+#ifndef _TRANSFORM_H_
+#define _TRANSFORM_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -17,7 +26,7 @@
 #include "000_Main/Main.h"
 
 //-----Object-----//
-#include "001_Constant/Constant.h"
+#include "004_Component/Component.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -27,46 +36,27 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Static Variable                                                                             //
+//  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class Transform : public Component
+{
+public:
+             Transform();
+    virtual ~Transform();
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+    void SetParent(Transform& value);
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+private:
+    Transform*  parent;        // Transform の親
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+    D3DXVECTOR3 position;      // ワールド空間の Transform の位置
+    D3DXVECTOR3 rotation;      // ワールド空間の Transform の回転
+    D3DXVECTOR3 lossyScale;    // オブジェクトのグローバルスケール
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+};
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
-
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
-
-const std::string Constant::PATH_NETWORK  = "Network/";
-
-const std::string Constant::PATH_MAP      = "Map/";
-
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
-
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
-
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
-
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

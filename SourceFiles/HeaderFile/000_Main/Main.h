@@ -1,7 +1,7 @@
 /**************************************************************************************************
 
- @File   : [ Main.h ] 
- @Auther : Nagasawa
+ @File   : [ Main.h ] UniverseEngine のシステムを全て管理するメインクラス
+ @Auther : Unisawa
 
 **************************************************************************************************/
 
@@ -37,15 +37,15 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
-//-----DirectX-----//
-#define  D3D_DEBUG_INFO
-#include "d3dx9.h"
-
 //-----Default Include-----//
 #include <stdio.h>
 #include <windows.h>
 #include <math.h>
 #include <time.h>
+
+//-----DirectX-----//
+#define  D3D_DEBUG_INFO
+#include "d3dx9.h"
 
 //-----STL-----//
 #include <String>
@@ -54,7 +54,7 @@
 //-----Manager-----//
 
 
-//-----GameObject-----//
+//-----Object-----//
 
 
 //***********************************************************************************************//
@@ -137,19 +137,20 @@ public:
      Main() {};
     ~Main() {};
 
-    void Init();
-    void Uninit();
-    void Update();
-    void Draw();
-    MSG  MessageLoop();
+    HRESULT Init();
+    void    Uninit();
+    void    Update();
+    void    Draw();
+    MSG     MessageLoop();
 
     static LRESULT CALLBACK WindowProcedure(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-    // WinAPIのウィンドウ情報
-    static HWND      WindowHandle;
-    static HINSTANCE Instance;
+    // Win32APIのウィンドウ情報
+    static HWND      windowHandle;
+    static HINSTANCE instance;
+    static bool      isWindow;
 
-    static unsigned int FrameRate;
+    static unsigned int frameRate;
 
 private:
     Manager* pManager;

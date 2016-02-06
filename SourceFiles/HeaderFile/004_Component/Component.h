@@ -1,11 +1,20 @@
 /**************************************************************************************************
 
- @File   : [ Constant.cpp ] 
+ @File   : [ Component.h ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
 
 
+
+//***********************************************************************************************//
+//                                                                                               //
+//  @Include Guard                                                                               //
+//                                                                                               //
+//***********************************************************************************************//
+#pragma once
+#ifndef _COMPONENT_H_
+#define _COMPONENT_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -17,7 +26,7 @@
 #include "000_Main/Main.h"
 
 //-----Object-----//
-#include "001_Constant/Constant.h"
+#include "003_Object/Object.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -27,46 +36,47 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Static Variable                                                                             //
+//  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class GameObject;
+class Transform;
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+class Component : public Object
+{
+public:
+    enum ComponentType
+    {
+        ComponentTransform = 0,
+        ComponentRenderer,
+        ComponentCollider,
+        ComponentNetwork,
+        ComponentRigidbody,
+        ComponentParticleSystem,
+        ComponentScript,
+        ComponentTypeCamera,
+        ComponentTypeLight,
+        ComponentMax,
+    };
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+             Component() {}
+             Component(ComponentType type, GameObject* gameObject);
+    virtual ~Component();
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+    virtual void Init();
+    virtual void Uninit();
+    virtual void Update();
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+private:
+    GameObject*   gameObject;    // アタッチしているGameObject
+    Transform*    transform;     // GameObject にアタッチされた Transform
+    std::string   tag;           // GameObjectのタグ
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
+    std::string   componentName;
+    ComponentType componentType;
+};
 
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
-
-const std::string Constant::PATH_NETWORK  = "Network/";
-
-const std::string Constant::PATH_MAP      = "Map/";
-
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
-
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
-
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
-
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //
