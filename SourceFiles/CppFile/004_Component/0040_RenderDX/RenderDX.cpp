@@ -13,9 +13,6 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "002_Manager/Manager.h"
-
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
@@ -36,7 +33,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderDX::RenderDX(GameObject::LAYER Layer)
+RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
 {
     enabled = true;
     zDepth  = 1.0f;
@@ -79,7 +76,7 @@ bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
  *===============================================================================================*/
 void RenderDX::SetBlending()
 {
-    LPDIRECT3DDEVICE9 pDevice = Manager::GetRenderManagerDX()->GetDevice();
+    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
 
     // ブレンドモードのリセット (アルファブレンドを基本とする)
     pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -131,7 +128,7 @@ void RenderDX::SetBlending()
  *===============================================================================================*/
 void RenderDX::SetCulling()
 {
-    LPDIRECT3DDEVICE9 pDevice = Manager::GetRenderManagerDX()->GetDevice();
+    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
 
     // カリングのリセット (裏カリングを基本とする)
     pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);

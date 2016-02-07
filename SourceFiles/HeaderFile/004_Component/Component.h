@@ -45,27 +45,26 @@ class Transform;
 class Component : public Object
 {
 public:
+
     enum ComponentType
     {
         ComponentTransform = 0,
         ComponentRenderer,
-        ComponentCollider,
-        ComponentNetwork,
-        ComponentRigidbody,
-        ComponentParticleSystem,
         ComponentScript,
-        ComponentTypeCamera,
-        ComponentTypeLight,
+
         ComponentMax,
     };
 
-             Component() {}
-             Component(ComponentType type, GameObject* gameObject);
+             Component(GameObject* pObject, ComponentType Type, std::string ComponentName);
     virtual ~Component();
 
     virtual void Init()   {}
     virtual void Uninit() {}
     virtual void Update() {}
+
+    // コンポーネント関連
+    Component* GetComponent(std::string name);
+    template <typename T> T* GetComponent();
 
     const std::string& GetComponentName() { return componentName; }
 

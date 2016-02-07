@@ -46,6 +46,19 @@ public:
 
     void SetParent(Transform& value);
 
+    //-----Setter, Getter-----//
+    void        SetPosition(float x, float y, float z) { position.x = x; position.y = y; position.z = z; }
+    void        SetPosition(const D3DXVECTOR3 &Pos)    { position = Pos; }
+    D3DXVECTOR3 GetPosition() const { return position; }
+
+    void        SetRotation(float x, float y, float z) { rotation.x = x; rotation.y = y; rotation.z = z; }
+    void        SetRotation(const D3DXVECTOR3 &Rot)    { rotation = Rot; }
+    D3DXVECTOR3 GetRotation() const { return rotation; }
+
+    void        SetScale(float x, float y, float z) { lossyScale.x = x; lossyScale.y = y; lossyScale.z = z; }
+    void        SetScale(const D3DXVECTOR3 &Sca)    { lossyScale = Sca; }
+    D3DXVECTOR3 GetScale() const { return lossyScale; }
+
 private:
     Transform*  parent;        // Transform ÇÃêe
 

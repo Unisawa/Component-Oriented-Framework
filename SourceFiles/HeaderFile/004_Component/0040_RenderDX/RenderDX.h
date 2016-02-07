@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderDX.h ] 全てのレンダラーのための一般的な機能を管理するクラス
+ @File   : [ RenderDX.h ] 全てのレンダラーのための一般的な機能を管理するクラス (抽象クラス)
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -89,7 +89,7 @@ public:
         CULLTYPE_MAX
     };
 
-             RenderDX(GameObject::LAYER Layer = GameObject::LAYER_ZERO);
+             RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer = GameObject::LAYER_ZERO);
     virtual ~RenderDX();
 
     virtual void Init()   = 0;

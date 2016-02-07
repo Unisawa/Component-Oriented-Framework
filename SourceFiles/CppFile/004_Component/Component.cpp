@@ -32,9 +32,12 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Component::Component(ComponentType type, GameObject* gameObject)
+Component::Component(GameObject* pObject, ComponentType Type, std::string ComponentName)
 {
+    gameObject    = pObject;
 
+    componentType = Type;
+    componentName = ComponentName;
 }
 
 /*===============================================================================================* 
@@ -44,6 +47,44 @@ Component::Component(ComponentType type, GameObject* gameObject)
 Component::~Component()
 {
 
+}
+
+/*===============================================================================================* 
+  @Summary: GameObject にアタッチされているコンポーネントを取得する
+  @Details: None
+ *===============================================================================================*/
+Component* Component::GetComponent(std::string name)
+{
+    std::list<Component*> pList = gameObject->GetComponetList();
+
+    for (auto Iterator = pList.begin(); Iterator != pList.end(); ++Iterator)
+    {
+        if (name == (*Iterator)->GetComponentName())
+        {
+            return (*Iterator);
+        }
+    }
+
+    return NULL;
+}
+
+/*===============================================================================================* 
+  @Summary: GameObject にアタッチされているコンポーネントを取得する
+  @Details: None
+ *===============================================================================================*/
+template <typename T> T* Component::GetComponent()
+{
+    std::list<Component*> pList = gameObject->GetComponetList();
+
+    for (auto Iterator = pList.begin(); Iterator != pList.end(); ++Iterator)
+    {
+        //if (T::className == (*Iterator)->GetComponentName())
+        {
+            return (T*)(*Iterator);
+        }
+    }
+
+    return NULL;
 }
 
 /*===============================================================================================* 

@@ -21,6 +21,7 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#define COMPONENT_NAME "Transform"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -32,7 +33,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Transform::Transform(GameObject* pObject)
+Transform::Transform(GameObject* pObject) : Component(pObject, ComponentTransform, COMPONENT_NAME)
 {
     parent = NULL;
 

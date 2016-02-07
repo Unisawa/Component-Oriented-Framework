@@ -26,7 +26,7 @@
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
-
+#include "004_Component/0040_RenderDX/RenderDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,22 +39,32 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Render2DDX
+class Render2DDX : public RenderDX
 {
 public:
-             Render2DDX();
+             Render2DDX(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT2D_OPACITY_ONE);
     virtual ~Render2DDX();
 
-    static Render2DDX* Create();
+    virtual void Init()   override;
+    virtual void Uninit() override;
+    virtual void Update() override;
+    virtual void Draw()   override;
 
-    virtual void Init();
-    virtual void Uninit();
-    virtual void Update();
-    virtual void Draw();
+    //-----Setter, Getter-----//
+    void SetTexture(std::string TextureName);
+    int  GetTexture() const { return textureID; }
+
+    void      SetColor(D3DXCOLOR value) { vertexColor = value; }
+    D3DXCOLOR GetColor() const { return vertexColor; }
 
 private:
+    void SetVertex();
 
+    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
 
+    D3DXCOLOR   vertexColor;    // カラー情報
+    D3DXVECTOR2 textureUV;      // テクスチャのUV座標の視点
+    int         textureID;      // テクスチャ識別番号
 };
 
 #endif

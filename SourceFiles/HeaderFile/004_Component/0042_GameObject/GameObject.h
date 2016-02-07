@@ -88,6 +88,8 @@ public:
     template <typename T> T* AddComponent();
     template <typename T> T* GetComponent();
 
+    std::list<Component*> GetComponetList() { return componentList; }
+
     // GameObject->tag とタグ付けされているか確認
     bool CompareTag(std::string tag) { return ((this->tag == tag) ? true : false); }
 

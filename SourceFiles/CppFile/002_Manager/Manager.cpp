@@ -18,9 +18,12 @@
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
+#include "004_Component/Component.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
 #include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0042_GameObject/GameObject.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
+#include "004_Component/0040_RenderDX/Render2DDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -56,10 +59,11 @@ HRESULT Manager::Init()
 
     pGameObjectManager = GameObjectManager::Create();
 
-    GameObject* pTemp = new GameObject();
+    GameObject* pTemp = new GameObject;
     pTemp->SetName("AAAAA");
+    Render2DDX* pRender2D = pTemp->AddComponent<Render2DDX>();
 
-    GameObject* apTemp = new GameObject();
+    GameObject* apTemp = new GameObject;
     apTemp->SetName("BBBBB");
 
     return S_OK;
