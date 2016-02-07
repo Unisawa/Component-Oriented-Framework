@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Manager.cpp ] ゲーム全般に必要な各種管理クラスを管理するクラス
+ @File   : [ RenderDX.cpp ] 全てのレンダラーのための一般的な機能を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -14,13 +14,11 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "000_Main/Main.h"
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
+#include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
-#include "004_Component/0042_GameObject/GameObjectManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -33,86 +31,57 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-RenderManagerDX* Manager::pRenderManagerDX = NULL;
-RenderManagerGL* Manager::pRenderManagerGL = NULL;
 
-GameObjectManager* Manager::pGameObjectManager = NULL;
-
-/*===============================================================================================* 
-  @Summary: 初期化処理
+/*=================================================================================================
+  @Summary: コンストラクタ
   @Details: None
- *===============================================================================================*/
-HRESULT Manager::Init()
+=================================================================================================*/
+RenderDX::RenderDX(GameObject::LAYER Layer)
 {
-#ifdef _DIRECTX
-    pRenderManagerDX = RenderManagerDX::Create();
-    if (pRenderManagerDX == NULL) return E_FAIL;    // DirectX の初期化に失敗
-#endif
+    enabled = true;
+    zDepth  = 1.0f;
 
-#ifdef _OPENGL
-    pRenderManagerGL = RenderManagerGL::Create();
-    if (pRenderManagerGL == NULL) return E_FAIL;    // OpenGL の初期化に失敗
-#endif
+    SetLayer(Layer);
 
-    pGameObjectManager = GameObjectManager::Create();
-
-    GameObject* pTemp = new GameObject();
-    pTemp->SetName("AAAAA");
-
-    GameObject* apTemp = new GameObject();
-    apTemp->SetName("BBBBB");
-
-    return S_OK;
+    RenderManagerDX::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
-  @Summary: 終了処理
+  @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-void Manager::Uninit()
+RenderDX::~RenderDX()
 {
-#ifdef _DIRECTX
-    SafeDeleteUninit(pRenderManagerDX);
-#endif
 
-#ifdef _OPENGL
-    SafeDeleteUninit(pRenderManagerGL);
-#endif
-
-    SafeDeleteUninit(pGameObjectManager);
 }
 
 /*===============================================================================================* 
-  @Summary: 更新処理
+  @Summary: ZDepthの値を参考にソートする Bに対してAの方が小さいか
   @Details: None
  *===============================================================================================*/
-void Manager::Update()
+bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
 {
-    pGameObjectManager->Update();
-
-#ifdef _DIRECTX
-    pRenderManagerDX->Update();
-#endif
-
-#ifdef _OPENGL
-    pRenderManagerGL->Update();
-#endif
+    return RenderA->GetZDepth() < RenderB->GetZDepth();
 }
 
 /*===============================================================================================* 
-  @Summary: 描画処理
+  @Summary: ZDepthの値を参考にソートする Bに対してAの方が大きいか
   @Details: None
  *===============================================================================================*/
-void Manager::Draw()
+bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
 {
-#ifdef _DIRECTX
-    pRenderManagerDX->Draw();
-#endif
-
-#ifdef _OPENGL
-    pRenderManagerGL->Draw();
-#endif
+    return RenderA->GetZDepth() > RenderB->GetZDepth();
 }
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //

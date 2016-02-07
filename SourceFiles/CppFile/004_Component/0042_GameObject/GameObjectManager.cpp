@@ -81,9 +81,9 @@ void GameObjectManager::Update()
  *===============================================================================================*/
 void GameObjectManager::UpdateAll()
 {
-    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = gameObjectList[Cnt].begin(); Iterator != gameObjectList[Cnt].end(); ++Iterator)
+        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end(); ++Iterator)
         {
             if ((*Iterator)->GetActive())
             {

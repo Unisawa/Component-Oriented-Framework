@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ GameObject.h ] 全ての実体のベースクラス
+ @File   : [ RenderDX.h ] 全てのレンダラーのための一般的な機能を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _GAMEOBJECT_H_
-#define _GAMEOBJECT_H_
+#ifndef _RENDERDX_H_
+#define _RENDERDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -22,11 +22,12 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----STL-----//
-#include <list>
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "003_Object/Object.h"
+#include "004_Component/Component.h"
+#include "004_Component/0042_GameObject/GameObject.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -34,79 +35,61 @@
 //                                                                                               //
 //***********************************************************************************************//
 
+//-----2DPolygon VertexInformation-----//
+typedef struct
+{
+    D3DXVECTOR3 pos;    // 頂点の位置座標
+    float       rhw;    // 3Dにおける2Dテクスチャのゆがみ補正のデータ パースペクティブコレクト
+    D3DCOLOR    col;    // 頂点カラー
+    D3DXVECTOR2 tex;    // テクスチャ座標
+
+}VERTEX_2D;
+
+//-----3DPolygon VertexInformation-----//
+typedef struct
+{
+    D3DXVECTOR3 pos;    // 頂点の位置座標
+    D3DXVECTOR3 nor;    // 法線ベクトル
+    D3DCOLOR    col;    // 頂点カラー
+    D3DXVECTOR2 tex;    // テクスチャ座標
+
+}VERTEX_3D;
+
+//-----VertexFormat-----//
+#define FVF_VERTEX_2D (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+#define FVF_VERTEX_3D (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Component;
-class Transform;
-
-class GameObject : public Object
+class RenderDX : public Component
 {
 public:
+             RenderDX(GameObject::LAYER Layer = GameObject::LAYER_ZERO);
+    virtual ~RenderDX();
 
-    static const enum LAYER
-    {
-        LAYER_ZERO = 0,
+    virtual void Init()   = 0;
+    virtual void Uninit() = 0;
+    virtual void Update() = 0;
+    virtual void Draw()   = 0;
 
-        // 3Dオブジェクト-不透明
-        OBJECT3D_OPACITY_ONE,
-        OBJECT3D_OPACITY_TWO,
-
-        // ビルボード-不透明
-        BILLBOARD_OPACITY_ONE,
-
-        // 3Dオブジェクト-半透明
-        OBJECT3D_TRANSLUCENT_ONE,
-        OBJECT3D_TRANSLUCENT_TWO,
-
-        // ビルボード-半透明
-        BILLBOARD_TRANSLUCENT_ONE,
-
-        // 2Dオブジェクト-不透明
-        OBJECT2D_OPACITY_ONE,
-        OBJECT2D_OPACITY_TWO,
-
-        // 2Dオブジェクト-半透明
-        OBJECT2D_TRANSLUCENT_ONE,
-        OBJECT2D_TRANSLUCENT_TWO,
-
-        LAYER_MAX
-    };
-
-             GameObject(LAYER Layer = LAYER_ZERO);
-    virtual ~GameObject();
-
-    virtual void Init();
-    virtual void Uninit();
-    virtual void Update();
-
-    // コンポーネント関連
-    void       AddComponent(Component* component);
-    Component* GetComponent(std::string name);
-    template <typename T> T* AddComponent();
-    template <typename T> T* GetComponent();
-
-    // GameObject->tag とタグ付けされているか確認
-    bool CompareTag(std::string tag) { return ((this->tag == tag) ? true : false); }
+    static bool ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB);
+    static bool ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB);
 
     //-----Setter, Getter-----//
-    void  SetActive(bool value) { activeSelf = value; }
-    bool  GetActive() const { return activeSelf; }
+    void              SetLayer(GameObject::LAYER value) { layer = value; }
+    GameObject::LAYER GetLayer() const { return layer; }
 
-    void  SetLayer(LAYER value) { layer = value; }
-    LAYER GetLayer() const { return layer; }
+    float GetZDepth() const { return zDepth; }
 
-    Transform* GetTransform() { return transform; }
+    bool enabled;    // True時のみ描画を行う
 
 private:
-    bool        activeSelf;    // GameObject のローカルのアクティブ状態
-    LAYER       layer;         // レイヤー (階層番号 レンダリング順序などに影響する)
-    std::string tag;           // タグ名
-    Transform*  transform;     // GameObject にアタッチされている Transform
+    GameObject::LAYER layer;    // 描画順
 
-    std::list<Component*> componentList;
+    float zDepth;    // カメラからオブジェクトまでの距離 (Zソート時に利用)
 };
 
 #endif

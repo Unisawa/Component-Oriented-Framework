@@ -19,6 +19,7 @@
 
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0040_RenderDX/RenderDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -36,6 +37,8 @@ LPDIRECT3DDEVICE9 RenderManagerDX::pD3DDevice = NULL;
 
 D3DXCOLOR         RenderManagerDX::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
 
+std::list<RenderDX*> RenderManagerDX::renderDXList[GameObject::LAYER_MAX];
+
 /*===============================================================================================* 
   @Summary: 生成処理
   @Details: None
@@ -49,6 +52,11 @@ RenderManagerDX *RenderManagerDX::Create()
         MessageBox(NULL, "DirectXによる描画設定に失敗しました。", "エラー発生", MB_ICONERROR | MB_OK);
 
         return NULL;
+    }
+
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        renderDXList[Layer].clear();
     }
 
     return pRenderManagerDX;
@@ -127,13 +135,11 @@ HRESULT RenderManagerDX::Init()
     }
 
     // レンダーステートの設定
+    pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);                     // ライトを使用する
     pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);              // 裏カリング
-
     pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);             // α情報のブレンド設定 以下 2行含む
     pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
     // テクスチャのステージステートの設定 テクスチャにα情報を適応させる
     pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_MODULATE);    // テクスチャにも頂点のα情報を適応させる
@@ -143,7 +149,6 @@ HRESULT RenderManagerDX::Init()
     // サンプラーステートの設定
     pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);        // テクスチャのUV値の繰り返しを設定する
     pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
-
     pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);         // テクスチャの拡大縮小時の補間を行う
     pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
@@ -166,6 +171,8 @@ HRESULT RenderManagerDX::Init()
  *===============================================================================================*/
 void RenderManagerDX::Uninit()
 {
+    ReleaseAll();
+
     SafeRelease(pD3DDevice);
     SafeRelease(pD3DObject);
 }
@@ -176,7 +183,7 @@ void RenderManagerDX::Uninit()
  *===============================================================================================*/
 void RenderManagerDX::Update()
 {
-
+    UpdateAll();
 }
 
 /*===============================================================================================* 
@@ -191,16 +198,167 @@ void RenderManagerDX::Draw()
     // 描画開始
     pD3DDevice->BeginScene();
 
+        DrawAll();
+
     pD3DDevice->EndScene();
 
     // フロントバッファとバックバッファの入れ替え
     pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
 
-/*===============================================================================================* 
-  @Summary: 
-  @Details: 
+/*===============================================================================================*
+  @Summary: 登録された全てのRenderを更新する
+  @Details: None
  *===============================================================================================*/
+void RenderManagerDX::UpdateAll()
+{
+    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    {
+        for (auto Iterator = renderDXList[Cnt].begin(); Iterator != renderDXList[Cnt].end(); ++Iterator)
+        {
+            if ((*Iterator)->enabled)
+            {
+                (*Iterator)->Update();
+            }
+        }
+    }
+}
+
+/*===============================================================================================*
+  @Summary: 登録された全てのRenderの描画をする
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::DrawAll()
+{
+    // 描画の高速化
+    CalculateZSortAll();
+    ZSort();
+
+    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    {
+        for (auto Iterator = renderDXList[Cnt].begin(); Iterator != renderDXList[Cnt].end(); ++Iterator)
+        {
+            if ((*Iterator)->enabled)
+            {
+                (*Iterator)->Draw();
+            }
+        }
+    }
+}
+
+/*===============================================================================================*
+  @Summary: 登録された全てのRenderを削除する
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::ReleaseAll()
+{
+    RenderDX* pRender;
+
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end();)
+        {
+            pRender = (*Iterator);
+
+            // リストから切り離す
+            Iterator = renderDXList[Layer].erase(Iterator);
+
+            // GameObjectの削除
+            SafeDeleteUninit(pRender);
+        }
+
+        renderDXList[Layer].clear();
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: 各レイヤーのRenderをカメラからの距離によってソートする
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::ZSort()
+{
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        // 不透明はZDepth値はカメラから近い順にソートし、半透明は遠い順にソート
+        if (Layer < GameObject::LAYER::OBJECT3D_TRANSLUCENT_ONE)
+        {
+            renderDXList[Layer].sort(RenderDX::ZSortCompareLess);
+        }
+        else
+        {
+            renderDXList[Layer].sort(RenderDX::ZSortCompareGreater);
+        }
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: 各レイヤーのRenderのZDepthの値を計算する
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::CalculateZSortAll()
+{
+    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    {
+        for (auto Iterator = renderDXList[Cnt].begin(); Iterator != renderDXList[Cnt].end(); ++Iterator)
+        {
+            
+        }
+    }
+}
+
+/*===============================================================================================*
+  @Summary: Renderをリストに追加する
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::LinkList(RenderDX* pRender, GameObject::LAYER Layer)
+{
+    renderDXList[Layer].push_back(pRender);
+}
+
+/*===============================================================================================*
+  @Summary: Renderをリストから解除する
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::UnLinkList(RenderDX* pRender)
+{
+    GameObject::LAYER Layer = pRender->GetLayer();
+
+    for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
+    {
+        if (*Iterator == pRender)
+        {
+            // リストから切り離す
+            renderDXList[Layer].erase(Iterator);
+
+            break;
+        }
+    }
+}
+
+/*===============================================================================================*
+  @Summary: 対象のRenderを削除する (リストからも取り除く)
+  @Details: 対象のRenderのUninit()が呼ばれる
+ *===============================================================================================*/
+void RenderManagerDX::Release(RenderDX* pRender)
+{
+    GameObject::LAYER Layer = pRender->GetLayer();
+
+    for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end();)
+    {
+        if (*Iterator == pRender)
+        {
+            // リストから切り離す
+            Iterator = renderDXList[Layer].erase(Iterator);
+
+            // GameObjectの削除
+            SafeDeleteUninit(pRender);
+
+            return;
+        }
+
+        ++Iterator;
+    }
+}
 
 //===============================================================================================//
 //                                                                                               //

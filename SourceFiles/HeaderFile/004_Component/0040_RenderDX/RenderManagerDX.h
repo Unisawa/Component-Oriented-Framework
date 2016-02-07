@@ -35,6 +35,9 @@
 #define  D3D_DEBUG_INFO
 #include "d3dx9.h"
 
+//-----Object-----//
+#include "004_Component/0042_GameObject/GameObject.h"
+
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -46,6 +49,8 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class RenderDX;
+
 class RenderManagerDX
 {
 public:
@@ -59,6 +64,19 @@ public:
     void    Update();
     void    Draw();
 
+    static void UpdateAll();
+    static void DrawAll();
+    static void ReleaseAll();
+
+    static void ZSort();
+    static void CalculateZSortAll();
+
+    //-----Operation List-----//
+    static void LinkList(RenderDX* pRender, GameObject::LAYER Layer);
+    static void UnLinkList(RenderDX* pRender);
+    static void Release(RenderDX* pRender);
+
+    //-----Setter, Getter-----//
     static LPDIRECT3DDEVICE9 GetDevice() { return pD3DDevice; }
 
     static void      SetClearColor(D3DXCOLOR Color) { clearColor = Color; }
@@ -69,6 +87,8 @@ private:
     static LPDIRECT3DDEVICE9 pD3DDevice;    // デバイスオブジェクト
 
     static D3DXCOLOR clearColor;            // 背景クリア色
+
+    static std::list<RenderDX*> renderDXList[GameObject::LAYER_MAX];
 };
 
 #endif
