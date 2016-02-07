@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderDX.cpp ] 全てのレンダラーのための一般的な機能を管理するクラス
+ @File   : [ Render2DDX.cpp ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -17,8 +17,7 @@
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/Render2DDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -36,127 +35,67 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderDX::RenderDX(GameObject::LAYER Layer)
+Render2DDX::Render2DDX()
 {
-    enabled = true;
-    zDepth  = 1.0f;
 
-    SetLayer(Layer);
-
-    RenderManagerDX::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-RenderDX::~RenderDX()
+Render2DDX::~Render2DDX()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が小さいか
+  @Summary: 生成処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
+Render2DDX *Render2DDX::Create()
 {
-    return RenderA->GetZDepth() < RenderB->GetZDepth();
+    Render2DDX* pRender2DDX;
+    pRender2DDX = new Render2DDX();
+    pRender2DDX->Init();
+
+    return pRender2DDX;
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が大きいか
+  @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
+void Render2DDX::Init()
 {
-    return RenderA->GetZDepth() > RenderB->GetZDepth();
+
 }
 
 /*===============================================================================================* 
-  @Summary: Renderが持つブレンド設定を行う
+  @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetBlending()
+void Render2DDX::Uninit()
 {
-    LPDIRECT3DDEVICE9 pDevice = Manager::GetRenderManagerDX()->GetDevice();
 
-    // ブレンドモードのリセット (アルファブレンドを基本とする)
-    pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-    pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    // ブレンド設定
-    switch (blendType)
-    {
-        // ブレンドしない
-        case BLENDTYPE_NOTBLEND:
-            pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-            break;
-
-        // アルファブレンド
-        case BLENDTYPE_NORMAL:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            break;
-
-        // 加算合成
-        case BLENDTYPE_ADD:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 半加算合成
-        case BLENDTYPE_ADD_SOFT:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 減算合成
-        case BLENDTYPE_SUBTRACT:
-            pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        default:
-            break;
-    }
 }
 
 /*===============================================================================================* 
-  @Summary: Renderが持つカリング設定を行う
+  @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetCulling()
+void Render2DDX::Update()
 {
-    LPDIRECT3DDEVICE9 pDevice = Manager::GetRenderManagerDX()->GetDevice();
 
-    // カリングのリセット (裏カリングを基本とする)
-    pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+}
 
-    // カリング設定
-    switch (cullingType)
-    {
-        // カリングしない
-        case CULLTYPE_NONE:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-            break;
+/*===============================================================================================* 
+  @Summary: 描画処理
+  @Details: None
+ *===============================================================================================*/
+void Render2DDX::Draw()
+{
 
-        // 表カリング
-        case CULLTYPE_CW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-            break;
-
-        // 裏カリング
-        case CULLTYPE_CCW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-            break;
-
-        default:
-            break;
-    }
 }
 
 /*===============================================================================================* 
