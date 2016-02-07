@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ GameObjectManager.h ] 
+ @File   : [ GameObjectManager.h ] ëSÇƒÇÃé¿ëÃÇä«óùÉNÉâÉX
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -22,11 +22,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "002_Manager/Manager.h"
-
 //-----Object-----//
-
+#include "GameObject.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -42,19 +39,26 @@
 class GameObjectManager
 {
 public:
-             GameObjectManager();
-    virtual ~GameObjectManager();
+     GameObjectManager() {}
+    ~GameObjectManager() {}
 
     static GameObjectManager* Create();
 
-    virtual void Init();
-    virtual void Uninit();
-    virtual void Update();
-    virtual void Draw();
+    void Init();
+    void Uninit();
+    void Update();
+
+    static void UpdateAll();
+    static void DrawAll();
+    static void ReleaseAll();
+
+    //-----Operation List-----//
+    static void LinkList(GameObject* pObject, GameObject::LAYER Layer);
+    static void UnLinkList(GameObject* pObject);
+    static void Release(GameObject* pObject);
 
 private:
-
-
+    static std::list<GameObject*> gameObjectList[GameObject::LAYER_MAX];
 };
 
 #endif

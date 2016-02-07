@@ -69,11 +69,11 @@ public:
 
     const std::string& GetComponentName() { return componentName; }
 
-private:
     GameObject*   gameObject;    // アタッチしているGameObject
     std::string   tag;           // GameObjectのタグ
     Transform*    transform;     // GameObject にアタッチされた Transform
 
+private:
     std::string   componentName;
     ComponentType componentType;
 };

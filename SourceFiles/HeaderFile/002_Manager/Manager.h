@@ -45,6 +45,7 @@
 //***********************************************************************************************//
 class RenderManagerDX;
 class RenderManagerGL;
+class GameObjectManager;
 
 class Manager
 {
@@ -60,9 +61,13 @@ public:
     static RenderManagerDX* GetRenderManagerDX() { return pRenderManagerDX; }
     static RenderManagerGL* GetRenderManagerGL() { return pRenderManagerGL; }
 
+    static GameObjectManager* GetGameObjectManager() { return pGameObjectManager; }
+
 private:
     static RenderManagerDX* pRenderManagerDX;
     static RenderManagerGL* pRenderManagerGL;
+
+    static GameObjectManager* pGameObjectManager;
 };
 
 #endif

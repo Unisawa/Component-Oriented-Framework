@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ GameObject.h ] 全ての実態のベースクラス
+ @File   : [ GameObject.h ] 全ての実体のベースクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -75,7 +75,7 @@ public:
         LAYER_MAX
     };
 
-             GameObject(std::string name = "");
+             GameObject(LAYER Layer = LAYER_ZERO);
     virtual ~GameObject();
 
     virtual void Init();
@@ -96,6 +96,8 @@ public:
 
     void  SetLayer(LAYER value) { layer = value; }
     LAYER GetLayer() const { return layer; }
+
+    Transform* GetTransform() { return transform; }
 
 private:
     bool        activeSelf;    // GameObject のローカルのアクティブ状態

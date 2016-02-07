@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ GameObjectManager.cpp ] 
+ @File   : [ GameObjectManager.cpp ] 全ての実体を管理クラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -14,10 +14,10 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "000_Main/Main.h"
 
 //-----Object-----//
-#include "004_Component/GameObjectManager.h"
+#include "004_Component/0042_GameObject/GameObjectManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -30,24 +30,7 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-
-/*=================================================================================================
-  @Summary: コンストラクタ
-  @Details: None
-=================================================================================================*/
-GameObjectManager::GameObjectManager()
-{
-
-}
-
-/*===============================================================================================* 
-  @Summary: デストラクタ
-  @Details: None
- *===============================================================================================*/
-GameObjectManager::~GameObjectManager()
-{
-
-}
+std::list<GameObject*> GameObjectManager::gameObjectList[GameObject::LAYER_MAX];
 
 /*===============================================================================================* 
   @Summary: 生成処理
@@ -68,7 +51,10 @@ GameObjectManager *GameObjectManager::Create()
  *===============================================================================================*/
 void GameObjectManager::Init()
 {
-
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        gameObjectList[Layer].clear();
+    }
 }
 
 /*===============================================================================================* 
@@ -77,7 +63,7 @@ void GameObjectManager::Init()
  *===============================================================================================*/
 void GameObjectManager::Uninit()
 {
-
+    ReleaseAll();
 }
 
 /*===============================================================================================* 
@@ -86,16 +72,104 @@ void GameObjectManager::Uninit()
  *===============================================================================================*/
 void GameObjectManager::Update()
 {
-
+    UpdateAll();
 }
 
-/*===============================================================================================* 
-  @Summary: 描画処理
+/*===============================================================================================*
+  @Summary: 登録された全てのGameObjectを更新する
   @Details: None
  *===============================================================================================*/
-void GameObjectManager::Draw()
+void GameObjectManager::UpdateAll()
 {
+    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    {
+        for (auto Iterator = gameObjectList[Cnt].begin(); Iterator != gameObjectList[Cnt].end(); ++Iterator)
+        {
+            if ((*Iterator)->GetActive())
+            {
+                (*Iterator)->Update();
+            }
+        }
+    }
+}
 
+/*===============================================================================================*
+  @Summary: 登録された全てのGameObjectを削除する
+  @Details: None
+ *===============================================================================================*/
+void GameObjectManager::ReleaseAll()
+{
+    GameObject* pObject;
+
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+        {
+            pObject = (*Iterator);
+
+            // リストから切り離す
+            Iterator = gameObjectList[Layer].erase(Iterator);
+
+            // GameObjectの削除
+            SafeDeleteUninit(pObject);
+        }
+
+        gameObjectList[Layer].clear();
+    }
+}
+
+/*===============================================================================================*
+  @Summary: GameObjectをリストに追加する
+  @Details: None
+ *===============================================================================================*/
+void GameObjectManager::LinkList(GameObject* pObject, GameObject::LAYER Layer)
+{
+    gameObjectList[Layer].push_back(pObject);
+}
+
+/*===============================================================================================*
+  @Summary: GameObjectをリストから解除する
+  @Details: None
+ *===============================================================================================*/
+void GameObjectManager::UnLinkList(GameObject* pObject)
+{
+    GameObject::LAYER Layer = pObject->GetLayer();
+
+    for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end(); ++Iterator)
+    {
+        if (*Iterator == pObject)
+        {
+            // リストから切り離す
+            gameObjectList[Layer].erase(Iterator);
+
+            break;
+        }
+    }
+}
+
+/*===============================================================================================*
+  @Summary: 対象のGameObjectを削除する (リストからも取り除く)
+  @Details: 対象のGameObjectのUninit()が呼ばれる
+ *===============================================================================================*/
+void GameObjectManager::Release(GameObject* pObject)
+{
+    GameObject::LAYER Layer = pObject->GetLayer();
+
+    for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+    {
+        if (*Iterator == pObject)
+        {
+            // リストから切り離す
+            Iterator = gameObjectList[Layer].erase(Iterator);
+
+            // GameObjectの削除
+            SafeDeleteUninit(pObject);
+
+            return;
+        }
+
+        ++Iterator;
+    }
 }
 
 /*===============================================================================================* 

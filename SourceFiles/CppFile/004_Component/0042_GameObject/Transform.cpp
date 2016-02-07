@@ -14,7 +14,7 @@
 //***********************************************************************************************//
 
 //-----Object-----//
-#include "004_Component/Transform.h"
+#include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -32,7 +32,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Transform::Transform()
+Transform::Transform(GameObject* pObject)
 {
     parent = NULL;
 
@@ -47,6 +47,9 @@ Transform::Transform()
     lossyScale.x = 1.0f;
     lossyScale.y = 1.0f;
     lossyScale.z = 1.0f;
+
+    gameObject = pObject;
+    transform  = this;
 }
 
 /*===============================================================================================* 

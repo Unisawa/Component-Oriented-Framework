@@ -36,10 +36,12 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class GameObject;
+
 class Transform : public Component
 {
 public:
-             Transform();
+             Transform(GameObject* pObject = NULL);
     virtual ~Transform();
 
     void SetParent(Transform& value);

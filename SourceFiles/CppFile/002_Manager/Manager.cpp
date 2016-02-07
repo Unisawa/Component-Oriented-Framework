@@ -20,6 +20,7 @@
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
 #include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0042_GameObject/GameObjectManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -34,6 +35,8 @@
 //***********************************************************************************************//
 RenderManagerDX* Manager::pRenderManagerDX = NULL;
 RenderManagerGL* Manager::pRenderManagerGL = NULL;
+
+GameObjectManager* Manager::pGameObjectManager = NULL;
 
 /*===============================================================================================* 
   @Summary: ‰Šú‰»ˆ—
@@ -51,6 +54,14 @@ HRESULT Manager::Init()
     if (pRenderManagerGL == NULL) return E_FAIL;    // OpenGL ‚Ì‰Šú‰»‚ÉŽ¸”s
 #endif
 
+    pGameObjectManager = GameObjectManager::Create();
+
+    GameObject* pTemp = new GameObject();
+    pTemp->SetName("AAAAA");
+
+    GameObject* apTemp = new GameObject();
+    apTemp->SetName("BBBBB");
+
     return S_OK;
 }
 
@@ -67,6 +78,8 @@ void Manager::Uninit()
 #ifdef _OPENGL
     SafeDeleteUninit(pRenderManagerGL);
 #endif
+
+    SafeDeleteUninit(pGameObjectManager);
 }
 
 /*===============================================================================================* 
@@ -82,6 +95,8 @@ void Manager::Update()
 #ifdef _OPENGL
     pRenderManagerGL->Update();
 #endif
+
+    pGameObjectManager->Update();
 }
 
 /*===============================================================================================* 

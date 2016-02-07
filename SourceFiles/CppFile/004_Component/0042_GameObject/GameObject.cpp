@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ GameObject.cpp ] 全ての実態のベースクラス
+ @File   : [ GameObject.cpp ] 全ての実体のベースクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -17,9 +17,10 @@
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/GameObject.h"
 #include "004_Component/Component.h"
-#include "004_Component/Transform.h"
+#include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0042_GameObject/GameObject.h"
+#include "004_Component/0042_GameObject/GameObjectManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -37,12 +38,15 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-GameObject::GameObject(std::string name)
+GameObject::GameObject(LAYER Layer)
 {
     activeSelf = true;
-    transform  = NULL;
+    transform  = new Transform(this);
 
-    SetName(name);
+    SetLayer(Layer);
+    SetName("GameObject");
+
+    GameObjectManager::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
