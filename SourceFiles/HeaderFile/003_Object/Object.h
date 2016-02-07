@@ -22,6 +22,9 @@
 //                                                                                               //
 //***********************************************************************************************//
 
+//-----STL-----//
+#include <string>
+
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -45,10 +48,10 @@ public:
     static void Destroy(Object Object, float time = 0.0f);
 
     void        SetName(std::string value) { name = value; }
-    std::string GetName() { return name; }
+    std::string GetName() const { return name; }
 
 private:
-    std::string name;    // オブジェクト名
+    std::string name;     // オブジェクト名
 };
 
 #endif

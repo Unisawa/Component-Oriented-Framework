@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ ObjectManager.cpp ] 
+ @File   : [ GameObjectManager.cpp ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -14,13 +14,10 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "Main.h"
-
-//-----Manager-----//
-
+#include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "ObjectManager.h"
+#include "004_Component/GameObjectManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -38,7 +35,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-ObjectManager::ObjectManager()
+GameObjectManager::GameObjectManager()
 {
 
 }
@@ -47,7 +44,7 @@ ObjectManager::ObjectManager()
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-ObjectManager::~ObjectManager()
+GameObjectManager::~GameObjectManager()
 {
 
 }
@@ -56,20 +53,20 @@ ObjectManager::~ObjectManager()
   @Summary: 生成処理
   @Details: None
  *===============================================================================================*/
-ObjectManager *ObjectManager::Create()
+GameObjectManager *GameObjectManager::Create()
 {
-    ObjectManager* pObjectManager;
-    pObjectManager = new ObjectManager();
-    pObjectManager->Init();
+    GameObjectManager* pGameObjectManager;
+    pGameObjectManager = new GameObjectManager();
+    pGameObjectManager->Init();
 
-    return pObjectManager;
+    return pGameObjectManager;
 }
 
 /*===============================================================================================* 
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-void ObjectManager::Init()
+void GameObjectManager::Init()
 {
 
 }
@@ -78,7 +75,7 @@ void ObjectManager::Init()
   @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void ObjectManager::Uninit()
+void GameObjectManager::Uninit()
 {
 
 }
@@ -87,7 +84,7 @@ void ObjectManager::Uninit()
   @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void ObjectManager::Update()
+void GameObjectManager::Update()
 {
 
 }
@@ -96,7 +93,7 @@ void ObjectManager::Update()
   @Summary: 描画処理
   @Details: None
  *===============================================================================================*/
-void ObjectManager::Draw()
+void GameObjectManager::Draw()
 {
 
 }

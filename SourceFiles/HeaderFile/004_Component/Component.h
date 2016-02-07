@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Component.h ] 
+ @File   : [ Component.h ] GameObject にアタッチされる全てに対するベースのクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -63,14 +63,16 @@ public:
              Component(ComponentType type, GameObject* gameObject);
     virtual ~Component();
 
-    virtual void Init();
-    virtual void Uninit();
-    virtual void Update();
+    virtual void Init()   {}
+    virtual void Uninit() {}
+    virtual void Update() {}
+
+    const std::string& GetComponentName() { return componentName; }
 
 private:
     GameObject*   gameObject;    // アタッチしているGameObject
-    Transform*    transform;     // GameObject にアタッチされた Transform
     std::string   tag;           // GameObjectのタグ
+    Transform*    transform;     // GameObject にアタッチされた Transform
 
     std::string   componentName;
     ComponentType componentType;
