@@ -82,11 +82,34 @@ public:
     virtual void Uninit();
     virtual void Update();
 
-    // コンポーネント関連
+    //-----コンポーネント関連-----//
     void       AddComponent(Component* component);
     Component* GetComponent(std::string name);
-    template <typename T> T* AddComponent();
-    template <typename T> T* GetComponent();
+
+    // コンポーネントの追加
+    template <typename T> T* AddComponent()
+    {
+        T* pComponent = new T(this);
+        pComponent->ComponentInit();
+
+        componentList.push_back((Component*)pComponent);
+
+        return pComponent;
+    }
+
+    // コンポーネントの取得
+    template <typename T> T* GetComponent()
+    {
+        for (auto Iterator = componentList.begin(); Iterator != componentList.end(); ++Iterator)
+        {
+            if (T::className == (*Iterator)->GetComponentName())
+            {
+                return (T*)(*Iterator);
+            }
+        }
+
+        return NULL;
+    }
 
     std::list<Component*> GetComponetList() { return componentList; }
 

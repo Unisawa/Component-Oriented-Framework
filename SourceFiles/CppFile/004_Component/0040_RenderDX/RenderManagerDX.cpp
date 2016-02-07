@@ -171,7 +171,8 @@ HRESULT RenderManagerDX::Init()
  *===============================================================================================*/
 void RenderManagerDX::Uninit()
 {
-    ReleaseAll();
+    // 既にGameObjectManager::ReleaseAll()でRenderコンポーネントは削除されているのでリンクを解除する
+    UnLinkListAll();
 
     SafeRelease(pD3DDevice);
     SafeRelease(pD3DObject);
@@ -243,6 +244,18 @@ void RenderManagerDX::DrawAll()
                 (*Iterator)->Draw();
             }
         }
+    }
+}
+
+/*===============================================================================================*
+  @Summary: 登録された全てのRenderをリストから解除する
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::UnLinkListAll()
+{
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        renderDXList[Layer].clear();
     }
 }
 

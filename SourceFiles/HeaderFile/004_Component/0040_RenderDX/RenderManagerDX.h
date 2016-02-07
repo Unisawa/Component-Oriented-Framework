@@ -66,6 +66,7 @@ public:
 
     static void UpdateAll();
     static void DrawAll();
+    static void UnLinkListAll();
     static void ReleaseAll();
 
     static void ZSort();

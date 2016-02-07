@@ -62,9 +62,28 @@ public:
     virtual void Uninit() {}
     virtual void Update() {}
 
+    virtual void ComponentInit()   { Init(); }
+    virtual void ComponentUninit() { Uninit(); }
+    virtual void ComponentUpdate() { Update(); }
+
     // コンポーネント関連
     Component* GetComponent(std::string name);
-    template <typename T> T* GetComponent();
+
+    // コンポーネントの取得
+    template <typename T> T* GetComponent()
+    {
+        std::list<Component*> pComponentList = gameObject->GetComponetList();
+
+        for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end(); ++Iterator)
+        {
+            //if (T::className == (*Iterator)->GetComponentName())
+            {
+                return (T*)(*Iterator);
+            }
+        }
+
+        return NULL;
+    }
 
     const std::string& GetComponentName() { return componentName; }
 

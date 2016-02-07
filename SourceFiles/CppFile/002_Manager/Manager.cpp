@@ -15,12 +15,14 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
+#include "001_Constant/Constant.h"
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
 #include "004_Component/Component.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
 #include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0042_GameObject/GameObject.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "004_Component/0040_RenderDX/Render2DDX.h"
@@ -59,12 +61,25 @@ HRESULT Manager::Init()
 
     pGameObjectManager = GameObjectManager::Create();
 
-    GameObject* pTemp = new GameObject;
-    pTemp->SetName("AAAAA");
-    Render2DDX* pRender2D = pTemp->AddComponent<Render2DDX>();
+    GameObject* pGameObject0 = new GameObject;
+    pGameObject0->SetName("AAAAA");
+    pGameObject0->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    pGameObject0->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
 
-    GameObject* apTemp = new GameObject;
-    apTemp->SetName("BBBBB");
+    GameObject* pGameObject1 = new GameObject;
+    pGameObject1->SetName("BBBBB");
+    pGameObject1->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF + Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    pGameObject1->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
+    pRender2D1->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+
+    GameObject* pGameObject2 = new GameObject;
+    pGameObject2->SetName("CCCCC");
+    pGameObject2->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF - Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    pGameObject2->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
+    pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
     return S_OK;
 }
@@ -75,6 +90,8 @@ HRESULT Manager::Init()
  *===============================================================================================*/
 void Manager::Uninit()
 {
+    SafeDeleteUninit(pGameObjectManager);
+
 #ifdef _DIRECTX
     SafeDeleteUninit(pRenderManagerDX);
 #endif
@@ -82,8 +99,6 @@ void Manager::Uninit()
 #ifdef _OPENGL
     SafeDeleteUninit(pRenderManagerGL);
 #endif
-
-    SafeDeleteUninit(pGameObjectManager);
 }
 
 /*===============================================================================================* 
