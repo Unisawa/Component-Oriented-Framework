@@ -15,7 +15,6 @@
 
 //-----MainSetting-----//
 #include "002_Manager/Manager.h"
-#include "001_Constant/Constant.h"
 
 //-----Object-----//
 #include "004_Component/0041_RenderGL/RenderGL.h"
@@ -94,19 +93,6 @@ void Render2DGL::Draw()
     float SizeX = pTransform->GetScale().x;
     float SizeY = pTransform->GetScale().y;
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    // 正射影行列
-    glOrtho(0.0f, Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.0f, 0.0f, 10000.0f);
-    glPushMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    // 2D描画設定
-    glDisable(GL_LIGHTING);
-    glDisable(GL_DEPTH_TEST);
-
     // 描画設定
     SetBlending();
     SetCulling();
@@ -147,17 +133,6 @@ void Render2DGL::Draw()
 
     // 描画終了
     glEnd();
-
-    // 2D描画設定リセット
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-
-    // カメラ設定解除
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
 }
 
 /*===============================================================================================* 

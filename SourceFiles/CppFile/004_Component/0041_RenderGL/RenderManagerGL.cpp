@@ -15,6 +15,7 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
+#include "001_Constant/Constant.h"
 
 //-----Object-----//
 #include "004_Component/0041_RenderGL/RenderGL.h"
@@ -140,8 +141,8 @@ void RenderManagerGL::Draw()
 {
     // 画面のクリア
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    //glClearDepth(1.0f);
-    //glClearStencil(0);
+    glClearDepth(1.0f);
+    glClearStencil(0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     // 描画
@@ -181,6 +182,23 @@ void RenderManagerGL::DrawAll()
 
     for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
     {
+        // 2Dカメラ設定
+        if (Cnt == GameObject::LAYER::OBJECT2D_OPACITY_ONE)
+        {
+            // 2D描画設定
+            glDisable(GL_LIGHTING);
+            glDisable(GL_DEPTH_TEST);
+
+            // 正射影行列
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0.0f, Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.0f, 0.0f, 10000.0f);
+            glPushMatrix();
+
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+        }
+
         for (auto Iterator = renderGLList[Cnt].begin(); Iterator != renderGLList[Cnt].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)
@@ -189,6 +207,17 @@ void RenderManagerGL::DrawAll()
             }
         }
     }
+
+    // 2Dカメラ設定解除
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    // 2D描画設定リセット
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
 }
 
 /*===============================================================================================*
