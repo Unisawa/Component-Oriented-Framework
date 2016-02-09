@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderManagerGL.h ] OpneGLの描画を管理するクラス
+ @File   : [ RenderGL.h ] OpenGLで全てのレンダラーのための一般的な機能を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,16 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDERMANAGERGL_H_
-#define _RENDERMANAGERGL_H_
-
-//***********************************************************************************************//
-//                                                                                               //
-//  @Link Library                                                                                //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma comment (lib, "OpenGL32.lib")    // OpenGL  関連
-#pragma comment (lib, "GLu32.lib")       // OpenGL  関連
+#ifndef _RENDERGL_H_
+#define _RENDERGL_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -30,12 +22,12 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----OpenGL-----//
-#include <gl/GL.h>
-#include <gl/GLU.h>
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/Component.h"
+#include "004_Component/0042_GameObject/GameObject.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -48,39 +40,65 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderGL;
-
-class RenderManagerGL
+class RenderGL : public Component
 {
 public:
-     RenderManagerGL() {}
-    ~RenderManagerGL() {}
 
-    static RenderManagerGL* Create();
+    static const enum BLENDTYPE
+    {
+        BLENDTYPE_NOTBLEND = 0,    // ブレンドしない
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
+        BLENDTYPE_NORMAL,          // アルファブレンド
+        BLENDTYPE_ADD,             // 加算合成
+        BLENDTYPE_ADD_SOFT,        // 半加算合成
+        BLENDTYPE_SUBTRACT,        // 減算合成
 
-    static void UpdateAll();
-    static void DrawAll();
-    static void UnLinkListAll();
-    static void ReleaseAll();
+        BLENDTYPE_MAX
+    };
 
-    static void ZSort();
-    static void CalculateZSortAll();
+    static const enum CULLTYPE
+    {
+        CULLTYPE_NONE = 0,    // カリングしない
+        CULLTYPE_CW,          // 表カリング
+        CULLTYPE_CCW,         // 裏カリング
 
-    //-----Operation List-----//
-    static void LinkList(RenderGL* pRender, GameObject::LAYER Layer);
-    static void UnLinkList(RenderGL* pRender);
-    static void Release(RenderGL* pRender);
+        CULLTYPE_MAX
+    };
+
+             RenderGL(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer = GameObject::LAYER_ZERO);
+    virtual ~RenderGL();
+
+    virtual void Init()   = 0;
+    virtual void Uninit() = 0;
+    virtual void Update() = 0;
+    virtual void Draw()   = 0;
+    
+    static bool ZSortCompareLess(RenderGL* RenderA, RenderGL* RenderB);
+    static bool ZSortCompareGreater(RenderGL* RenderA, RenderGL* RenderB);
+
+    void SetBlending();
+    void SetCulling();
+
+    //-----Setter, Getter-----//
+    void              SetLayer(GameObject::LAYER value) { layer = value; }
+    GameObject::LAYER GetLayer() const { return layer; }
+
+    void      SetBlendType(BLENDTYPE value) { blendType = value; }
+    BLENDTYPE GetBlendType() const { return blendType; }
+    
+    void     SetCullType(CULLTYPE value) { cullingType = value; }
+    CULLTYPE GetCullType() const { return cullingType; }
+
+    float GetZDepth() const { return zDepth; }
+
+    bool enabled;    // True時のみ描画を行う
 
 private:
-    static HDC   hDC;       // デバイスコンテキスト
-    static HGLRC hGLRC;     // カレントコンテキスト
+    GameObject::LAYER layer;          // 描画順
+    BLENDTYPE         blendType;      // 描画時のブレンド設定
+    CULLTYPE          cullingType;    // 描画時のカリング設定
 
-    static std::list<RenderGL*> renderGLList[GameObject::LAYER_MAX];
+    float zDepth;    // カメラからオブジェクトまでの距離 (Zソート時に利用)
 };
 
 #endif

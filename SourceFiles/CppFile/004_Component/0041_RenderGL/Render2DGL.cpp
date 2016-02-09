@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderDX.cpp ] DirectXで全てのレンダラーのための一般的な機能を管理するクラス
+ @File   : [ Render2DGL.cpp ] OpenGLで2D四角形ポリゴンを描画するRenderクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,15 +13,21 @@
 //                                                                                               //
 //***********************************************************************************************//
 
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
+#include "001_Constant/Constant.h"
+
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0041_RenderGL/RenderGL.h"
+#include "004_Component/0041_RenderGL/Render2DGL.h"
+#include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#define COMPONENT_NAME "Render2DGL"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -33,127 +39,125 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
+Render2DGL::Render2DGL(GameObject* pObject, GameObject::LAYER Layer) : RenderGL(pObject, COMPONENT_NAME, Layer)
 {
-    enabled = true;
-    zDepth  = 1.0f;
 
-    SetLayer(Layer);
-
-    RenderManagerDX::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-RenderDX::~RenderDX()
+Render2DGL::~Render2DGL()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が小さいか
+  @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
+void Render2DGL::Init()
 {
-    return RenderA->GetZDepth() < RenderB->GetZDepth();
+    textureID = -1;
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が大きいか
+  @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
+void Render2DGL::Uninit()
 {
-    return RenderA->GetZDepth() > RenderB->GetZDepth();
+
 }
 
 /*===============================================================================================* 
-  @Summary: Renderが持つブレンド設定を行う
+  @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetBlending()
+void Render2DGL::Update()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
 
-    // ブレンドモードのリセット (アルファブレンドを基本とする)
-    pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-    pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    // ブレンド設定
-    switch (blendType)
-    {
-        // ブレンドしない
-        case BLENDTYPE_NOTBLEND:
-            pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-            break;
-
-        // アルファブレンド
-        case BLENDTYPE_NORMAL:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            break;
-
-        // 加算合成
-        case BLENDTYPE_ADD:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 半加算合成
-        case BLENDTYPE_ADD_SOFT:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 減算合成
-        case BLENDTYPE_SUBTRACT:
-            pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        default:
-            break;
-    }
 }
 
 /*===============================================================================================* 
-  @Summary: Renderが持つカリング設定を行う
+  @Summary: 描画処理
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetCulling()
+void Render2DGL::Draw()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    Transform* pTransform = this->gameObject->GetTransform();
 
-    // カリングのリセット (裏カリングを基本とする)
-    pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    float x = pTransform->GetPosition().x;
+    float y = pTransform->GetPosition().y;
 
-    // カリング設定
-    switch (cullingType)
-    {
-        // カリングしない
-        case CULLTYPE_NONE:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-            break;
+    float SizeX = pTransform->GetScale().x;
+    float SizeY = pTransform->GetScale().y;
 
-        // 表カリング
-        case CULLTYPE_CW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-            break;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
-        // 裏カリング
-        case CULLTYPE_CCW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-            break;
+    // 正射影行列
+    glOrtho(0.0f, Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.0f, 0.0f, 10000.0f);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-        default:
-            break;
-    }
+    // 2D描画設定
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+
+    // 描画設定
+    SetBlending();
+    SetCulling();
+
+    // テクスチャセット
+    //glBindTexture(GL_TEXTURE_2D,textureID);
+
+    // 描画開始
+    glBegin(GL_TRIANGLE_STRIP);
+
+    // 左奥
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(x - SizeX * 0.5f,
+               y - SizeY * 0.5f,
+                           0.0f);
+
+    // 右奥
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(x + SizeX * 0.5f,
+               y - SizeY * 0.5f,
+                           0.0f);
+
+    // 左手前
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(x - SizeX * 0.5f,
+               y + SizeY * 0.5f,
+                           0.0f);
+
+    // 右手前
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(x + SizeX * 0.5f,
+               y + SizeY * 0.5f,
+                           0.0f);
+
+    // 描画終了
+    glEnd();
+
+    // 2D描画設定リセット
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+
+    // カメラ設定解除
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
 }
 
 /*===============================================================================================* 

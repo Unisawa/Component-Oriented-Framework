@@ -18,8 +18,8 @@
 #include "001_Constant/Constant.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
 #include "004_Component/0040_RenderDX/RenderDX.h"
+#include "004_Component/0040_RenderDX/RenderManagerDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //

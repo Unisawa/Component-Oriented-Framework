@@ -21,6 +21,8 @@
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
+#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0041_RenderGL/RenderManagerGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -29,14 +31,6 @@
 //***********************************************************************************************//
 #define _DIRECTX    // DirectXの使用宣言
 //#define _OPENGL     // OpenGL の使用宣言
-
-#ifdef _DIRECTX
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#endif
-
-#ifdef _OPENGL
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
-#endif
 
 //***********************************************************************************************//
 //                                                                                               //

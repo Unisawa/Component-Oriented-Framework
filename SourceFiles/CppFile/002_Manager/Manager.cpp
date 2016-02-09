@@ -26,6 +26,7 @@
 #include "004_Component/0042_GameObject/GameObject.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "004_Component/0040_RenderDX/Render2DDX.h"
+#include "004_Component/0041_RenderGL/Render2DGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -80,6 +81,12 @@ HRESULT Manager::Init()
     pGameObject2->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
     pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+
+    GameObject* pGameObject9 = new GameObject;
+    pGameObject9->SetName("OpenGL");
+    pGameObject9->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    pGameObject9->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
 
     return S_OK;
 }

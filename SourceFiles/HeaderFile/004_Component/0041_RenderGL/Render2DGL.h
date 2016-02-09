@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderManagerGL.h ] OpneGLの描画を管理するクラス
+ @File   : [ Render2DGL.h ] OpenGLで2D四角形ポリゴンを描画するRenderクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,16 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDERMANAGERGL_H_
-#define _RENDERMANAGERGL_H_
-
-//***********************************************************************************************//
-//                                                                                               //
-//  @Link Library                                                                                //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma comment (lib, "OpenGL32.lib")    // OpenGL  関連
-#pragma comment (lib, "GLu32.lib")       // OpenGL  関連
+#ifndef _RENDER2DGL_H_
+#define _RENDER2DGL_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -30,12 +22,11 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----OpenGL-----//
-#include <gl/GL.h>
-#include <gl/GLU.h>
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0041_RenderGL/RenderGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -48,39 +39,23 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderGL;
-
-class RenderManagerGL
+class Render2DGL : public RenderGL
 {
 public:
-     RenderManagerGL() {}
-    ~RenderManagerGL() {}
+             Render2DGL(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT2D_OPACITY_ONE);
+    virtual ~Render2DGL();
 
-    static RenderManagerGL* Create();
+    virtual void Init()   override;
+    virtual void Uninit() override;
+    virtual void Update() override;
+    virtual void Draw()   override;
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
-
-    static void UpdateAll();
-    static void DrawAll();
-    static void UnLinkListAll();
-    static void ReleaseAll();
-
-    static void ZSort();
-    static void CalculateZSortAll();
-
-    //-----Operation List-----//
-    static void LinkList(RenderGL* pRender, GameObject::LAYER Layer);
-    static void UnLinkList(RenderGL* pRender);
-    static void Release(RenderGL* pRender);
+    //-----Setter, Getter-----//
+    void SetTexture(std::string TextureName);
+    int  GetTexture() const { return textureID; }
 
 private:
-    static HDC   hDC;       // デバイスコンテキスト
-    static HGLRC hGLRC;     // カレントコンテキスト
-
-    static std::list<RenderGL*> renderGLList[GameObject::LAYER_MAX];
+    int textureID;    // テクスチャ識別番号
 };
 
 #endif

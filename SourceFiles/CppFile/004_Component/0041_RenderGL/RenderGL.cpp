@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderDX.cpp ] DirectXで全てのレンダラーのための一般的な機能を管理するクラス
+ @File   : [ RenderGL.cpp ] OpenGLで全てのレンダラーのための一般的な機能を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,9 +13,12 @@
 //                                                                                               //
 //***********************************************************************************************//
 
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
+
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0041_RenderGL/RenderGL.h"
+#include "004_Component/0041_RenderGL/RenderManagerGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -33,21 +36,21 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
+RenderGL::RenderGL(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
 {
     enabled = true;
     zDepth  = 1.0f;
 
     SetLayer(Layer);
 
-    RenderManagerDX::LinkList(this, Layer);
+    RenderManagerGL::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-RenderDX::~RenderDX()
+RenderGL::~RenderGL()
 {
 
 }
@@ -56,7 +59,7 @@ RenderDX::~RenderDX()
   @Summary: ZDepthの値を参考にソートする Bに対してAの方が小さいか
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
+bool RenderGL::ZSortCompareLess(RenderGL* RenderA, RenderGL* RenderB)
 {
     return RenderA->GetZDepth() < RenderB->GetZDepth();
 }
@@ -65,7 +68,7 @@ bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
   @Summary: ZDepthの値を参考にソートする Bに対してAの方が大きいか
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
+bool RenderGL::ZSortCompareGreater(RenderGL* RenderA, RenderGL* RenderB)
 {
     return RenderA->GetZDepth() > RenderB->GetZDepth();
 }
@@ -74,47 +77,35 @@ bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
   @Summary: Renderが持つブレンド設定を行う
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetBlending()
+void RenderGL::SetBlending()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
-
-    // ブレンドモードのリセット (アルファブレンドを基本とする)
-    pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-    pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    // ブレンド Off
+    glDisable(GL_BLEND);
 
     // ブレンド設定
     switch (blendType)
     {
         // ブレンドしない
         case BLENDTYPE_NOTBLEND:
-            pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+            glDisable(GL_BLEND);
             break;
 
         // アルファブレンド
         case BLENDTYPE_NORMAL:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             break;
 
         // 加算合成
         case BLENDTYPE_ADD:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
             break;
 
         // 半加算合成
         case BLENDTYPE_ADD_SOFT:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
             break;
 
         // 減算合成
         case BLENDTYPE_SUBTRACT:
-            pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
             break;
 
         default:
@@ -126,34 +117,34 @@ void RenderDX::SetBlending()
   @Summary: Renderが持つカリング設定を行う
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetCulling()
+void RenderGL::SetCulling()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    //LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
 
-    // カリングのリセット (裏カリングを基本とする)
-    pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    //// カリングのリセット (裏カリングを基本とする)
+    //pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
-    // カリング設定
-    switch (cullingType)
-    {
-        // カリングしない
-        case CULLTYPE_NONE:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-            break;
+    //// カリング設定
+    //switch (cullingType)
+    //{
+    //    // カリングしない
+    //    case CULLTYPE_NONE:
+    //        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    //        break;
 
-        // 表カリング
-        case CULLTYPE_CW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-            break;
+    //    // 表カリング
+    //    case CULLTYPE_CW:
+    //        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+    //        break;
 
-        // 裏カリング
-        case CULLTYPE_CCW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-            break;
+    //    // 裏カリング
+    //    case CULLTYPE_CCW:
+    //        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    //        break;
 
-        default:
-            break;
-    }
+    //    default:
+    //        break;
+    //}
 }
 
 /*===============================================================================================* 
