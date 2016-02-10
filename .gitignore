@@ -1,11 +1,11 @@
-# .cppと.h以外をignoreに設定している
+# .cppと.h以外をignoreに設定
 
-# フォルダ内全て
+# Files
 Resources/
 Debug/
 Release/
 
-# Visual Studio 関連データ
+# Visual Studio
 *.ilk
 *.exe
 *.pdb
