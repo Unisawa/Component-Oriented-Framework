@@ -83,8 +83,6 @@ public:
     virtual void Update();
 
     //-----コンポーネント関連-----//
-    void       AddComponent(Component* component);
-    Component* GetComponent(std::string name);
 
     // コンポーネントの追加
     template <typename T> T* AddComponent()

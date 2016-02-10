@@ -67,16 +67,13 @@ public:
     virtual void ComponentUpdate() { Update(); }
 
     // コンポーネント関連
-    Component* GetComponent(std::string name);
-
-    // コンポーネントの取得
     template <typename T> T* GetComponent()
     {
         std::list<Component*> pComponentList = gameObject->GetComponetList();
 
         for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end(); ++Iterator)
         {
-            //if (T::className == (*Iterator)->GetComponentName())
+            if (T::className == (*Iterator)->GetComponentName())
             {
                 return (T*)(*Iterator);
             }
@@ -85,7 +82,8 @@ public:
         return NULL;
     }
 
-    const std::string& GetComponentName() { return componentName; }
+    void        SetComponentName(std::string value) { componentName = value; }
+    std::string GetComponentName() const { return componentName; }
 
     GameObject*   gameObject;    // アタッチしているGameObject
     std::string   tag;           // GameObjectのタグ

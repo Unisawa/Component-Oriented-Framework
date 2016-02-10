@@ -97,32 +97,6 @@ void GameObject::Update()
 
 }
 
-/*===============================================================================================* 
-  @Summary: GameObjectに指定したコンポーネントを追加する
-  @Details: None
- *===============================================================================================*/
-void GameObject::AddComponent(Component* component)
-{
-    componentList.push_back(component);
-}
-
-/*===============================================================================================* 
-  @Summary: GameObject にアタッチされているコンポーネントを取得する
-  @Details: None
- *===============================================================================================*/
-Component* GameObject::GetComponent(std::string name)
-{
-    for (auto Iterator = componentList.begin(); Iterator != componentList.end(); ++Iterator)
-    {
-        if (name == (*Iterator)->GetComponentName())
-        {
-            return (*Iterator);
-        }
-    }
-
-    return NULL;
-}
-
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

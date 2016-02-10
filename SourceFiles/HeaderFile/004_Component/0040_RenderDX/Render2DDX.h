@@ -57,6 +57,8 @@ public:
     void      SetColor(D3DXCOLOR value) { vertexColor = value; }
     D3DXCOLOR GetColor() const { return vertexColor; }
 
+    static const std::string className;
+
 private:
     void SetVertex();
 

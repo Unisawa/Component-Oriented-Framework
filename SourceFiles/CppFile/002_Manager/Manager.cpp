@@ -82,6 +82,10 @@ HRESULT Manager::Init()
     Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
     pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
+    // コンポーネントテスト
+    Render2DDX* Temp = pGameObject2->GetComponent<Render2DDX>();
+    Temp->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+
     //GameObject* pGameObject9 = new GameObject;
     //pGameObject9->SetName("OpenGL");
     //pGameObject9->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));

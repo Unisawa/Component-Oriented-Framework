@@ -26,7 +26,7 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define COMPONENT_NAME "Render2DDX"
+const std::string Render2DDX::className = "Render2DDX";
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -38,7 +38,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Render2DDX::Render2DDX(GameObject* pObject, GameObject::LAYER Layer) : RenderDX(pObject, COMPONENT_NAME, Layer)
+Render2DDX::Render2DDX(GameObject* pObject, GameObject::LAYER Layer) : RenderDX(pObject, className, Layer)
 {
 
 }

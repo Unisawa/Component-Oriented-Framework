@@ -54,6 +54,8 @@ public:
     void SetTexture(std::string TextureName);
     int  GetTexture() const { return textureID; }
 
+    static const std::string className;
+
 private:
     int textureID;    // テクスチャ識別番号
 };

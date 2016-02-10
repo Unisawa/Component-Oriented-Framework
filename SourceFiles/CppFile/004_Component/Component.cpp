@@ -50,25 +50,6 @@ Component::~Component()
 }
 
 /*===============================================================================================* 
-  @Summary: GameObject にアタッチされているコンポーネントを取得する
-  @Details: None
- *===============================================================================================*/
-Component* Component::GetComponent(std::string name)
-{
-    std::list<Component*> pList = gameObject->GetComponetList();
-
-    for (auto Iterator = pList.begin(); Iterator != pList.end(); ++Iterator)
-    {
-        if (name == (*Iterator)->GetComponentName())
-        {
-            return (*Iterator);
-        }
-    }
-
-    return NULL;
-}
-
-/*===============================================================================================* 
   @Summary: 
   @Details: 
  *===============================================================================================*/

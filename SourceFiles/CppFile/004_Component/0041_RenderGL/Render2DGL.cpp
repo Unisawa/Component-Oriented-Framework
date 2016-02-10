@@ -26,7 +26,7 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define COMPONENT_NAME "Render2DGL"
+const std::string Render2DGL::className = "Render2DGL";
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -38,7 +38,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Render2DGL::Render2DGL(GameObject* pObject, GameObject::LAYER Layer) : RenderGL(pObject, COMPONENT_NAME, Layer)
+Render2DGL::Render2DGL(GameObject* pObject, GameObject::LAYER Layer) : RenderGL(pObject, className, Layer)
 {
 
 }
