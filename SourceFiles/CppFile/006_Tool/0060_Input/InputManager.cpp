@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderGL.cpp ] OpenGLで全てのレンダラーのための一般的な機能を管理するクラス (抽象クラス)
+ @File   : [ InputManager.cpp ] 全ての入力情報を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -14,11 +14,11 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "000_Main/Main.h"
 
 //-----Object-----//
-#include "004_Component/0041_RenderGL/RenderGL.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "006_Tool/0060_Input/InputManager.h"
+#include "006_Tool/0060_Input/Keyboard.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -31,120 +31,70 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
+LPDIRECTINPUT8   InputManager::pDInput     = NULL;
+//Mouse*           InputManager::pMouse      = NULL;
+Keyboard*        InputManager::pKeyboard   = NULL;
+//Joystick*        InputManager::pJoystick   = NULL;
+//InputVirtualKey* InputManager::pVirtualKey = NULL;
 
-/*=================================================================================================
-  @Summary: コンストラクタ
+int InputManager::RepeatRate = 40;
+
+/*===============================================================================================* 
+  @Summary: 生成処理
   @Details: None
-=================================================================================================*/
-RenderGL::RenderGL(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
+ *===============================================================================================*/
+InputManager *InputManager::Create()
 {
-    enabled = true;
-    zDepth  = 1.0f;
+    InputManager* pInputManager;
+    pInputManager = new InputManager();
+    pInputManager->Init();
 
-    SetLayer(Layer);
-
-    RenderManagerGL::LinkList(this, Layer);
+    return pInputManager;
 }
 
 /*===============================================================================================* 
-  @Summary: デストラクタ
+  @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-RenderGL::~RenderGL()
+void InputManager::Init()
 {
-
-}
-
-/*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が小さいか
-  @Details: None
- *===============================================================================================*/
-bool RenderGL::ZSortCompareLess(RenderGL* RenderA, RenderGL* RenderB)
-{
-    return RenderA->GetZDepth() < RenderB->GetZDepth();
-}
-
-/*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が大きいか
-  @Details: None
- *===============================================================================================*/
-bool RenderGL::ZSortCompareGreater(RenderGL* RenderA, RenderGL* RenderB)
-{
-    return RenderA->GetZDepth() > RenderB->GetZDepth();
-}
-
-/*===============================================================================================* 
-  @Summary: Renderが持つブレンド設定を行う
-  @Details: None
- *===============================================================================================*/
-void RenderGL::SetBlending()
-{
-    // ブレンド Off
-    glDisable(GL_BLEND);
-
-    // ブレンド設定
-    switch (blendType)
+    if (FAILED(DirectInput8Create(Main::instance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&pDInput, NULL)))
     {
-        // ブレンドしない
-        case BLENDTYPE_NOTBLEND:
-            glDisable(GL_BLEND);
-            break;
+        MessageBox(NULL, "[ pDInput ] の生成に失敗しました。", "エラー発生", MB_ICONERROR | MB_OK);
 
-        // アルファブレンド
-        case BLENDTYPE_NORMAL:
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            break;
-
-        // 加算合成
-        case BLENDTYPE_ADD:
-            break;
-
-        // 半加算合成
-        case BLENDTYPE_ADD_SOFT:
-            break;
-
-        // 減算合成
-        case BLENDTYPE_SUBTRACT:
-            break;
-
-        default:
-            break;
+        return;
     }
+
+    //pMouse      = Mouse::Create();
+    pKeyboard   = Keyboard::Create();
+    //pJoystick   = Joystick::Create();
+    //pVirtualKey = InputVirtualKey::Create();
 }
 
 /*===============================================================================================* 
-  @Summary: Renderが持つカリング設定を行う
+  @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void RenderGL::SetCulling()
+void InputManager::Uninit()
 {
-    //LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    //SafeDeleteUninit(pMouse);
+    SafeDeleteUninit(pKeyboard);
+    //SafeDeleteUninit(pJoystick);
+    //SafeDeleteUninit(pVirtualKey);
 
-    //// カリングのリセット (裏カリングを基本とする)
-    //pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    SafeRelease(pDInput);
+}
 
-    //// カリング設定
-    //switch (cullingType)
-    //{
-    //    // カリングしない
-    //    case CULLTYPE_NONE:
-    //        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    //        break;
-
-    //    // 表カリング
-    //    case CULLTYPE_CW:
-    //        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-    //        break;
-
-    //    // 裏カリング
-    //    case CULLTYPE_CCW:
-    //        pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-    //        break;
-
-    //    default:
-    //        break;
-    //}
+/*===============================================================================================* 
+  @Summary: 更新処理
+  @Details: None
+ *===============================================================================================*/
+void InputManager::Update()
+{
+    //pMouse->Update();
+    pKeyboard->Update();
+    //pJoystick->Update();
+    //pVirtualKey->Update();
 }
 
 /*===============================================================================================* 

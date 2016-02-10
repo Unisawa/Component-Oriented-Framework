@@ -18,13 +18,16 @@
 #include "001_Constant/Constant.h"
 #include "002_Manager/Manager.h"
 
-//-----Object-----//
-#include "004_Component/Component.h"
+//-----Manager-----//
+#include "006_Tool/0060_Input/InputManager.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
 #include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0042_GameObject/GameObjectManager.h"
+
+//-----Object-----//
+#include "004_Component/Component.h"
 #include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0042_GameObject/GameObject.h"
-#include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "004_Component/0040_RenderDX/Render2DDX.h"
 #include "004_Component/0041_RenderGL/Render2DGL.h"
 
@@ -39,10 +42,14 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
+InputManager* Manager::pInputManager = NULL;
+
 RenderManagerDX* Manager::pRenderManagerDX = NULL;
 RenderManagerGL* Manager::pRenderManagerGL = NULL;
 
 GameObjectManager* Manager::pGameObjectManager = NULL;
+
+GameObject* pTemp = NULL;
 
 /*===============================================================================================* 
   @Summary: 初期化処理
@@ -50,6 +57,8 @@ GameObjectManager* Manager::pGameObjectManager = NULL;
  *===============================================================================================*/
 HRESULT Manager::Init()
 {
+    pInputManager = InputManager::Create();
+
 #ifdef _DIRECTX
     pRenderManagerDX = RenderManagerDX::Create();
     if (pRenderManagerDX == NULL) return E_FAIL;    // DirectX の初期化に失敗
@@ -62,6 +71,7 @@ HRESULT Manager::Init()
 
     pGameObjectManager = GameObjectManager::Create();
 
+    // GameObjectの生成、コンポーネントの追加テスト
     GameObject* pGameObject0 = new GameObject;
     pGameObject0->SetName("AAAAA");
     pGameObject0->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
@@ -82,9 +92,7 @@ HRESULT Manager::Init()
     Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
     pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
-    // コンポーネントテスト
-    Render2DDX* Temp = pGameObject2->GetComponent<Render2DDX>();
-    Temp->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+    pTemp = pGameObject2;
 
     //GameObject* pGameObject9 = new GameObject;
     //pGameObject9->SetName("OpenGL");
@@ -110,6 +118,8 @@ void Manager::Uninit()
 #ifdef _OPENGL
     SafeDeleteUninit(pRenderManagerGL);
 #endif
+
+    SafeDeleteUninit(pInputManager);
 }
 
 /*===============================================================================================* 
@@ -118,6 +128,18 @@ void Manager::Uninit()
  *===============================================================================================*/
 void Manager::Update()
 {
+    pInputManager->Update();
+
+    // 入力テスト
+    Keyboard* pKey = InputManager::GetKeyboard();
+
+    if (pKey->GetKeyboardTrigger(DIK_SPACE))
+    {
+        // コンポーネント取得テスト
+        Render2DDX* Temp = pTemp->GetComponent<Render2DDX>();
+        Temp->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+    }
+
     pGameObjectManager->Update();
 
 #ifdef _DIRECTX

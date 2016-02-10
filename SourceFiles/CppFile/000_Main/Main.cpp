@@ -124,6 +124,8 @@ HRESULT Main::Init()
 {
     Main::frameRate = 60;
 
+    Debug::Log("Start Manager Init");
+
     pManager = new Manager();
     if (pManager->Init() == E_FAIL) return E_FAIL;
 
@@ -136,6 +138,8 @@ HRESULT Main::Init()
  *===============================================================================================*/
 void Main::Uninit()
 {
+    Debug::Log("Start Manager Uninit");
+
     SafeDeleteUninit(pManager);
 }
 

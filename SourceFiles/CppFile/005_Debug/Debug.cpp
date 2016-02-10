@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Manager.h ] ゲーム全般に必要な各種Managerを管理するクラス
+ @File   : [ Debug.cpp ] 開発中のデバッグを補助するためのクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -9,68 +9,61 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Include Guard                                                                               //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma once
-#ifndef _MANAGER_H_
-#define _MANAGER_H_
-
-//***********************************************************************************************//
-//                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
+
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
+
+//-----Object-----//
+#include "005_Debug/Debug.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define _DIRECTX    // DirectXの使用宣言
-//#define _OPENGL     // OpenGL の使用宣言
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Class                                                                                       //
+//  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-class InputManager;
 
-class RenderManagerDX;
-class RenderManagerGL;
-class GameObjectManager;
-
-class Manager
+/*===============================================================================================* 
+  @Summary: Visual Studio の出力欄にデバッグ情報を出力する
+  @Details: None
+ *===============================================================================================*/
+#ifdef _DEBUG
+void Debug::Log(std::string Messege, ...)
 {
-public:
-     Manager() {}
-    ~Manager() {}
+    va_list ArgumentList;
+    CHAR    DebugInfo[256];
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
+    // 可変引数から文字列へ
+    va_start(ArgumentList, Messege);
+    vsprintf_s(DebugInfo, Messege.c_str(), ArgumentList);
+    va_end(ArgumentList);
 
-    static InputManager* GetInputManager() { return pInputManager; }
+    // デバック出力
+    OutputDebugString("|--------------------------------------------------------------------------------\n|  ");
+    OutputDebugString(DebugInfo);
+    OutputDebugString("\n");
+    OutputDebugString("|--------------------------------------------------------------------------------\n");
+}
+#else
+void Debug::Log(std::string Messege, ...)
+{
 
-    static RenderManagerDX* GetRenderManagerDX() { return pRenderManagerDX; }
-    static RenderManagerGL* GetRenderManagerGL() { return pRenderManagerGL; }
-
-    static GameObjectManager* GetGameObjectManager() { return pGameObjectManager; }
-
-private:
-    static InputManager* pInputManager;
-
-    static RenderManagerDX* pRenderManagerDX;
-    static RenderManagerGL* pRenderManagerGL;
-
-    static GameObjectManager* pGameObjectManager;
-};
-
+}
 #endif
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
+
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

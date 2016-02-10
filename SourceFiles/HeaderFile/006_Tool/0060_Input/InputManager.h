@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Manager.h ] ゲーム全般に必要な各種Managerを管理するクラス
+ @File   : [ InputManager.h ] 全ての入力情報を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,61 +13,76 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _MANAGER_H_
-#define _MANAGER_H_
+#ifndef _INPUTMANAGER_H_
+#define _INPUTMANAGER_H_
+
+//***********************************************************************************************//
+//                                                                                               //
+//  @Link Library                                                                                //
+//                                                                                               //
+//***********************************************************************************************//
+#pragma comment (lib, "dinput8.lib")    // 入力システム関連
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
+
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
+
+//-----Input-----//
+#define  DIRECTINPUT_VERSION (0x0800)    // DirectInput のバージョン指定-(0x0800)
+#include "dinput.h"
+//#include "Mouse.h"
+#include "006_Tool/0060_Input/Keyboard.h"
+//#include "Joystick.h"
+//#include "InputVirtualKey.h"
+
+//-----Object-----//
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define _DIRECTX    // DirectXの使用宣言
-//#define _OPENGL     // OpenGL の使用宣言
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class InputManager;
-
-class RenderManagerDX;
-class RenderManagerGL;
-class GameObjectManager;
-
-class Manager
+class InputManager
 {
 public:
-     Manager() {}
-    ~Manager() {}
+     InputManager() {}
+    ~InputManager() {}
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
+    static InputManager* Create();
 
-    static InputManager* GetInputManager() { return pInputManager; }
+    void Init();
+    void Uninit();
+    void Update();
 
-    static RenderManagerDX* GetRenderManagerDX() { return pRenderManagerDX; }
-    static RenderManagerGL* GetRenderManagerGL() { return pRenderManagerGL; }
+    static LPDIRECTINPUT8 GetInputDevice(void) { return pDInput; }
 
-    static GameObjectManager* GetGameObjectManager() { return pGameObjectManager; }
+    //static Mouse*           GetMouse()      { return pMouse; }
+    static Keyboard*        GetKeyboard()   { return pKeyboard; }
+    //static Joystick*        GetJoystick()   { return pJoystick; }
+    //static InputVirtualKey* GetVirtualKey() { return pVirtualKey; }
+
+    static int RepeatRate;    // キー入力 リピート判定までのフレーム数
 
 private:
-    static InputManager* pInputManager;
+    static LPDIRECTINPUT8 pDInput;
 
-    static RenderManagerDX* pRenderManagerDX;
-    static RenderManagerGL* pRenderManagerGL;
+    //static Mouse*    pMouse;
+    static Keyboard* pKeyboard;
+    //static Joystick* pJoystick;
 
-    static GameObjectManager* pGameObjectManager;
+    //static InputVirtualKey* pVirtualKey;
 };
 
 #endif

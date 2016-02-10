@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Manager.h ] ゲーム全般に必要な各種Managerを管理するクラス
+ @File   : [ Keyboard.h ] キーボードからの入力を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,61 +13,56 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _MANAGER_H_
-#define _MANAGER_H_
+#ifndef _KEYBOARD_H_
+#define _KEYBOARD_H_
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
+
+//-----MainSetting-----//
+#include "000_Main/Main.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define _DIRECTX    // DirectXの使用宣言
-//#define _OPENGL     // OpenGL の使用宣言
+#define MAX_KEY_NUM (256)
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class InputManager;
-
-class RenderManagerDX;
-class RenderManagerGL;
-class GameObjectManager;
-
-class Manager
+class Keyboard
 {
 public:
-     Manager() {}
-    ~Manager() {}
+     Keyboard() {}
+    ~Keyboard() {}
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
+    static Keyboard* Create();
 
-    static InputManager* GetInputManager() { return pInputManager; }
+    void Init();
+    void Uninit();
+    void Update();
 
-    static RenderManagerDX* GetRenderManagerDX() { return pRenderManagerDX; }
-    static RenderManagerGL* GetRenderManagerGL() { return pRenderManagerGL; }
-
-    static GameObjectManager* GetGameObjectManager() { return pGameObjectManager; }
+    //-----Input State-----//
+    bool GetKeyboardPress(int KeyID)   { return (keyStatePress[KeyID] & 0x80) ? true : false; }
+    bool GetKeyboardTrigger(int KeyID) { return (keyStateTrigger[KeyID] & 0x80) ? true : false; }
+    bool GetKeyboardRelease(int KeyID) { return (keyStateRelease[KeyID] & 0x80) ? true : false; }
+    bool GetKeyboardRepeat(int KeyID)  { return (keyStateRepeat[KeyID] & 0x80) ? true : false; }
 
 private:
-    static InputManager* pInputManager;
+    LPDIRECTINPUTDEVICE8 pDeviceKeyboard;
 
-    static RenderManagerDX* pRenderManagerDX;
-    static RenderManagerGL* pRenderManagerGL;
-
-    static GameObjectManager* pGameObjectManager;
+    BYTE keyStatePress[MAX_KEY_NUM];               // キーボード: Press   情報
+    BYTE keyStateTrigger[MAX_KEY_NUM];             // キーボード: Trigger 情報
+    BYTE keyStateRelease[MAX_KEY_NUM];             // キーボード: Release 情報
+    BYTE keyStateRepeat[MAX_KEY_NUM];              // キーボード: Repeat  情報
+    int  keyStateRepeatCount[MAX_KEY_NUM];         // キーボード: Repeat  判定に必要
 };
 
 #endif

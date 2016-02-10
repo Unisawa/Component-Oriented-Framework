@@ -77,6 +77,9 @@ public:
     static void UnLinkList(RenderDX* pRender);
     static void Release(RenderDX* pRender);
 
+    //-----Create Font-----//
+    static LPD3DXFONT CreateFontText(int CharacterSize, int CharacterWidth, int FontSize, bool IsItalic, std::string FontName);
+
     //-----Setter, Getter-----//
     static LPDIRECT3DDEVICE9 GetDevice() { return pD3DDevice; }
 

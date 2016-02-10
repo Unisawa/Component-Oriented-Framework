@@ -46,6 +46,10 @@
 
 //-----Manager-----//
 #include "002_Manager/Manager.h"
+#include "006_Tool/0060_Input/InputManager.h"
+
+//-----Debug-----//
+#include "005_Debug/Debug.h"
 
 //***********************************************************************************************//
 //                                                                                               //

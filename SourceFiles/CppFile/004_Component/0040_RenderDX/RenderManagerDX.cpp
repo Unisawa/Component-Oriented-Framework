@@ -373,6 +373,25 @@ void RenderManagerDX::Release(RenderDX* pRender)
     }
 }
 
+/*===============================================================================================* 
+  @Summary: フォントテキストを生成する
+  @Details: None
+ *===============================================================================================*/
+LPD3DXFONT RenderManagerDX::CreateFontText(int CharacterSize, int CharacterWidth, int FontSize, bool IsItalic, std::string FontName)
+{
+    LPD3DXFONT FontDevice;
+
+    if (FAILED(D3DXCreateFont(pD3DDevice, CharacterSize, CharacterWidth, FontSize, 0, IsItalic, SHIFTJIS_CHARSET,
+        OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH | FF_MODERN, FontName.c_str(), &FontDevice)))
+    {
+        MessageBox(NULL, "[ FontDevice ] の生成に失敗しました。", "エラー発生", MB_ICONERROR | MB_OK);
+
+        return NULL;
+    }
+
+    return FontDevice;
+}
+
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //
