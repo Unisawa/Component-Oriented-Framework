@@ -42,10 +42,7 @@ public:
              Object();
     virtual ~Object();
 
-    static Object Instantiate(Object original);
-    static Object Instantiate(Object original, D3DXVECTOR3 position, D3DXVECTOR3 rotation);
-
-    static void Destroy(Object Object, float time = 0.0f);
+    virtual void Destroy(float time = 0.0f) {}
 
     void        SetName(std::string value) { name = value; }
     std::string GetName() const { return name; }

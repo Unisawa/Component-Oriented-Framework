@@ -82,7 +82,8 @@ public:
     virtual void Uninit();
     virtual void Update();
 
-    //-----コンポーネント関連-----//
+    virtual void Destroy(float time = 0.0f) override;
+    virtual void Destroy(Component* pComponent, float time = 0.0f);
 
     // コンポーネントの追加
     template <typename T> T* AddComponent()
@@ -111,7 +112,7 @@ public:
 
     std::list<Component*> GetComponetList() { return componentList; }
 
-    // GameObject->tag とタグ付けされているか確認
+    // 指定した文字列(tag) とタグ付けされているか確認
     bool CompareTag(std::string tag) { return ((this->tag == tag) ? true : false); }
 
     //-----Setter, Getter-----//

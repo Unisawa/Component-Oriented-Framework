@@ -133,11 +133,35 @@ void Manager::Update()
     // 入力テスト
     Keyboard* pKey = InputManager::GetKeyboard();
 
-    if (pKey->GetKeyboardTrigger(DIK_SPACE))
+    // コンポーネント追加テスト
+    if (pKey->GetKeyboardTrigger(DIK_C))
     {
-        // コンポーネント取得テスト
-        Render2DDX* Temp = pTemp->GetComponent<Render2DDX>();
-        Temp->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
+
+        if (pRender == NULL)
+            pTemp->AddComponent<Render2DDX>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+    }
+
+    // コンポーネント取得テスト
+    if (pKey->GetKeyboardTrigger(DIK_V))
+    {
+        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
+
+        if (pRender != NULL)
+            pRender->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+    }
+
+    // ゲームオブジェクトの削除テスト
+    if (pKey->GetKeyboardTrigger(DIK_K))
+    {
+        pTemp->Destroy();
+    }
+
+    // コンポーネントの削除テスト
+    if (pKey->GetKeyboardTrigger(DIK_L))
+    {
+        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
+        pRender->Destroy();
     }
 
     pGameObjectManager->Update();

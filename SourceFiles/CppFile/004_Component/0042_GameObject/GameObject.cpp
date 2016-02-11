@@ -55,18 +55,6 @@ GameObject::GameObject(LAYER Layer)
  *===============================================================================================*/
 GameObject::~GameObject()
 {
-    Component* pComponent;
-
-    for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
-    {
-        pComponent = (*Iterator);
-
-        // コンポーネントの削除
-        SafeDeleteUninit(pComponent);
-
-        Iterator++;
-    }
-
     SafeDelete(transform);
 }
 
@@ -85,7 +73,17 @@ void GameObject::Init()
  *===============================================================================================*/
 void GameObject::Uninit()
 {
+    Component* pComponent;
 
+    for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
+    {
+        pComponent = (*Iterator);
+
+        // コンポーネントの削除
+        SafeDeleteUninit(pComponent);
+
+        Iterator++;
+    }
 }
 
 /*===============================================================================================* 
@@ -94,7 +92,45 @@ void GameObject::Uninit()
  *===============================================================================================*/
 void GameObject::Update()
 {
+    // 所持している各コンポーネントの更新処理
+    for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
+    {
+        (*Iterator)->Update();
 
+        Iterator++;
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: GameObject の削除
+  @Details: None
+ *===============================================================================================*/
+void GameObject::Destroy(float time)
+{
+    GameObjectManager::Release(this);
+}
+
+/*===============================================================================================* 
+  @Summary: Component の削除
+  @Details: None
+ *===============================================================================================*/
+void GameObject::Destroy(Component* pComponent, float time)
+{
+    for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
+    {
+        if (pComponent == (*Iterator))
+        {
+            // リストから切り離す
+            Iterator = componentList.erase(Iterator);
+
+            // コンポーネントの削除
+            SafeDeleteUninit(pComponent);
+
+            return;
+        }
+
+        Iterator++;
+    }
 }
 
 //===============================================================================================//

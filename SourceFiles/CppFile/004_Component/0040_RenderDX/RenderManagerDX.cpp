@@ -184,7 +184,7 @@ void RenderManagerDX::Uninit()
  *===============================================================================================*/
 void RenderManagerDX::Update()
 {
-    UpdateAll();
+    //UpdateAll();    // GameObject->Update Ç≈å¬ÅXÇÃRenderÇÃUpdateÇÕåƒÇŒÇÍÇƒÇ¢ÇÈ
 }
 
 /*===============================================================================================* 
@@ -213,9 +213,9 @@ void RenderManagerDX::Draw()
  *===============================================================================================*/
 void RenderManagerDX::UpdateAll()
 {
-    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderDXList[Cnt].begin(); Iterator != renderDXList[Cnt].end(); ++Iterator)
+        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)
             {
@@ -235,9 +235,9 @@ void RenderManagerDX::DrawAll()
     CalculateZSortAll();
     ZSort();
 
-    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderDXList[Cnt].begin(); Iterator != renderDXList[Cnt].end(); ++Iterator)
+        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)
             {
@@ -310,9 +310,9 @@ void RenderManagerDX::ZSort()
  *===============================================================================================*/
 void RenderManagerDX::CalculateZSortAll()
 {
-    for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderDXList[Cnt].begin(); Iterator != renderDXList[Cnt].end(); ++Iterator)
+        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
         {
             
         }
