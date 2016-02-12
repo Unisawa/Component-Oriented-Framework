@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ SceneManager.h ] 
+ @File   : [ SceneManager.h ] 画面遷移を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -25,9 +25,6 @@
 //-----MainSetting-----//
 #include "002_Manager/Manager.h"
 
-//-----Object-----//
-
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -39,22 +36,34 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class Scene;
+
 class SceneManager
 {
 public:
-             SceneManager();
-    virtual ~SceneManager();
+     SceneManager();
+    ~SceneManager();
 
     static SceneManager* Create();
 
-    virtual void Init();
-    virtual void Uninit();
-    virtual void Update();
-    virtual void Draw();
+    void Init();
+    void Uninit();
+    void Update();
+
+    void   StartChange();
+    void   CheckChange();
+    Scene* ChangeScene(Scene* pNextScene);
+
+    static void LoadLevel(Scene* pNext, int IntervalFrame);
+    static void LoadLevelQuick(Scene* pNext);
 
 private:
+    static Scene* pScene;
+    static Scene* pSceneNext;
+    static bool   IsShiftNow;              // Scene遷移中かどうか
+    static int    IntervalFrameByShift;    // Scene遷移するまでのインターバル
 
-
+    int ShiftState;
 };
 
 #endif

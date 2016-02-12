@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ SceneTitle.h ] タイトルシーンのクラス
+ @File   : [ SceneGame.h ] ゲームシーンのクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _SCENETITLE_H_
-#define _SCENETITLE_H_
+#ifndef _SCENEGAME_H_
+#define _SCENEGAME_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,11 +39,11 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class SceneTitle : public Scene
+class SceneGame : public Scene
 {
 public:
-             SceneTitle();
-    virtual ~SceneTitle();
+             SceneGame();
+    virtual ~SceneGame();
 
     virtual void Init()   override;
     virtual void Uninit() override;

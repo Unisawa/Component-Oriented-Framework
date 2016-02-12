@@ -116,6 +116,9 @@ public:
     bool CompareTag(std::string tag) { return ((this->tag == tag) ? true : false); }
 
     //-----Setter, Getter-----//
+    void  DontDestroyOnLoad(bool value) { dontDestroyFlag = value; }
+    bool  IsDontDestroy() { return dontDestroyFlag; }
+
     void  SetActive(bool value) { activeSelf = value; }
     bool  GetActive() const { return activeSelf; }
 
@@ -125,10 +128,11 @@ public:
     Transform* GetTransform() { return transform; }
 
 private:
-    bool        activeSelf;    // GameObject のローカルのアクティブ状態
-    LAYER       layer;         // レイヤー (階層番号 レンダリング順序などに影響する)
-    std::string tag;           // タグ名
-    Transform*  transform;     // GameObject にアタッチされている Transform
+    bool        activeSelf;         // GameObject のローカルのアクティブ状態
+    LAYER       layer;              // レイヤー (階層番号 レンダリング順序などに影響する)
+    std::string tag;                // タグ名
+    Transform*  transform;          // GameObject にアタッチされている Transform
+    bool        dontDestroyFlag;    // シーン読み込み時に自動でオブジェクトを削除しない
 
     std::list<Component*> componentList;
 };

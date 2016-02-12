@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Scene.h ] 
+ @File   : [ Scene.h ] 画面遷移するシーンの基礎クラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -25,9 +25,6 @@
 //-----MainSetting-----//
 #include "002_Manager/Manager.h"
 
-//-----Object-----//
-
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -39,22 +36,21 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class SceneTitle;
+class SceneGame;
+
 class Scene
 {
 public:
-             Scene();
-    virtual ~Scene();
+             Scene() {}
+    virtual ~Scene() {}
 
-    static Scene* Create();
+    virtual void Init()   = 0;
+    virtual void Uninit() = 0;
+    virtual void Update() = 0;
 
-    virtual void Init();
-    virtual void Uninit();
-    virtual void Update();
-    virtual void Draw();
-
-private:
-
-
+    static SceneTitle TITLE;
+    static SceneGame  GAME;
 };
 
 #endif

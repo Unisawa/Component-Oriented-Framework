@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ SceneManager.cpp ] 
+ @File   : [ SceneManager.cpp ] 画面遷移を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -17,7 +17,9 @@
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/SceneManager.h"
+#include "007_Scene/SceneManager.h"
+#include "007_Scene/SceneTitle.h"
+#include "007_Scene/SceneGame.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -30,6 +32,10 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
+Scene* SceneManager::pScene;
+Scene* SceneManager::pSceneNext;
+bool   SceneManager::IsShiftNow = 0;
+int    SceneManager::IntervalFrameByShift = -1;
 
 /*=================================================================================================
   @Summary: コンストラクタ
@@ -37,7 +43,7 @@
 =================================================================================================*/
 SceneManager::SceneManager()
 {
-
+    pScene = &Scene::TITLE;
 }
 
 /*===============================================================================================* 
@@ -68,7 +74,12 @@ SceneManager *SceneManager::Create()
  *===============================================================================================*/
 void SceneManager::Init()
 {
+    ShiftState = 0;
 
+    pScene->Init();
+
+    //pFade = Fade::Create();
+    //pFade->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
 /*===============================================================================================* 
@@ -77,7 +88,7 @@ void SceneManager::Init()
  *===============================================================================================*/
 void SceneManager::Uninit()
 {
-
+    pScene->Uninit();
 }
 
 /*===============================================================================================* 
@@ -86,16 +97,102 @@ void SceneManager::Uninit()
  *===============================================================================================*/
 void SceneManager::Update()
 {
+    pScene->Update();
 
+    // 画面遷移の状態管理
+    CheckChange();
 }
 
 /*===============================================================================================* 
-  @Summary: 描画処理
+  @Summary: 画面遷移を開始する
   @Details: None
  *===============================================================================================*/
-void SceneManager::Draw()
+void SceneManager::StartChange()
 {
+    ShiftState = 1;
 
+    //Fade::FadeOut();
+}
+
+/*===============================================================================================* 
+  @Summary: 画面遷移に関する処理
+  @Details: None
+ *===============================================================================================*/
+void SceneManager::CheckChange()
+{
+    // 画面遷移を開始する時
+    if (IntervalFrameByShift >= 0)
+    {
+        --IntervalFrameByShift;
+        if (IntervalFrameByShift < 0)
+        {
+            StartChange();
+        }
+    }
+
+    // 以下、画面遷移中の処理
+    if (ShiftState == 0) return;
+
+    // FadeOut終了
+    //if ((ShiftState == 1) && Fade::FadeState == Fade::FADE::IDOL)
+    //{
+    //    ShiftState = 2;
+
+    //    // 画面遷移
+    //    ChangeScene(pSceneNext);
+
+    //    Fade::FadeIn();
+    //}
+
+    //// FadeIn終了 (画面遷移完了)
+    //if ((ShiftState == 2) && Fade::FadeState == Fade::FADE::IDOL)
+    //{
+    //    ShiftState = 0;
+    //    IsShiftNow = false;
+    //}
+}
+
+/*===============================================================================================* 
+  @Summary: 指定したSceneに切り替え、前回のSceneを返す
+  @Details: None
+ *===============================================================================================*/
+Scene* SceneManager::ChangeScene(Scene* pNextScene)
+{
+    Scene* pBeforeScene = pScene;
+
+    pBeforeScene->Uninit();
+    pScene = pNextScene;
+    pNextScene->Init();
+
+    return pBeforeScene;
+}
+
+/*===============================================================================================* 
+  @Summary: インターバルのフレーム数が経過してから画面遷移を開始するように設定をする
+  @Details: IntervalFrameは 0 以上の数 (0 <= x)
+ *===============================================================================================*/
+void SceneManager::LoadLevel(Scene* pNext, int IntervalFrame)
+{
+    if (!IsShiftNow)
+    {
+        IsShiftNow = true;
+
+        pSceneNext = pNext;
+        IntervalFrameByShift = IntervalFrame;
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: すぐに画面遷移を行う Fade無し
+  @Details: None
+ *===============================================================================================*/
+void SceneManager::LoadLevelQuick(Scene* pNext)
+{
+    Scene* pBeforeScene = pScene;
+
+    pBeforeScene->Uninit();
+    pScene = pNext;
+    pNext->Init();
 }
 
 /*===============================================================================================* 

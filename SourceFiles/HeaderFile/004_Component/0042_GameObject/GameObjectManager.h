@@ -51,6 +51,7 @@ public:
     static void UpdateAll();
     static void DrawAll();
     static void ReleaseAll();
+    static void ReleaseAllScene();
 
     //-----Operation List-----//
     static void LinkList(GameObject* pObject, GameObject::LAYER Layer);

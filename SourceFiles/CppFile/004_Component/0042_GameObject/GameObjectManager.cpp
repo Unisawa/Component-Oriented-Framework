@@ -119,6 +119,35 @@ void GameObjectManager::ReleaseAll()
 }
 
 /*===============================================================================================*
+  @Summary: シーン読み込み時に、登録された全てのGameObjectを削除する
+  @Details: ただし、削除しないフラグが真のものは削除しない
+ *===============================================================================================*/
+void GameObjectManager::ReleaseAllScene()
+{
+    GameObject* pObject;
+
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+        {
+            if ((*Iterator)->IsDontDestroy())
+            {
+                Iterator++;
+            }
+            else
+            {
+                pObject = (*Iterator);
+
+                // リストから切り離す
+                Iterator = gameObjectList[Layer].erase(Iterator);
+
+                // GameObjectの削除
+                SafeDeleteUninit(pObject);
+            }
+        }
+    }
+}
+/*===============================================================================================*
   @Summary: GameObjectをリストに追加する
   @Details: None
  *===============================================================================================*/
