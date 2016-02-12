@@ -134,6 +134,19 @@ void GameObject::Destroy(Component* pComponent, float time)
     }
 }
 
+/*===============================================================================================* 
+  @Summary: Layer (çXêVèá) ÇïœçXÇ∑ÇÈ
+  @Details: None
+ *===============================================================================================*/
+void GameObject::SetLayer(LAYER value)
+{
+    if (layer == value) return;
+
+    GameObjectManager::UnLinkList(this);
+    layer = value;
+    GameObjectManager::LinkList(this, value);
+}
+
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

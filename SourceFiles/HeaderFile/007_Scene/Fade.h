@@ -60,16 +60,16 @@ public:
              Fade(GameObject* pObject);
     virtual ~Fade();
 
-    virtual void Init();
-    virtual void Uninit();
-    virtual void Update();
+    virtual void Init()   override;
+    virtual void Uninit() override;
+    virtual void Update() override;
 
     void FadeIn();
     void FadeOut();
 
     static const std::string className;
 
-    FADE GetFadeState() { return fadeState; }
+    FADE GetFadeState() const { return fadeState; }
 
 private:
     void UpdateFadeIn();

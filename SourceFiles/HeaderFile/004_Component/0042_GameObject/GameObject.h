@@ -122,7 +122,7 @@ public:
     void  SetActive(bool value) { activeSelf = value; }
     bool  GetActive() const { return activeSelf; }
 
-    void  SetLayer(LAYER value) { layer = value; }
+    void  SetLayer(LAYER value);
     LAYER GetLayer() const { return layer; }
 
     Transform*  transform;          // GameObject にアタッチされている Transform
