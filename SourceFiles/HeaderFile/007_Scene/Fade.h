@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ SceneManager.h ] 画面遷移を管理するクラス
+ @File   : [ Fade.h ] 画面全体の照度を変化させるフェードクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _SCENEMANAGER_H_
-#define _SCENEMANAGER_H_
+#ifndef _FADE_H_
+#define _FADE_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -24,6 +24,10 @@
 
 //-----MainSetting-----//
 #include "002_Manager/Manager.h"
+
+//-----Object-----//
+#include "004_Component/0043_Behaviour/MonoBehaviour.h"
+#include "007_Scene/Fade.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -36,37 +40,46 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Scene;
-class Fade;
+class Render2DDX;
 
-class SceneManager
+class Fade : public MonoBehaviour
 {
 public:
-     SceneManager();
-    ~SceneManager();
 
-    static SceneManager* Create();
+    static const enum FADE
+    {
+        NONE = -1,
 
-    void Init();
-    void Uninit();
-    void Update();
+        IDOL,
+        FADEIN,
+        FADEOUT,
 
-    void   StartChange();
-    void   CheckChange();
-    Scene* ChangeScene(Scene* pNextScene);
+        MAX
+    };
 
-    static void LoadLevel(Scene* pNext, int IntervalFrame = 0.0f);
-    static void LoadLevelQuick(Scene* pNext);
+             Fade(GameObject* pObject);
+    virtual ~Fade();
+
+    virtual void Init();
+    virtual void Uninit();
+    virtual void Update();
+
+    void FadeIn();
+    void FadeOut();
+
+    static const std::string className;
+
+    FADE GetFadeState() { return fadeState; }
 
 private:
-    static Scene* pScene;                  // 現在のシーン
-    static Scene* pSceneNext;              // 次に変更するシーン
-    static bool   isShiftNow;              // Scene遷移中かどうか
-    static int    intervalFrameByShift;    // Scene遷移するまでのインターバル
+    void UpdateFadeIn();
+    void UpdateFadeOut();
 
-    static Fade* pFade;
+    Render2DDX* pRender2D;
 
-    int shiftState;    // シーン遷移中の状態を管理する
+    FADE fadeState;
+    int  fadeTime;
+    int  fadeCount;
 };
 
 #endif

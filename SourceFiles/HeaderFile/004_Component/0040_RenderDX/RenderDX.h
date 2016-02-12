@@ -83,6 +83,7 @@ public:
     static const enum CULLTYPE
     {
         CULLTYPE_NONE = 0,    // カリングしない
+
         CULLTYPE_CW,          // 表カリング
         CULLTYPE_CCW,         // 裏カリング
 
@@ -104,7 +105,7 @@ public:
     void SetCulling();
 
     //-----Setter, Getter-----//
-    void              SetLayer(GameObject::LAYER value) { layer = value; }
+    void              SetLayer(GameObject::LAYER value);
     GameObject::LAYER GetLayer() const { return layer; }
 
     void      SetBlendType(BLENDTYPE value) { blendType = value; }

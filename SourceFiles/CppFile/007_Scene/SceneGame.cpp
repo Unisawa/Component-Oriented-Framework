@@ -23,6 +23,7 @@
 #include "004_Component/0041_RenderGL/RenderManagerGL.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "007_Scene/SceneManager.h"
+#include "007_Scene/SceneTitle.h"
 #include "007_Scene/SceneGame.h"
 
 //-----Object-----//
@@ -72,21 +73,21 @@ void SceneGame::Init()
     // GameObjectの生成、コンポーネントの追加テスト
     //GameObject* pGameObject0 = new GameObject;
     //pGameObject0->SetName("AAAAA");
-    //pGameObject0->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
-    //pGameObject0->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    //pGameObject0->transform->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    //pGameObject0->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
     //Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
 
     //GameObject* pGameObject1 = new GameObject;
     //pGameObject1->SetName("BBBBB");
-    //pGameObject1->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF + Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
-    //pGameObject1->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    //pGameObject1->transform->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF + Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    //pGameObject1->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     //Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
     //pRender2D1->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
     GameObject* pGameObject2 = new GameObject;
     pGameObject2->SetName("CCCCC");
-    pGameObject2->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF - Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
-    pGameObject2->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    pGameObject2->transform->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF - Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    pGameObject2->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
     pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
@@ -94,8 +95,8 @@ void SceneGame::Init()
 
     //GameObject* pGameObject9 = new GameObject;
     //pGameObject9->SetName("OpenGL");
-    //pGameObject9->GetTransform()->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
-    //pGameObject9->GetTransform()->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    //pGameObject9->transform->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    //pGameObject9->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
     //Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
 
 }
@@ -147,6 +148,11 @@ void SceneGame::Update()
     {
         Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
         pRender->Destroy();
+    }
+
+    if (pKey->GetKeyboardTrigger(DIK_SPACE))
+    {
+        SceneManager::LoadLevel(&Scene::TITLE);
     }
 }
 

@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderDX.cpp ] DirectXで全てのレンダラーのための一般的な機能を管理するクラス (抽象クラス)
+ @File   : [ Fade.cpp ] 画面全体の照度を変化させるフェードクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,9 +13,14 @@
 //                                                                                               //
 //***********************************************************************************************//
 
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
+#include "001_Constant/Constant.h"
+
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "007_Scene/Fade.h"
+#include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0040_RenderDX/Render2DDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -28,148 +33,142 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
+const std::string Fade::className = "Fade";
 
 /*=================================================================================================
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
+Fade::Fade(GameObject* pObject) : MonoBehaviour(pObject, className)
 {
-    enabled = true;
-    zDepth  = 1.0f;
-    layer   = Layer;
+    fadeTime  = 40;
+    fadeCount = 0;
 
-    blendType   = BLENDTYPE::BLENDTYPE_NORMAL;
-    cullingType = CULLTYPE::CULLTYPE_CCW;
-
-    RenderManagerDX::LinkList(this, Layer);
+    fadeState = FADE::NONE;
 }
 
 /*===============================================================================================* 
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-RenderDX::~RenderDX()
+Fade::~Fade()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が小さいか
+  @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
+void Fade::Init()
 {
-    return RenderA->GetZDepth() < RenderB->GetZDepth();
+    fadeState = FADE::IDOL;
+
+    gameObject->DontDestroyOnLoad(true);
+    gameObject->transform->SetPosition(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f);
+    gameObject->transform->SetScale(Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.0f);
+
+    // Fade用 2Dポリゴン追加
+    pRender2D = gameObject->AddComponent<Render2DDX>();
+    pRender2D->SetLayer(GameObject::LAYER::OBJECT2D_TRANSLUCENT_TWO);
+    pRender2D->SetColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が大きいか
+  @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
+void Fade::Uninit()
 {
-    return RenderA->GetZDepth() > RenderB->GetZDepth();
+
 }
 
 /*===============================================================================================* 
-  @Summary: Renderが持つブレンド設定を行う
+  @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetBlending()
+void Fade::Update()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    UpdateFadeIn();
+    UpdateFadeOut();
+}
 
-    // ブレンドモードのリセット (アルファブレンドを基本とする)
-    pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-    pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+/*===============================================================================================* 
+  @Summary: FadeIn中の処理
+  @Details: None
+ *===============================================================================================*/
+void Fade::UpdateFadeIn()
+{
+    if (fadeState != FADE::FADEIN) return;
 
-    // ブレンド設定
-    switch (blendType)
+    // α計算
+    D3DXCOLOR Color = pRender2D->GetColor();
+    Color.a = 1.0f * (1 - ((float) fadeCount / fadeTime));
+
+    // 頂点情報の更新
+    pRender2D->SetColor(Color);
+
+    // フェードが終われば、フェード実行状態を解除
+    if (fadeTime < ++fadeCount)
     {
-        // ブレンドしない
-        case BLENDTYPE_NOTBLEND:
-            pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-            break;
-
-        // アルファブレンド
-        case BLENDTYPE_NORMAL:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            break;
-
-        // 加算合成
-        case BLENDTYPE_ADD:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 半加算合成
-        case BLENDTYPE_ADD_SOFT:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 減算合成
-        case BLENDTYPE_SUBTRACT:
-            pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        default:
-            break;
+        fadeCount = fadeTime;
+        fadeState = FADE::IDOL;
     }
 }
 
 /*===============================================================================================* 
-  @Summary: Renderが持つカリング設定を行う
+  @Summary: FadeOut中の処理
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetCulling()
+void Fade::UpdateFadeOut()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    if (fadeState != FADE::FADEOUT) return;
 
-    // カリングのリセット (裏カリングを基本とする)
-    pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    // α計算
+    D3DXCOLOR Color = pRender2D->GetColor();
+    Color.a = 1.0f * ((float) fadeCount / fadeTime);
 
-    // カリング設定
-    switch (cullingType)
+    // 頂点情報の更新
+    pRender2D->SetColor(Color);
+
+    // フェードが終われば、フェード実行状態を解除
+    if (fadeTime < ++fadeCount)
     {
-        // カリングしない
-        case CULLTYPE_NONE:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-            break;
-
-        // 表カリング
-        case CULLTYPE_CW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-            break;
-
-        // 裏カリング
-        case CULLTYPE_CCW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-            break;
-
-        default:
-            break;
+        fadeCount = fadeTime;
+        fadeState = FADE::IDOL;
     }
 }
 
 /*===============================================================================================* 
-  @Summary: Layer (描画順) を変更する
+  @Summary: FadeInを開始する
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetLayer(GameObject::LAYER value)
+void Fade::FadeIn()
 {
-    if (layer == value) return;
-
-    RenderManagerDX::UnLinkList(this);
-    layer = value;
-    RenderManagerDX::LinkList(this, value);
+    if (fadeState == FADE::IDOL)
+    {
+        fadeState = FADE::FADEIN;
+        fadeCount = 0;
+    }
 }
+
+/*===============================================================================================* 
+  @Summary: FadeOutを開始する
+  @Details: None
+ *===============================================================================================*/
+void Fade::FadeOut()
+{
+    if (fadeState == FADE::IDOL)
+    {
+        fadeState = FADE::FADEOUT;
+        fadeCount = 0;
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //

@@ -1,20 +1,11 @@
 /**************************************************************************************************
 
- @File   : [ SceneManager.h ] 画面遷移を管理するクラス
+ @File   : [ Behaviour.cpp ] コンポーネントを有効/無効にするクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
 
 
-
-//***********************************************************************************************//
-//                                                                                               //
-//  @Include Guard                                                                               //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma once
-#ifndef _SCENEMANAGER_H_
-#define _SCENEMANAGER_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -25,6 +16,9 @@
 //-----MainSetting-----//
 #include "002_Manager/Manager.h"
 
+//-----Object-----//
+#include "004_Component/0043_Behaviour/Behaviour.h"
+
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -33,43 +27,40 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Class                                                                                       //
+//  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-class Scene;
-class Fade;
 
-class SceneManager
+/*=================================================================================================
+  @Summary: コンストラクタ
+  @Details: None
+=================================================================================================*/
+Behaviour::Behaviour(GameObject* pObject, std::string ComponentName) : Component(pObject, ComponentBehaviour, ComponentName)
 {
-public:
-     SceneManager();
-    ~SceneManager();
+    enabled = true;
+}
 
-    static SceneManager* Create();
+/*===============================================================================================* 
+  @Summary: デストラクタ
+  @Details: None
+ *===============================================================================================*/
+Behaviour::~Behaviour()
+{
 
-    void Init();
-    void Uninit();
-    void Update();
+}
 
-    void   StartChange();
-    void   CheckChange();
-    Scene* ChangeScene(Scene* pNextScene);
+/*===============================================================================================* 
+  @Summary: 更新処理
+  @Details: None
+ *===============================================================================================*/
+void Behaviour::ComponentUpdate()
+{
+    if (enabled)
+    {
+        Update();
+    }
+}
 
-    static void LoadLevel(Scene* pNext, int IntervalFrame = 0.0f);
-    static void LoadLevelQuick(Scene* pNext);
-
-private:
-    static Scene* pScene;                  // 現在のシーン
-    static Scene* pSceneNext;              // 次に変更するシーン
-    static bool   isShiftNow;              // Scene遷移中かどうか
-    static int    intervalFrameByShift;    // Scene遷移するまでのインターバル
-
-    static Fade* pFade;
-
-    int shiftState;    // シーン遷移中の状態を管理する
-};
-
-#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

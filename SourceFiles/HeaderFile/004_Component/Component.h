@@ -50,7 +50,7 @@ public:
     {
         ComponentTransform = 0,
         ComponentRenderer,
-        ComponentScript,
+        ComponentBehaviour,
 
         ComponentMax,
     };

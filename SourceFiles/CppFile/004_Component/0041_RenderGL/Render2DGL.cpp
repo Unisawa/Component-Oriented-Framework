@@ -85,7 +85,7 @@ void Render2DGL::Update()
  *===============================================================================================*/
 void Render2DGL::Draw()
 {
-    Transform* pTransform = this->gameObject->GetTransform();
+    Transform* pTransform = this->gameObject->transform;
 
     float x = pTransform->GetPosition().x;
     float y = pTransform->GetPosition().y;

@@ -96,7 +96,7 @@ void GameObject::Update()
     // 所持している各コンポーネントの更新処理
     for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
     {
-        (*Iterator)->Update();
+        (*Iterator)->ComponentUpdate();
 
         Iterator++;
     }

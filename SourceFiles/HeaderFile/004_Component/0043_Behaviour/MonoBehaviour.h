@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ SceneManager.h ] 画面遷移を管理するクラス
+ @File   : [ MonoBehaviour.h ] 全てのスクリプトから派生するベースクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _SCENEMANAGER_H_
-#define _SCENEMANAGER_H_
+#ifndef _MONOBEHAVIOUR_H_
+#define _MONOBEHAVIOUR_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -24,6 +24,9 @@
 
 //-----MainSetting-----//
 #include "002_Manager/Manager.h"
+
+//-----Object-----//
+#include "004_Component/0043_Behaviour/Behaviour.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -36,37 +39,15 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Scene;
-class Fade;
-
-class SceneManager
+class MonoBehaviour : public Behaviour
 {
 public:
-     SceneManager();
-    ~SceneManager();
+             MonoBehaviour(GameObject* pObject, std::string ComponentName);
+    virtual ~MonoBehaviour();
 
-    static SceneManager* Create();
-
-    void Init();
-    void Uninit();
-    void Update();
-
-    void   StartChange();
-    void   CheckChange();
-    Scene* ChangeScene(Scene* pNextScene);
-
-    static void LoadLevel(Scene* pNext, int IntervalFrame = 0.0f);
-    static void LoadLevelQuick(Scene* pNext);
-
-private:
-    static Scene* pScene;                  // 現在のシーン
-    static Scene* pSceneNext;              // 次に変更するシーン
-    static bool   isShiftNow;              // Scene遷移中かどうか
-    static int    intervalFrameByShift;    // Scene遷移するまでのインターバル
-
-    static Fade* pFade;
-
-    int shiftState;    // シーン遷移中の状態を管理する
+    virtual void Init()   override {}
+    virtual void Uninit() override {}
+    virtual void Update() override {}
 };
 
 #endif

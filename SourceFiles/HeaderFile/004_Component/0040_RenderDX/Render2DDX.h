@@ -54,7 +54,8 @@ public:
     void SetTexture(std::string TextureName);
     int  GetTexture() const { return textureID; }
 
-    void      SetColor(D3DXCOLOR value) { vertexColor = value; }
+    void      SetColor(D3DXCOLOR value) { vertexColor = value; SetVertex(); }
+    void      SetColor(float red, float green, float blue, float alpha) { vertexColor.r = red; vertexColor.g = green; vertexColor.b = blue; vertexColor.a = alpha; SetVertex(); }
     D3DXCOLOR GetColor() const { return vertexColor; }
 
     static const std::string className;

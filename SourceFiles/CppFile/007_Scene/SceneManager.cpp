@@ -20,6 +20,7 @@
 #include "007_Scene/SceneManager.h"
 #include "007_Scene/SceneTitle.h"
 #include "007_Scene/SceneGame.h"
+#include "007_Scene/Fade.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -34,8 +35,10 @@
 //***********************************************************************************************//
 Scene* SceneManager::pScene;
 Scene* SceneManager::pSceneNext;
-bool   SceneManager::IsShiftNow = 0;
-int    SceneManager::IntervalFrameByShift = -1;
+bool   SceneManager::isShiftNow = 0;
+int    SceneManager::intervalFrameByShift = -1;
+
+Fade*  SceneManager::pFade = NULL;
 
 /*=================================================================================================
   @Summary: ƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -74,12 +77,14 @@ SceneManager *SceneManager::Create()
  *===============================================================================================*/
 void SceneManager::Init()
 {
-    ShiftState = 0;
+    shiftState = 0;
 
     pScene->Init();
 
-    //pFade = Fade::Create();
-    //pFade->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
+    GameObject* pFadeGameObject = new GameObject;
+    pFadeGameObject->SetName("Fade Filter");
+
+    pFade = pFadeGameObject->AddComponent<Fade>();
 }
 
 /*===============================================================================================* 
@@ -89,6 +94,8 @@ void SceneManager::Init()
 void SceneManager::Uninit()
 {
     pScene->Uninit();
+
+    pFade->Uninit();
 }
 
 /*===============================================================================================* 
@@ -109,9 +116,9 @@ void SceneManager::Update()
  *===============================================================================================*/
 void SceneManager::StartChange()
 {
-    ShiftState = 1;
+    shiftState = 1;
 
-    //Fade::FadeOut();
+    pFade->FadeOut();
 }
 
 /*===============================================================================================* 
@@ -121,35 +128,35 @@ void SceneManager::StartChange()
 void SceneManager::CheckChange()
 {
     // ‰æ–Ê‘JˆÚ‚ðŠJŽn‚·‚éŽž
-    if (IntervalFrameByShift >= 0)
+    if (intervalFrameByShift >= 0)
     {
-        --IntervalFrameByShift;
-        if (IntervalFrameByShift < 0)
+        --intervalFrameByShift;
+        if (intervalFrameByShift < 0)
         {
             StartChange();
         }
     }
 
     // ˆÈ‰ºA‰æ–Ê‘JˆÚ’†‚Ìˆ—
-    if (ShiftState == 0) return;
+    if (shiftState == 0) return;
 
     // FadeOutI—¹
-    //if ((ShiftState == 1) && Fade::FadeState == Fade::FADE::IDOL)
-    //{
-    //    ShiftState = 2;
+    if ((shiftState == 1) && pFade->GetFadeState() == Fade::FADE::IDOL)
+    {
+        shiftState = 2;
 
-    //    // ‰æ–Ê‘JˆÚ
-    //    ChangeScene(pSceneNext);
+        // ‰æ–Ê‘JˆÚ
+        ChangeScene(pSceneNext);
 
-    //    Fade::FadeIn();
-    //}
+        pFade->FadeIn();
+    }
 
-    //// FadeInI—¹ (‰æ–Ê‘JˆÚŠ®—¹)
-    //if ((ShiftState == 2) && Fade::FadeState == Fade::FADE::IDOL)
-    //{
-    //    ShiftState = 0;
-    //    IsShiftNow = false;
-    //}
+    // FadeInI—¹ (‰æ–Ê‘JˆÚŠ®—¹)
+    if ((shiftState == 2) && pFade->GetFadeState() == Fade::FADE::IDOL)
+    {
+        shiftState = 0;
+        isShiftNow = false;
+    }
 }
 
 /*===============================================================================================* 
@@ -173,12 +180,12 @@ Scene* SceneManager::ChangeScene(Scene* pNextScene)
  *===============================================================================================*/
 void SceneManager::LoadLevel(Scene* pNext, int IntervalFrame)
 {
-    if (!IsShiftNow)
+    if (!isShiftNow)
     {
-        IsShiftNow = true;
+        isShiftNow = true;
 
         pSceneNext = pNext;
-        IntervalFrameByShift = IntervalFrame;
+        intervalFrameByShift = IntervalFrame;
     }
 }
 

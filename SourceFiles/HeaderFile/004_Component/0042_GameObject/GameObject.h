@@ -91,7 +91,7 @@ public:
         T* pComponent = new T(this);
         pComponent->ComponentInit();
 
-        componentList.push_back((Component*)pComponent);
+        componentList.push_back(pComponent);
 
         return pComponent;
     }
@@ -125,13 +125,12 @@ public:
     void  SetLayer(LAYER value) { layer = value; }
     LAYER GetLayer() const { return layer; }
 
-    Transform* GetTransform() { return transform; }
+    Transform*  transform;          // GameObject にアタッチされている Transform
 
 private:
     bool        activeSelf;         // GameObject のローカルのアクティブ状態
     LAYER       layer;              // レイヤー (階層番号 レンダリング順序などに影響する)
     std::string tag;                // タグ名
-    Transform*  transform;          // GameObject にアタッチされている Transform
     bool        dontDestroyFlag;    // シーン読み込み時に自動でオブジェクトを削除しない
 
     std::list<Component*> componentList;
