@@ -53,6 +53,8 @@ public:
     static void ReleaseAll();
     static void ReleaseAllScene();
 
+    static GameObject* FindGameObject(std::string Name);
+
     //-----Operation List-----//
     static void LinkList(GameObject* pObject, GameObject::LAYER Layer);
     static void UnLinkList(GameObject* pObject);

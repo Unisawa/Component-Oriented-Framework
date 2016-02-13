@@ -76,6 +76,7 @@ public:
     };
 
              GameObject(LAYER Layer = LAYER_ZERO);
+             GameObject(std::string Name, LAYER Layer = LAYER_ZERO);
     virtual ~GameObject();
 
     virtual void Init();
@@ -84,6 +85,8 @@ public:
 
     virtual void Destroy(float time = 0.0f) override;
     virtual void Destroy(Component* pComponent, float time = 0.0f);
+
+    static GameObject* Find(std::string Name);
 
     // コンポーネントの追加
     template <typename T> T* AddComponent()

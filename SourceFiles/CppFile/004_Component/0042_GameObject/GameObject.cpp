@@ -43,9 +43,25 @@ GameObject::GameObject(LAYER Layer)
     activeSelf      = true;
     transform       = new Transform(this);
     dontDestroyFlag = false;
+    layer           = Layer;
 
-    SetLayer(Layer);
-    SetName("GameObject");
+    SetName("GameObject (Default)");
+
+    GameObjectManager::LinkList(this, Layer);
+}
+
+/*=================================================================================================
+  @Summary: コンストラクタ
+  @Details: None
+=================================================================================================*/
+GameObject::GameObject(std::string Name, LAYER Layer)
+{
+    activeSelf      = true;
+    transform       = new Transform(this);
+    dontDestroyFlag = false;
+    layer           = Layer;
+
+    SetName(Name);
 
     GameObjectManager::LinkList(this, Layer);
 }
@@ -132,6 +148,15 @@ void GameObject::Destroy(Component* pComponent, float time)
 
         Iterator++;
     }
+}
+
+/*===============================================================================================* 
+  @Summary: 指定した名前を持つ GameObject を検索してオブジェクトを返す
+  @Details: None
+ *===============================================================================================*/
+GameObject* GameObject::Find(std::string Name)
+{
+    return GameObjectManager::FindGameObject(Name);
 }
 
 /*===============================================================================================* 

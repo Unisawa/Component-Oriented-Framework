@@ -147,6 +147,29 @@ void GameObjectManager::ReleaseAllScene()
         }
     }
 }
+
+/*===============================================================================================* 
+  @Summary: 指定した名前を持つ GameObject を検索してオブジェクトを返す
+  @Details: None
+ *===============================================================================================*/
+GameObject* GameObjectManager::FindGameObject(std::string Name)
+{
+    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    {
+        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+        {
+            if (Name == (*Iterator)->GetName())
+            {
+                return (*Iterator);
+            }
+
+            Iterator++;
+        }
+    }
+
+    return NULL;
+}
+
 /*===============================================================================================*
   @Summary: GameObjectをリストに追加する
   @Details: None

@@ -77,8 +77,7 @@ void SceneTitle::Init()
     pGameObject0->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
 
-    GameObject* pGameObject1 = new GameObject;
-    pGameObject1->SetName("BBBBB");
+    GameObject* pGameObject1 = new GameObject("BBBBB");
     pGameObject1->transform->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF + Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
     pGameObject1->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
@@ -136,6 +135,12 @@ void SceneTitle::Update()
 
         if (pRender != NULL)
             pRender->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+    }
+
+    // ゲームオブジェクトの検索テスト
+    if (pKey->GetKeyboardTrigger(DIK_H))
+    {
+        pTemp = GameObject::Find("BBBBB");
     }
 
     // ゲームオブジェクトの削除テスト
