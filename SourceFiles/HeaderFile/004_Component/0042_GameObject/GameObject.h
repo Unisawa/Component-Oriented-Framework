@@ -94,7 +94,7 @@ public:
         T* pComponent = new T(this);
         pComponent->ComponentInit();
 
-        componentList.push_back(pComponent);
+        pComponentList.push_back(pComponent);
 
         return pComponent;
     }
@@ -102,7 +102,7 @@ public:
     // コンポーネントの取得
     template <typename T> T* GetComponent()
     {
-        for (auto Iterator = componentList.begin(); Iterator != componentList.end(); ++Iterator)
+        for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end(); ++Iterator)
         {
             if (T::className == (*Iterator)->GetComponentName())
             {
@@ -113,7 +113,7 @@ public:
         return NULL;
     }
 
-    std::list<Component*> GetComponetList() { return componentList; }
+    std::list<Component*> GetComponetList() { return pComponentList; }
 
     // 指定した文字列(tag) とタグ付けされているか確認
     bool CompareTag(std::string tag) { return ((this->tag == tag) ? true : false); }
@@ -136,7 +136,7 @@ private:
     std::string tag;                // タグ名
     bool        dontDestroyFlag;    // シーン読み込み時に自動でオブジェクトを削除しない
 
-    std::list<Component*> componentList;
+    std::list<Component*> pComponentList;
 };
 
 #endif

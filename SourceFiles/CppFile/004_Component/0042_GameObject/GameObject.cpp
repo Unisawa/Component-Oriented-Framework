@@ -92,7 +92,7 @@ void GameObject::Uninit()
 {
     Component* pComponent;
 
-    for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
+    for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end();)
     {
         pComponent = (*Iterator);
 
@@ -110,7 +110,7 @@ void GameObject::Uninit()
 void GameObject::Update()
 {
     // 所持している各コンポーネントの更新処理
-    for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
+    for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end();)
     {
         (*Iterator)->ComponentUpdate();
 
@@ -133,12 +133,12 @@ void GameObject::Destroy(float time)
  *===============================================================================================*/
 void GameObject::Destroy(Component* pComponent, float time)
 {
-    for (auto Iterator = componentList.begin(); Iterator != componentList.end();)
+    for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end();)
     {
         if (pComponent == (*Iterator))
         {
             // リストから切り離す
-            Iterator = componentList.erase(Iterator);
+            Iterator = pComponentList.erase(Iterator);
 
             // コンポーネントの削除
             SafeDeleteUninit(pComponent);

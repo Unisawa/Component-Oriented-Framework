@@ -80,7 +80,7 @@ private:
     static HDC   hDC;       // デバイスコンテキスト
     static HGLRC hGLRC;     // カレントコンテキスト
 
-    static std::list<RenderGL*> renderGLList[GameObject::LAYER_MAX];
+    static std::list<RenderGL*> pRenderGLList[GameObject::LAYER_MAX];
 };
 
 #endif

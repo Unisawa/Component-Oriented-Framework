@@ -61,7 +61,7 @@ public:
     static void Release(GameObject* pObject);
 
 private:
-    static std::list<GameObject*> gameObjectList[GameObject::LAYER_MAX];
+    static std::list<GameObject*> pGameObjectList[GameObject::LAYER_MAX];
 };
 
 #endif

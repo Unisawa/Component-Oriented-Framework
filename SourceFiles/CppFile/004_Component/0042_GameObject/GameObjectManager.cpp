@@ -30,7 +30,7 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-std::list<GameObject*> GameObjectManager::gameObjectList[GameObject::LAYER_MAX];
+std::list<GameObject*> GameObjectManager::pGameObjectList[GameObject::LAYER_MAX];
 
 /*===============================================================================================* 
   @Summary: 生成処理
@@ -53,7 +53,7 @@ void GameObjectManager::Init()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        gameObjectList[Layer].clear();
+        pGameObjectList[Layer].clear();
     }
 }
 
@@ -83,7 +83,7 @@ void GameObjectManager::UpdateAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end(); ++Iterator)
+        for (auto Iterator = pGameObjectList[Layer].begin(); Iterator != pGameObjectList[Layer].end(); ++Iterator)
         {
             if ((*Iterator)->GetActive())
             {
@@ -103,18 +103,18 @@ void GameObjectManager::ReleaseAll()
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+        for (auto Iterator = pGameObjectList[Layer].begin(); Iterator != pGameObjectList[Layer].end();)
         {
             pObject = (*Iterator);
 
             // リストから切り離す
-            Iterator = gameObjectList[Layer].erase(Iterator);
+            Iterator = pGameObjectList[Layer].erase(Iterator);
 
             // GameObjectの削除
             SafeDeleteUninit(pObject);
         }
 
-        gameObjectList[Layer].clear();
+        pGameObjectList[Layer].clear();
     }
 }
 
@@ -128,7 +128,7 @@ void GameObjectManager::ReleaseAllScene()
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+        for (auto Iterator = pGameObjectList[Layer].begin(); Iterator != pGameObjectList[Layer].end();)
         {
             if ((*Iterator)->IsDontDestroy())
             {
@@ -139,7 +139,7 @@ void GameObjectManager::ReleaseAllScene()
                 pObject = (*Iterator);
 
                 // リストから切り離す
-                Iterator = gameObjectList[Layer].erase(Iterator);
+                Iterator = pGameObjectList[Layer].erase(Iterator);
 
                 // GameObjectの削除
                 SafeDeleteUninit(pObject);
@@ -156,7 +156,7 @@ GameObject* GameObjectManager::FindGameObject(std::string Name)
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+        for (auto Iterator = pGameObjectList[Layer].begin(); Iterator != pGameObjectList[Layer].end();)
         {
             if (Name == (*Iterator)->GetName())
             {
@@ -176,7 +176,7 @@ GameObject* GameObjectManager::FindGameObject(std::string Name)
  *===============================================================================================*/
 void GameObjectManager::LinkList(GameObject* pObject, GameObject::LAYER Layer)
 {
-    gameObjectList[Layer].push_back(pObject);
+    pGameObjectList[Layer].push_back(pObject);
 }
 
 /*===============================================================================================*
@@ -187,12 +187,12 @@ void GameObjectManager::UnLinkList(GameObject* pObject)
 {
     GameObject::LAYER Layer = pObject->GetLayer();
 
-    for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end(); ++Iterator)
+    for (auto Iterator = pGameObjectList[Layer].begin(); Iterator != pGameObjectList[Layer].end(); ++Iterator)
     {
         if (*Iterator == pObject)
         {
             // リストから切り離す
-            gameObjectList[Layer].erase(Iterator);
+            pGameObjectList[Layer].erase(Iterator);
 
             break;
         }
@@ -207,12 +207,12 @@ void GameObjectManager::Release(GameObject* pObject)
 {
     GameObject::LAYER Layer = pObject->GetLayer();
 
-    for (auto Iterator = gameObjectList[Layer].begin(); Iterator != gameObjectList[Layer].end();)
+    for (auto Iterator = pGameObjectList[Layer].begin(); Iterator != pGameObjectList[Layer].end();)
     {
-        if (*Iterator == pObject)
+        if ((*Iterator) == pObject)
         {
             // リストから切り離す
-            Iterator = gameObjectList[Layer].erase(Iterator);
+            Iterator = pGameObjectList[Layer].erase(Iterator);
 
             // GameObjectの削除
             SafeDeleteUninit(pObject);

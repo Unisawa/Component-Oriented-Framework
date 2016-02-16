@@ -35,7 +35,7 @@
 HDC   RenderManagerGL::hDC   = NULL;
 HGLRC RenderManagerGL::hGLRC = NULL;
 
-std::list<RenderGL*> RenderManagerGL::renderGLList[GameObject::LAYER_MAX];
+std::list<RenderGL*> RenderManagerGL::pRenderGLList[GameObject::LAYER_MAX];
 
 /*===============================================================================================* 
   @Summary: 生成処理
@@ -54,7 +54,7 @@ RenderManagerGL *RenderManagerGL::Create()
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        renderGLList[Layer].clear();
+        pRenderGLList[Layer].clear();
     }
 
     return pRenderManagerGL;
@@ -160,7 +160,7 @@ void RenderManagerGL::UpdateAll()
 {
     for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
     {
-        for (auto Iterator = renderGLList[Cnt].begin(); Iterator != renderGLList[Cnt].end(); ++Iterator)
+        for (auto Iterator = pRenderGLList[Cnt].begin(); Iterator != pRenderGLList[Cnt].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)
             {
@@ -199,7 +199,7 @@ void RenderManagerGL::DrawAll()
             glLoadIdentity();
         }
 
-        for (auto Iterator = renderGLList[Cnt].begin(); Iterator != renderGLList[Cnt].end(); ++Iterator)
+        for (auto Iterator = pRenderGLList[Cnt].begin(); Iterator != pRenderGLList[Cnt].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)
             {
@@ -228,7 +228,7 @@ void RenderManagerGL::UnLinkListAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        renderGLList[Layer].clear();
+        pRenderGLList[Layer].clear();
     }
 }
 
@@ -242,18 +242,18 @@ void RenderManagerGL::ReleaseAll()
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderGLList[Layer].begin(); Iterator != renderGLList[Layer].end();)
+        for (auto Iterator = pRenderGLList[Layer].begin(); Iterator != pRenderGLList[Layer].end();)
         {
             pRender = (*Iterator);
 
             // リストから切り離す
-            Iterator = renderGLList[Layer].erase(Iterator);
+            Iterator = pRenderGLList[Layer].erase(Iterator);
 
             // GameObjectの削除
             SafeDeleteUninit(pRender);
         }
 
-        renderGLList[Layer].clear();
+        pRenderGLList[Layer].clear();
     }
 }
 
@@ -268,11 +268,11 @@ void RenderManagerGL::ZSort()
         // 不透明はZDepth値はカメラから近い順にソートし、半透明は遠い順にソート
         if (Layer < GameObject::LAYER::OBJECT3D_TRANSLUCENT_ONE)
         {
-            renderGLList[Layer].sort(RenderGL::ZSortCompareLess);
+            pRenderGLList[Layer].sort(RenderGL::ZSortCompareLess);
         }
         else
         {
-            renderGLList[Layer].sort(RenderGL::ZSortCompareGreater);
+            pRenderGLList[Layer].sort(RenderGL::ZSortCompareGreater);
         }
     }
 }
@@ -285,7 +285,7 @@ void RenderManagerGL::CalculateZSortAll()
 {
     for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
     {
-        for (auto Iterator = renderGLList[Cnt].begin(); Iterator != renderGLList[Cnt].end(); ++Iterator)
+        for (auto Iterator = pRenderGLList[Cnt].begin(); Iterator != pRenderGLList[Cnt].end(); ++Iterator)
         {
             
         }
@@ -298,7 +298,7 @@ void RenderManagerGL::CalculateZSortAll()
  *===============================================================================================*/
 void RenderManagerGL::LinkList(RenderGL* pRender, GameObject::LAYER Layer)
 {
-    renderGLList[Layer].push_back(pRender);
+    pRenderGLList[Layer].push_back(pRender);
 }
 
 /*===============================================================================================*
@@ -309,12 +309,12 @@ void RenderManagerGL::UnLinkList(RenderGL* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 
-    for (auto Iterator = renderGLList[Layer].begin(); Iterator != renderGLList[Layer].end(); ++Iterator)
+    for (auto Iterator = pRenderGLList[Layer].begin(); Iterator != pRenderGLList[Layer].end(); ++Iterator)
     {
         if (*Iterator == pRender)
         {
             // リストから切り離す
-            renderGLList[Layer].erase(Iterator);
+            pRenderGLList[Layer].erase(Iterator);
 
             break;
         }
@@ -329,12 +329,12 @@ void RenderManagerGL::Release(RenderGL* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 
-    for (auto Iterator = renderGLList[Layer].begin(); Iterator != renderGLList[Layer].end();)
+    for (auto Iterator = pRenderGLList[Layer].begin(); Iterator != pRenderGLList[Layer].end();)
     {
         if (*Iterator == pRender)
         {
             // リストから切り離す
-            Iterator = renderGLList[Layer].erase(Iterator);
+            Iterator = pRenderGLList[Layer].erase(Iterator);
 
             // GameObjectの削除
             SafeDeleteUninit(pRender);

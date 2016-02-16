@@ -92,7 +92,7 @@ private:
 
     static D3DXCOLOR clearColor;            // ”wŒiƒNƒŠƒAF
 
-    static std::list<RenderDX*> renderDXList[GameObject::LAYER_MAX];
+    static std::list<RenderDX*> pRenderDXList[GameObject::LAYER_MAX];
 };
 
 #endif

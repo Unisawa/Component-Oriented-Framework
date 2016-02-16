@@ -37,7 +37,7 @@ LPDIRECT3DDEVICE9 RenderManagerDX::pD3DDevice = NULL;
 
 D3DXCOLOR         RenderManagerDX::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
 
-std::list<RenderDX*> RenderManagerDX::renderDXList[GameObject::LAYER_MAX];
+std::list<RenderDX*> RenderManagerDX::pRenderDXList[GameObject::LAYER_MAX];
 
 /*===============================================================================================* 
   @Summary: 生成処理
@@ -56,7 +56,7 @@ RenderManagerDX *RenderManagerDX::Create()
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        renderDXList[Layer].clear();
+        pRenderDXList[Layer].clear();
     }
 
     return pRenderManagerDX;
@@ -215,7 +215,7 @@ void RenderManagerDX::UpdateAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
+        for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)
             {
@@ -237,7 +237,7 @@ void RenderManagerDX::DrawAll()
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
+        for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)
             {
@@ -255,7 +255,7 @@ void RenderManagerDX::UnLinkListAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        renderDXList[Layer].clear();
+        pRenderDXList[Layer].clear();
     }
 }
 
@@ -269,18 +269,18 @@ void RenderManagerDX::ReleaseAll()
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end();)
+        for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end();)
         {
             pRender = (*Iterator);
 
             // リストから切り離す
-            Iterator = renderDXList[Layer].erase(Iterator);
+            Iterator = pRenderDXList[Layer].erase(Iterator);
 
             // GameObjectの削除
             SafeDeleteUninit(pRender);
         }
 
-        renderDXList[Layer].clear();
+        pRenderDXList[Layer].clear();
     }
 }
 
@@ -295,11 +295,11 @@ void RenderManagerDX::ZSort()
         // 不透明はZDepth値はカメラから近い順にソートし、半透明は遠い順にソート
         if (Layer < GameObject::LAYER::OBJECT3D_TRANSLUCENT_ONE)
         {
-            renderDXList[Layer].sort(RenderDX::ZSortCompareLess);
+            pRenderDXList[Layer].sort(RenderDX::ZSortCompareLess);
         }
         else
         {
-            renderDXList[Layer].sort(RenderDX::ZSortCompareGreater);
+            pRenderDXList[Layer].sort(RenderDX::ZSortCompareGreater);
         }
     }
 }
@@ -312,7 +312,7 @@ void RenderManagerDX::CalculateZSortAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
-        for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
+        for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
         {
             
         }
@@ -325,7 +325,7 @@ void RenderManagerDX::CalculateZSortAll()
  *===============================================================================================*/
 void RenderManagerDX::LinkList(RenderDX* pRender, GameObject::LAYER Layer)
 {
-    renderDXList[Layer].push_back(pRender);
+    pRenderDXList[Layer].push_back(pRender);
 }
 
 /*===============================================================================================*
@@ -336,12 +336,12 @@ void RenderManagerDX::UnLinkList(RenderDX* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 
-    for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end(); ++Iterator)
+    for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
     {
-        if (*Iterator == pRender)
+        if ((*Iterator) == pRender)
         {
             // リストから切り離す
-            renderDXList[Layer].erase(Iterator);
+            pRenderDXList[Layer].erase(Iterator);
 
             break;
         }
@@ -356,12 +356,12 @@ void RenderManagerDX::Release(RenderDX* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 
-    for (auto Iterator = renderDXList[Layer].begin(); Iterator != renderDXList[Layer].end();)
+    for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end();)
     {
-        if (*Iterator == pRender)
+        if ((*Iterator) == pRender)
         {
             // リストから切り離す
-            Iterator = renderDXList[Layer].erase(Iterator);
+            Iterator = pRenderDXList[Layer].erase(Iterator);
 
             // GameObjectの削除
             SafeDeleteUninit(pRender);

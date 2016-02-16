@@ -79,12 +79,12 @@ void SceneManager::Init()
 {
     shiftState = 0;
 
-    pScene->Init();
-
-    GameObject* pFadeGameObject = new GameObject;
-    pFadeGameObject->SetName("Fade Filter");
-
+    // フェードフィルターの作成
+    GameObject* pFadeGameObject = new GameObject("Fade Filter");
     pFade = pFadeGameObject->AddComponent<Fade>();
+
+    // 初回起動時のシーンの初期化
+    pScene->Init();
 }
 
 /*===============================================================================================* 
