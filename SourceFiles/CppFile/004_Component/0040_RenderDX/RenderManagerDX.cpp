@@ -18,8 +18,11 @@
 #include "001_Constant/Constant.h"
 
 //-----Object-----//
+#include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0040_RenderDX/CameraDX.h"
+#include "004_Component/0040_RenderDX/CameraDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -37,6 +40,8 @@ LPDIRECT3DDEVICE9 RenderManagerDX::pD3DDevice = NULL;
 
 D3DXCOLOR         RenderManagerDX::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
 
+CameraDXManager*  RenderManagerDX::pCameraDXManager = NULL;
+
 std::list<RenderDX*> RenderManagerDX::pRenderDXList[GameObject::LAYER_MAX];
 
 /*===============================================================================================* 
@@ -53,6 +58,8 @@ RenderManagerDX *RenderManagerDX::Create()
 
         return NULL;
     }
+
+    pCameraDXManager = CameraDXManager::Create();
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
@@ -174,6 +181,8 @@ void RenderManagerDX::Uninit()
     // 既にGameObjectManager::ReleaseAll()でRenderコンポーネントは削除されているのでリンクを解除する
     UnLinkListAll();
 
+    SafeDeleteUninit(pCameraDXManager);
+
     SafeRelease(pD3DDevice);
     SafeRelease(pD3DObject);
 }
@@ -184,6 +193,8 @@ void RenderManagerDX::Uninit()
  *===============================================================================================*/
 void RenderManagerDX::Update()
 {
+    pCameraDXManager->Update();
+
     //UpdateAll();    // GameObject->Update で個々のRenderのUpdateは呼ばれている
 }
 
@@ -310,11 +321,20 @@ void RenderManagerDX::ZSort()
  *===============================================================================================*/
 void RenderManagerDX::CalculateZSortAll()
 {
-    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+    std::list<CameraDX*> pCamera = CameraDXManager::GetCameraDXList();
+
+    // カメラの個数分、各オブジェクトとの距離を計算する。
+    for (auto CameraIterator = pCamera.begin(); CameraIterator != pCamera.end(); ++CameraIterator)
     {
-        for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
+        for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
         {
-            
+            for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
+            {
+                if ((*Iterator)->enabled)
+                {
+                    (*Iterator)->SetZDepth( (*CameraIterator)->GetZLengthCamera( ((*Iterator)->transform->GetPosition())) );
+                }
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
-/**************************************************************************************************
+ï»¿/**************************************************************************************************
 
- @File   : [ SceneManager.cpp ] ‰æ–Ê‘JˆÚ‚ğŠÇ—‚·‚éƒNƒ‰ƒX
+ @File   : [ CameraDX.cpp ] ç©ºé–“å†…ã®ã‚«ãƒ¡ãƒ©æƒ…å ±ã‚’æŒã¤ã‚¯ãƒ©ã‚¹
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -15,12 +15,11 @@
 
 //-----MainSetting-----//
 #include "002_Manager/Manager.h"
+#include "001_Constant/Constant.h"
 
 //-----Object-----//
-#include "007_Scene/SceneManager.h"
-#include "007_Scene/SceneTitle.h"
-#include "007_Scene/SceneGame.h"
-#include "007_Scene/Fade.h"
+#include "004_Component/0040_RenderDX/CameraDX.h"
+#include "004_Component/0040_RenderDX/CameraDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -33,173 +32,115 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-Scene* SceneManager::pScene;
-Scene* SceneManager::pSceneNext;
-bool   SceneManager::isShiftNow = 0;
-int    SceneManager::intervalFrameByShift = -1;
-
-Fade*  SceneManager::pFade = NULL;
+const std::string CameraDX::className = "CameraDX";
 
 /*=================================================================================================
-  @Summary: ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+  @Summary: ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
 =================================================================================================*/
-SceneManager::SceneManager()
+CameraDX::CameraDX(GameObject* pObject) : Behaviour(pObject, className)
 {
-    pScene = &Scene::GAME;
+    CameraDXManager::LinkList(this);
 }
 
 /*===============================================================================================* 
-  @Summary: ƒfƒXƒgƒ‰ƒNƒ^
+  @Summary: ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
  *===============================================================================================*/
-SceneManager::~SceneManager()
+CameraDX::~CameraDX()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ¶¬ˆ—
+  @Summary: åˆæœŸåŒ–å‡¦ç†
   @Details: None
  *===============================================================================================*/
-SceneManager *SceneManager::Create()
+void CameraDX::Init()
 {
-    SceneManager* pSceneManager;
-    pSceneManager = new SceneManager();
-    pSceneManager->Init();
+    // åˆæœŸå€¤
+    PointEye     = D3DXVECTOR3(0.0f, 200.0f, -200.0f);
+    PointLook    = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    UpVector     = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-    return pSceneManager;
+    Rotation     = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    Length       = sqrtf((PointEye.x - PointLook.x) * (PointEye.x - PointLook.x) +
+                         (PointEye.y - PointLook.y) * (PointEye.y - PointLook.y) +
+                         (PointEye.z - PointLook.z) * (PointEye.z - PointLook.z));
+
+    D3DXVec3Normalize(&Direction, &(PointLook - PointEye));
+
+    ScreenAspect = (float)Constant::SCREEN_WIDTH / Constant::SCREEN_HEIGHT;
+    ScreenNear   = 1.0f;
+    ScreenFar    = 10000.0f;
+    ScreenAngle  = 45.0f;
 }
 
 /*===============================================================================================* 
-  @Summary: ‰Šú‰»ˆ—
+  @Summary: çµ‚äº†å‡¦ç†
   @Details: None
  *===============================================================================================*/
-void SceneManager::Init()
+void CameraDX::Uninit()
 {
-    shiftState = 0;
-
-    // ƒtƒF[ƒhƒtƒBƒ‹ƒ^[‚Ìì¬
-    GameObject* pFadeGameObject = new GameObject("Fade Filter");
-    pFade = pFadeGameObject->AddComponent<Fade>();
-
-    // ‰‰ñ‹N“®‚ÌƒV[ƒ“‚Ì‰Šú‰»
-    pScene->Init();
+    CameraDXManager::UnLinkList(this);
 }
 
 /*===============================================================================================* 
-  @Summary: I—¹ˆ—
+  @Summary: æ›´æ–°å‡¦ç†
   @Details: None
  *===============================================================================================*/
-void SceneManager::Uninit()
+void CameraDX::Update()
 {
-    pScene->Uninit();
-
-    pFade->Uninit();
+    SetProjection();
+    SetModelView();
 }
 
 /*===============================================================================================* 
-  @Summary: XVˆ—
+  @Summary: ã‚«ãƒ¡ãƒ©ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ã‚’ä½œæˆã—è¨­å®šã™ã‚‹
   @Details: None
  *===============================================================================================*/
-void SceneManager::Update()
+void CameraDX::SetProjection()
 {
-    pScene->Update();
+    // ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
+    LPDIRECT3DDEVICE9  pDevice = RenderManagerDX::GetDevice();
 
-    // ‰æ–Ê‘JˆÚ‚Ìó‘ÔŠÇ—
-    CheckChange();
+    // ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
+    D3DXMatrixIdentity(&ProjectionMatrix);
+    D3DXMatrixPerspectiveFovLH(&ProjectionMatrix, ScreenAngle, ScreenAspect, ScreenNear, ScreenFar);
+    pDevice->SetTransform(D3DTS_PROJECTION, &ProjectionMatrix);
 }
 
 /*===============================================================================================* 
-  @Summary: ‰æ–Ê‘JˆÚ‚ğŠJn‚·‚é
+  @Summary: ã‚«ãƒ¡ãƒ©ã®ãƒ¢ãƒ‡ãƒ«ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ã‚’ä½œæˆã—è¨­å®šã™ã‚‹
   @Details: None
  *===============================================================================================*/
-void SceneManager::StartChange()
+void CameraDX::SetModelView()
 {
-    shiftState = 1;
+    // ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
+    LPDIRECT3DDEVICE9  pDevice = RenderManagerDX::GetDevice();
 
-    pFade->FadeOut();
+    // ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
+    D3DXMatrixIdentity(&ViewMatrix);
+    D3DXMatrixLookAtLH(&ViewMatrix, &PointEye, &PointLook, &UpVector);
+    pDevice->SetTransform(D3DTS_VIEW, &ViewMatrix);
 }
 
 /*===============================================================================================* 
-  @Summary: ‰æ–Ê‘JˆÚ‚ÉŠÖ‚·‚éˆ—
+  @Summary: ã‚ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚«ãƒ¡ãƒ©ã‹ã‚‰ã®è·é›¢ã‚’è¨ˆç®—ã—ã¦è¿”ã™
   @Details: None
  *===============================================================================================*/
-void SceneManager::CheckChange()
+float CameraDX::GetZLengthCamera(D3DXVECTOR3 Position)
 {
-    // ‰æ–Ê‘JˆÚ‚ğŠJn‚·‚é
-    if (intervalFrameByShift >= 0)
-    {
-        --intervalFrameByShift;
-        if (intervalFrameByShift < 0)
-        {
-            StartChange();
-        }
-    }
+    float ZLength;
+    D3DXVECTOR3 Look;
 
-    // ˆÈ‰ºA‰æ–Ê‘JˆÚ’†‚Ìˆ—
-    if (shiftState == 0) return;
+    D3DXVec3Subtract(&Look, &PointLook, &PointEye);
+    D3DXVec3Normalize(&Look, &Look);
 
-    // FadeOutI—¹
-    if ((shiftState == 1) && pFade->GetFadeState() == Fade::FADE::IDOL)
-    {
-        shiftState = 2;
+    ZLength  = D3DXVec3Dot(&Position, &Look);
+    ZLength -= D3DXVec3Dot(&PointEye, &Look);
 
-        // ‰æ–Ê‘JˆÚ
-        ChangeScene(pSceneNext);
-
-        pFade->FadeIn();
-    }
-
-    // FadeInI—¹ (‰æ–Ê‘JˆÚŠ®—¹)
-    if ((shiftState == 2) && pFade->GetFadeState() == Fade::FADE::IDOL)
-    {
-        shiftState = 0;
-        isShiftNow = false;
-    }
-}
-
-/*===============================================================================================* 
-  @Summary: w’è‚µ‚½Scene‚ÉØ‚è‘Ö‚¦A‘O‰ñ‚ÌScene‚ğ•Ô‚·
-  @Details: None
- *===============================================================================================*/
-Scene* SceneManager::ChangeScene(Scene* pNextScene)
-{
-    Scene* pBeforeScene = pScene;
-
-    pBeforeScene->Uninit();
-    pScene = pNextScene;
-    pNextScene->Init();
-
-    return pBeforeScene;
-}
-
-/*===============================================================================================* 
-  @Summary: ƒCƒ“ƒ^[ƒoƒ‹‚ÌƒtƒŒ[ƒ€”‚ªŒo‰ß‚µ‚Ä‚©‚ç‰æ–Ê‘JˆÚ‚ğŠJn‚·‚é‚æ‚¤‚Éİ’è‚ğ‚·‚é
-  @Details: IntervalFrame‚Í 0 ˆÈã‚Ì” (0 <= x)
- *===============================================================================================*/
-void SceneManager::LoadLevel(Scene* pNext, int IntervalFrame)
-{
-    if (!isShiftNow)
-    {
-        isShiftNow = true;
-
-        pSceneNext = pNext;
-        intervalFrameByShift = IntervalFrame;
-    }
-}
-
-/*===============================================================================================* 
-  @Summary: ‚·‚®‚É‰æ–Ê‘JˆÚ‚ğs‚¤ Fade–³‚µ
-  @Details: None
- *===============================================================================================*/
-void SceneManager::LoadLevelQuick(Scene* pNext)
-{
-    Scene* pBeforeScene = pScene;
-
-    pBeforeScene->Uninit();
-    pScene = pNext;
-    pNext->Init();
+    return ZLength;
 }
 
 /*===============================================================================================* 

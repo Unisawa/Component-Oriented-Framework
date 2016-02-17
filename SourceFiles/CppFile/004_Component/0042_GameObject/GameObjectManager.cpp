@@ -51,10 +51,7 @@ GameObjectManager *GameObjectManager::Create()
  *===============================================================================================*/
 void GameObjectManager::Init()
 {
-    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
-    {
-        pGameObjectList[Layer].clear();
-    }
+
 }
 
 /*===============================================================================================* 

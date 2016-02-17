@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderDX.cpp ] DirectXで全てのレンダラーのための一般的な機能を管理するクラス (抽象クラス)
+ @File   : [ Render3DDX.cpp ] DirectXで3D四角形ポリゴンを描画するRenderクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,15 +13,20 @@
 //                                                                                               //
 //***********************************************************************************************//
 
+//-----MainSetting-----//
+#include "002_Manager/Manager.h"
+
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0040_RenderDX/Render3DDX.h"
+#include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+const std::string Render3DDX::className = "Render3DDX";
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -33,144 +38,139 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
+Render3DDX::Render3DDX(GameObject* pObject, GameObject::LAYER Layer) : RenderDX(pObject, className, Layer)
 {
-    enabled   = true;
-    zDepth    = 1.0f;
-    layer     = Layer;
-    transform = pObject->transform;
 
-    blendType   = BLENDTYPE::BLENDTYPE_NORMAL;
-    cullingType = CULLTYPE::CULLTYPE_CCW;
-
-    RenderManagerDX::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-RenderDX::~RenderDX()
+Render3DDX::~Render3DDX()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が小さいか
+  @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
+void Render3DDX::Init()
 {
-    return RenderA->GetZDepth() < RenderB->GetZDepth();
+    size        = D3DXVECTOR3(10.0f, 0.0f, 10.0f);
+
+    vertexColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+    textureUV   = D3DXVECTOR2(0.0f, 0.0f);
+    textureID   = -1;
+
+    // 頂点バッファーの確保
+    RenderManagerDX::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_3D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
+
+    SetVertex();
 }
 
 /*===============================================================================================* 
-  @Summary: ZDepthの値を参考にソートする Bに対してAの方が大きいか
+  @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
+void Render3DDX::Uninit()
 {
-    return RenderA->GetZDepth() > RenderB->GetZDepth();
-}
-
-/*===============================================================================================* 
-  @Summary: Renderが持つブレンド設定を行う
-  @Details: None
- *===============================================================================================*/
-void RenderDX::SetBlending()
-{
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
-
-    // ブレンドモードのリセット (アルファブレンドを基本とする)
-    pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-    pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-    // ブレンド設定
-    switch (blendType)
-    {
-        // ブレンドしない
-        case BLENDTYPE_NOTBLEND:
-            pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-            break;
-
-        // アルファブレンド
-        case BLENDTYPE_NORMAL:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-            break;
-
-        // 加算合成
-        case BLENDTYPE_ADD:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 半加算合成
-        case BLENDTYPE_ADD_SOFT:
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        // 減算合成
-        case BLENDTYPE_SUBTRACT:
-            pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
-            pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-            pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-            break;
-
-        default:
-            break;
-    }
-}
-
-/*===============================================================================================* 
-  @Summary: Renderが持つカリング設定を行う
-  @Details: None
- *===============================================================================================*/
-void RenderDX::SetCulling()
-{
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
-
-    // カリングのリセット (裏カリングを基本とする)
-    pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
-    // カリング設定
-    switch (cullingType)
-    {
-        // カリングしない
-        case CULLTYPE_NONE:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-            break;
-
-        // 表カリング
-        case CULLTYPE_CW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-            break;
-
-        // 裏カリング
-        case CULLTYPE_CCW:
-            pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-            break;
-
-        default:
-            break;
-    }
-}
-
-/*===============================================================================================* 
-  @Summary: Layer (描画順) を変更する
-  @Details: None
- *===============================================================================================*/
-void RenderDX::SetLayer(GameObject::LAYER value)
-{
-    if (layer == value) return;
-
     RenderManagerDX::UnLinkList(this);
-    layer = value;
-    RenderManagerDX::LinkList(this, value);
+
+    SafeRelease(pVertexBuffer);
 }
+
+/*===============================================================================================* 
+  @Summary: 更新処理
+  @Details: None
+ *===============================================================================================*/
+void Render3DDX::Update()
+{
+    SetVertex();
+}
+
+/*===============================================================================================* 
+  @Summary: 描画処理
+  @Details: None
+ *===============================================================================================*/
+void Render3DDX::Draw()
+{
+    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+
+    // 描画設定
+    SetBlending();
+    SetCulling();
+
+    // 頂点バッファの描画設定
+    pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(VERTEX_3D));
+    pDevice->SetFVF(FVF_VERTEX_3D);
+
+    // テクスチャの読み込み ポリゴンの描画
+    pDevice->SetTexture(0, NULL);
+    //pDevice->SetTexture(0, TextureManager::GetTexture(TextureID));
+    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
+    // テクスチャリセット
+    pDevice->SetTexture(0, NULL);
+}
+
+/*===============================================================================================* 
+  @Summary: 頂点情報の更新
+  @Details: None
+ *===============================================================================================*/
+void Render3DDX::SetVertex()
+{
+    VERTEX_3D* pVtx;
+    D3DXVECTOR3 Position = this->gameObject->transform->GetPosition();
+    D3DXVECTOR3 Scale    = this->gameObject->transform->GetScale();
+
+    // 頂点バッファ領域のロック
+    pVertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
+
+    // ポリゴンの位置座標
+    pVtx[0].pos.x = -size.x;
+    pVtx[0].pos.y =  0.0f;
+    pVtx[0].pos.z =  size.z;
+
+    pVtx[1].pos.x =  size.x;
+    pVtx[1].pos.y =  0.0f;
+    pVtx[1].pos.z =  size.z;
+
+    pVtx[2].pos.x = -size.x;
+    pVtx[2].pos.y =  0.0f;
+    pVtx[2].pos.z = -size.z;
+
+    pVtx[3].pos.x =  size.x;
+    pVtx[3].pos.y =  0.0f;
+    pVtx[3].pos.z = -size.z;
+
+    // ポリゴンの同次座標--固定--
+    pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+    pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+    pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+    pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+    // ポリゴンのカラー情報
+    pVtx[0].col = vertexColor;
+    pVtx[1].col = vertexColor;
+    pVtx[2].col = vertexColor;
+    pVtx[3].col = vertexColor;
+
+    // ポリゴンのテクスチャ座標
+    pVtx[0].tex = D3DXVECTOR2(textureUV.x + 0.0f, textureUV.y + 0.0f);
+    pVtx[1].tex = D3DXVECTOR2(textureUV.x + 1.0f, textureUV.y + 0.0f);
+    pVtx[2].tex = D3DXVECTOR2(textureUV.x + 0.0f, textureUV.y + 1.0f);
+    pVtx[3].tex = D3DXVECTOR2(textureUV.x + 1.0f, textureUV.y + 1.0f);
+
+    // 頂点バッファ領域のアンロック
+    pVertexBuffer->Unlock();
+}
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //

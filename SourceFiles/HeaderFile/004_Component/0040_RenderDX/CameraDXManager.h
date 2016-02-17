@@ -1,6 +1,6 @@
-/**************************************************************************************************
+Ôªø/**************************************************************************************************
 
- @File   : [ RenderManagerDX.h ] DirectXÇÃï`âÊÇä«óùÇ∑ÇÈÉNÉâÉX
+ @File   : [ CameraDXManager.h ] CameraDX„ÇíÁÆ°ÁêÜ„Åô„Çã„ÇØ„É©„Çπ
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,17 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDERMANAGERDX_H_
-#define _RENDERMANAGERDX_H_
-
-//***********************************************************************************************//
-//                                                                                               //
-//  @Link Library                                                                                //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma comment (lib, "d3d9.lib")      // DirectX ñ{ëÃ
-#pragma comment (lib, "d3dx9.lib")     // DirectX ägí£ÉâÉCÉuÉâÉä
-#pragma comment (lib, "dxguid.lib")    // DirectX ÉRÉìÉ|Å[ÉlÉìÉgégópÇ…ïKóv
+#ifndef _CAMERADXMANAGER_H_
+#define _CAMERADXMANAGER_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -31,12 +22,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----DirectX-----//
-#define  D3D_DEBUG_INFO
-#include "d3dx9.h"
-
 //-----Object-----//
-#include "004_Component/0042_GameObject/GameObject.h"
+#include "004_Component/0040_RenderDX/CameraDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -49,55 +36,33 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderDX;
-class CameraDXManager;
+class CameraDX;
 
-class RenderManagerDX
+class CameraDXManager
 {
 public:
-     RenderManagerDX() {}
-    ~RenderManagerDX() {}
+     CameraDXManager() {}
+    ~CameraDXManager() {}
 
-    static RenderManagerDX* Create();
+    static CameraDXManager* Create();
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
+    void Init();
+    void Uninit();
+    void Update();
 
     static void UpdateAll();
-    static void DrawAll();
     static void UnLinkListAll();
     static void ReleaseAll();
 
-    static void ZSort();
-    static void CalculateZSortAll();
-
     //-----Operation List-----//
-    static void LinkList(RenderDX* pRender, GameObject::LAYER Layer);
-    static void UnLinkList(RenderDX* pRender);
-    static void Release(RenderDX* pRender);
+    static void LinkList(CameraDX* pCameraDX);
+    static void UnLinkList(CameraDX* pCameraDX);
+    static void Release(CameraDX* pCameraDX);
 
-    //-----Create Font-----//
-    static LPD3DXFONT CreateFontText(int CharacterSize, int CharacterWidth, int FontSize, bool IsItalic, std::string FontName);
-
-    //-----Setter, Getter-----//
-    static LPDIRECT3DDEVICE9 GetDevice() { return pD3DDevice; }
-
-    static void      SetClearColor(D3DXCOLOR Color) { clearColor = Color; }
-    static D3DXCOLOR GetClearColor() { return clearColor; }
-
-    static CameraDXManager* GetCameraDXManager() { return pCameraDXManager; }
+    static std::list<CameraDX*> GetCameraDXList() { return pCameraDXList; }
 
 private:
-    static LPDIRECT3D9       pD3DObject;    // Direct3DÉIÉuÉWÉFÉNÉg
-    static LPDIRECT3DDEVICE9 pD3DDevice;    // ÉfÉoÉCÉXÉIÉuÉWÉFÉNÉg
-
-    static D3DXCOLOR clearColor;            // îwåiÉNÉäÉAêF
-
-    static CameraDXManager* pCameraDXManager;
-
-    static std::list<RenderDX*> pRenderDXList[GameObject::LAYER_MAX];
+    static std::list<CameraDX*> pCameraDXList;
 };
 
 #endif

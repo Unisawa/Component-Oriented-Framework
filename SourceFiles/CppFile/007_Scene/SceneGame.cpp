@@ -32,6 +32,7 @@
 #include "004_Component/0042_GameObject/GameObject.h"
 #include "004_Component/0040_RenderDX/Render2DDX.h"
 #include "004_Component/0041_RenderGL/Render2DGL.h"
+#include "004_Component/0040_RenderDX/Render3DDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -45,6 +46,7 @@
 //                                                                                               //
 //***********************************************************************************************//
 static GameObject* pTemp = NULL;
+static Render3DDX* pRender3D3 = NULL;
 
 /*=================================================================================================
   @Summary: コンストラクタ
@@ -84,14 +86,14 @@ void SceneGame::Init()
     //Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
     //pRender2D1->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
-    GameObject* pGameObject2 = new GameObject;
-    pGameObject2->SetName("CCCCC");
-    pGameObject2->transform->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF - Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
-    pGameObject2->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
-    Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
-    pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+    //GameObject* pGameObject2 = new GameObject;
+    //pGameObject2->SetName("CCCCC");
+    //pGameObject2->transform->SetPosition(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF - Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    //pGameObject2->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    //Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
+    //pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
-    pTemp = pGameObject2;
+    //pTemp = pGameObject2;
 
     //GameObject* pGameObject9 = new GameObject;
     //pGameObject9->SetName("OpenGL");
@@ -99,6 +101,13 @@ void SceneGame::Init()
     //pGameObject9->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
     //Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
 
+    // 3Dポリゴン描画テスト
+    GameObject* pGameObject3 = new GameObject;
+    pGameObject3->SetName("DDDDD");
+
+    pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
+    pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
+    pRender3D3->SetColor(D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 }
 
 /*===============================================================================================* 

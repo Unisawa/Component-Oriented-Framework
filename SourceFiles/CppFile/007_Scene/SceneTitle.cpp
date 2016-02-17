@@ -82,7 +82,7 @@ void SceneTitle::Init()
     pGameObject1->transform->SetScale(D3DXVECTOR3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
     pRender2D1->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-    pGameObject1->DontDestroyOnLoad(true);
+    //pGameObject1->DontDestroyOnLoad(true);
 
     GameObject* pGameObject2 = new GameObject;
     pGameObject2->SetName("CCCCC");
