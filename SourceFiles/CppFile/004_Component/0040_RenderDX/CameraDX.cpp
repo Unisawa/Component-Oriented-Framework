@@ -129,15 +129,20 @@ void CameraDX::SetModelView()
   @Summary: あるオブジェクトのカメラからの距離を計算して返す
   @Details: None
  *===============================================================================================*/
-float CameraDX::GetZLengthCamera(D3DXVECTOR3 Position)
+float CameraDX::GetZLengthCamera(Vector3 Position)
 {
-    float ZLength;
+    float       ZLength;
     D3DXVECTOR3 Look;
+    D3DXVECTOR3 Pos;
+
+    Pos.x = Position.x;
+    Pos.y = Position.y;
+    Pos.z = Position.z;
 
     D3DXVec3Subtract(&Look, &PointLook, &PointEye);
     D3DXVec3Normalize(&Look, &Look);
 
-    ZLength  = D3DXVec3Dot(&Position, &Look);
+    ZLength  = D3DXVec3Dot(&Pos, &Look);
     ZLength -= D3DXVec3Dot(&PointEye, &Look);
 
     return ZLength;

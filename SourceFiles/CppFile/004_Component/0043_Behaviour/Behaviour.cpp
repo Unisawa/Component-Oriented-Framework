@@ -35,7 +35,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Behaviour::Behaviour(GameObject* pObject, std::string ComponentName) : Component(pObject, ComponentBehaviour, ComponentName)
+Behaviour::Behaviour(GameObject* pObject, std::string ComponentName) : Component(pObject, BEHAVIOUR, ComponentName)
 {
     enabled = true;
 }

@@ -54,9 +54,9 @@ public:
     void SetTexture(std::string TextureName);
     int  GetTexture() const { return textureID; }
 
-    void        SetSize(D3DXVECTOR3 value) { size = value; }
-    void        SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
-    D3DXVECTOR3 GetSize() { return size; }
+    void      SetSize(Vector3 value) { size = value; }
+    void      SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
+    Vector3   GetSize() { return size; }
 
     void      SetColor(D3DXCOLOR value) { vertexColor = value; SetVertex(); }
     void      SetColor(float red, float green, float blue, float alpha) { vertexColor.r = red; vertexColor.g = green; vertexColor.b = blue; vertexColor.a = alpha; SetVertex(); }
@@ -69,7 +69,7 @@ private:
 
     LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
 
-    D3DXVECTOR3 size;           // ポリゴンの大きさ
+    Vector3     size;           // ポリゴンの大きさ
 
     D3DXCOLOR   vertexColor;    // カラー情報
     D3DXVECTOR2 textureUV;      // テクスチャのUV座標の視点

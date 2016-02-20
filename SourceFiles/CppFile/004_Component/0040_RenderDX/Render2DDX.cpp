@@ -120,8 +120,8 @@ void Render2DDX::Draw()
 void Render2DDX::SetVertex()
 {
     VERTEX_2D* pVtx;
-    D3DXVECTOR3 Position = this->gameObject->transform->GetPosition();
-    D3DXVECTOR3 Scale    = this->gameObject->transform->GetScale();
+    Vector3 Position = this->gameObject->transform->GetPosition();
+    Vector3 Scale    = this->gameObject->transform->GetScale();
 
     // 頂点バッファ領域のロック
     pVertexBuffer->Lock(0, 0, (void**)&pVtx, 0);

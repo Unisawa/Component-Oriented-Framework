@@ -33,7 +33,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
+RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, RENDERER, ComponentName)
 {
     enabled   = true;
     zDepth    = 1.0f;

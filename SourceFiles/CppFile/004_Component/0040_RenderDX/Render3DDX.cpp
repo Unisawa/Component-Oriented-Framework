@@ -58,7 +58,7 @@ Render3DDX::~Render3DDX()
  *===============================================================================================*/
 void Render3DDX::Init()
 {
-    size        = D3DXVECTOR3(10.0f, 0.0f, 10.0f);
+    size        = Vector3(10.0f, 0.0f, 10.0f);
 
     vertexColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     textureUV   = D3DXVECTOR2(0.0f, 0.0f);
@@ -122,8 +122,8 @@ void Render3DDX::Draw()
 void Render3DDX::SetVertex()
 {
     VERTEX_3D* pVtx;
-    D3DXVECTOR3 Position = this->gameObject->transform->GetPosition();
-    D3DXVECTOR3 Scale    = this->gameObject->transform->GetScale();
+    Vector3 Position = this->gameObject->transform->GetPosition();
+    Vector3 Scale    = this->gameObject->transform->GetScale();
 
     // 頂点バッファ領域のロック
     pVertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
@@ -146,10 +146,10 @@ void Render3DDX::SetVertex()
     pVtx[3].pos.z = -size.z;
 
     // ポリゴンの同次座標--固定--
-    pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-    pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-    pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-    pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+    pVtx[0].nor = Vector3(0.0f, 1.0f, 0.0f);
+    pVtx[1].nor = Vector3(0.0f, 1.0f, 0.0f);
+    pVtx[2].nor = Vector3(0.0f, 1.0f, 0.0f);
+    pVtx[3].nor = Vector3(0.0f, 1.0f, 0.0f);
 
     // ポリゴンのカラー情報
     pVtx[0].col = vertexColor;

@@ -36,7 +36,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-RenderGL::RenderGL(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, ComponentRenderer, ComponentName)
+RenderGL::RenderGL(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, RENDERER, ComponentName)
 {
     enabled = true;
     zDepth  = 1.0f;

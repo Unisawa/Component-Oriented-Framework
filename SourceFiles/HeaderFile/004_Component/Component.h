@@ -22,9 +22,6 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "000_Main/Main.h"
-
 //-----Object-----//
 #include "003_Object/Object.h"
 
@@ -46,16 +43,16 @@ class Component : public Object
 {
 public:
 
-    enum ComponentType
+    static const enum COMPONENTTYPE
     {
-        ComponentTransform = 0,
-        ComponentRenderer,
-        ComponentBehaviour,
+        TRANSFORM = 0,
+        RENDERER,
+        BEHAVIOUR,
 
-        ComponentMax,
+        TYPE_MAX
     };
 
-             Component(GameObject* pObject, ComponentType Type, std::string ComponentName);
+             Component(GameObject* pObject, COMPONENTTYPE Type, std::string ComponentName);
     virtual ~Component();
 
     virtual void Init()   {}
@@ -93,7 +90,7 @@ public:
 
 private:
     std::string   componentName;
-    ComponentType componentType;
+    COMPONENTTYPE componentType;
 };
 
 #endif

@@ -16,6 +16,9 @@
 //-----MainSetting-----//
 #include "004_Component/Component.h"
 
+//-----Object-----//
+#include "004_Component/0042_GameObject/GameObject.h"
+
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -32,7 +35,7 @@
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Component::Component(GameObject* pObject, ComponentType Type, std::string ComponentName)
+Component::Component(GameObject* pObject, COMPONENTTYPE Type, std::string ComponentName)
 {
     gameObject    = pObject;
 

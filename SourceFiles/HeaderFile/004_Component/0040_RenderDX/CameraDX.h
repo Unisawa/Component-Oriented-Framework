@@ -52,7 +52,7 @@ public:
     virtual void SetProjection();
     virtual void SetModelView();
 
-    virtual float GetZLengthCamera(D3DXVECTOR3 Position);
+    virtual float GetZLengthCamera(Vector3 Position);
 
     virtual D3DXMATRIX GetProjectionMatrix() { return ProjectionMatrix; }
     virtual D3DXMATRIX GetViewMatrix()       { return ViewMatrix; }

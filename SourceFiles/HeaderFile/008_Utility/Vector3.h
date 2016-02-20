@@ -50,6 +50,8 @@ struct Vector3
 
     void operator  = (const Vector3 &Vec) { x = Vec.x; y = Vec.y; z = Vec.z; }
 
+    void Normalize();
+
     static Vector3 one;
     static Vector3 zero;
 
