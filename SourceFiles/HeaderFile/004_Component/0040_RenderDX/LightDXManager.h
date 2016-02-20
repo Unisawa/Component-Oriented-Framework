@@ -1,6 +1,6 @@
-/**************************************************************************************************
+ï»¿/**************************************************************************************************
 
- @File   : [ RenderManagerDX.h ] DirectX‚Ì•`‰æ‚ğŠÇ—‚·‚éƒNƒ‰ƒX
+ @File   : [ LightDXManager.h ] LightDXã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,17 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDERMANAGERDX_H_
-#define _RENDERMANAGERDX_H_
-
-//***********************************************************************************************//
-//                                                                                               //
-//  @Link Library                                                                                //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma comment (lib, "d3d9.lib")      // DirectX –{‘Ì
-#pragma comment (lib, "d3dx9.lib")     // DirectX Šg’£ƒ‰ƒCƒuƒ‰ƒŠ
-#pragma comment (lib, "dxguid.lib")    // DirectX ƒRƒ“ƒ|[ƒlƒ“ƒgg—p‚É•K—v
+#ifndef _LIGHTMANAGER_H_
+#define _LIGHTMANAGER_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -31,76 +22,52 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----DirectX-----//
-#define  D3D_DEBUG_INFO
-#include "d3dx9.h"
-
 //-----Object-----//
-#include "004_Component/0042_GameObject/GameObject.h"
+#include "004_Component/0040_RenderDX/LightDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#define MAX_LIGHT_NUM (8)
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderDX;
-class LightDXManager;
-class CameraDXManager;
+class LightDX;
 
-class RenderManagerDX
+class LightDXManager
 {
 public:
-     RenderManagerDX() {}
-    ~RenderManagerDX() {}
+     LightDXManager() {}
+    ~LightDXManager() {}
 
-    static RenderManagerDX* Create();
+    static LightDXManager* Create();
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
+    void Init();
+    void Uninit();
+    void Update();
 
     static void UpdateAll();
-    static void DrawAll();
     static void UnLinkListAll();
     static void ReleaseAll();
 
-    static void ZSort();
-    static void CalculateZSortAll();
-
     //-----Operation List-----//
-    static void LinkList(RenderDX* pRender, GameObject::LAYER Layer);
-    static void UnLinkList(RenderDX* pRender);
-    static void Release(RenderDX* pRender);
+    static int  LinkList(LightDX* pLightDX);
+    static void UnLinkList(LightDX* pLightDX);
+    static void Release(LightDX* pLightDX);
 
-    //-----Create Font-----//
-    static LPD3DXFONT CreateFontText(int CharacterSize, int CharacterWidth, int FontSize, bool IsItalic, std::string FontName);
+    static void EnableSpecular(BOOL value) { RenderManagerDX::GetDevice()->SetRenderState(D3DRS_SPECULARENABLE, value); }
 
-    //-----Setter, Getter-----//
-    static LPDIRECT3DDEVICE9 GetDevice() { return pD3DDevice; }
-
-    static void      SetClearColor(D3DXCOLOR Color) { clearColor = Color; }
-    static D3DXCOLOR GetClearColor() { return clearColor; }
-
-    static LightDXManager*  GetLightDXManager()  { return pLightDXManager; }
-    static CameraDXManager* GetCameraDXManager() { return pCameraDXManager; }
+    static LightDX* GetLight(int LightID);
 
 private:
-    static LPDIRECT3D9       pD3DObject;    // Direct3DƒIƒuƒWƒFƒNƒg
-    static LPDIRECT3DDEVICE9 pD3DDevice;    // ƒfƒoƒCƒXƒIƒuƒWƒFƒNƒg
+    static std::list<LightDX*> pLightDXList;
 
-    static D3DXCOLOR clearColor;            // ”wŒiƒNƒŠƒAF
-
-    static LightDXManager*  pLightDXManager;
-    static CameraDXManager* pCameraDXManager;
-
-    static std::list<RenderDX*> pRenderDXList[GameObject::LAYER_MAX];
+    static bool useLightID[MAX_LIGHT_NUM];    // å›ºå®šæ©Ÿèƒ½ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ä½¿ç”¨æ™‚ã®8ã¤ã®ãƒ©ã‚¤ãƒˆã‚’ç®¡ç†ã™ã‚‹ãƒ•ãƒ©ã‚°
 };
 
 #endif

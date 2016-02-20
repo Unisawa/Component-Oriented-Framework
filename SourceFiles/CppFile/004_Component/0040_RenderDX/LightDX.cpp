@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ CameraDXManager.cpp ] CameraDXを管理するクラス
+ @File   : [ LightDX.cpp ] 空間内のライト情報を持つクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -14,11 +14,11 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "000_Main/Main.h"
+#include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/CameraDX.h"
-#include "004_Component/0040_RenderDX/CameraDXManager.h"
+#include "004_Component/0040_RenderDX/LightDX.h"
+#include "004_Component/0040_RenderDX/LightDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -30,134 +30,120 @@
 //                                                                                               //
 //  @Static Variable                                                                             //
 //                                                                                               //
-//***********************************************************************************************/
-std::list<CameraDX*> CameraDXManager::pCameraDXList;
+//***********************************************************************************************//
+const std::string LightDX::className = "LightDX";
+
+/*=================================================================================================
+  @Summary: コンストラクタ
+  @Details: None
+=================================================================================================*/
+LightDX::LightDX(GameObject* pObject) : Behaviour(pObject, className)
+{
+
+}
 
 /*===============================================================================================* 
-  @Summary: 生成処理
+  @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-CameraDXManager *CameraDXManager::Create()
+LightDX::~LightDX()
 {
-    CameraDXManager* pCameraDXManager;
-    pCameraDXManager = new CameraDXManager();
-    pCameraDXManager->Init();
 
-    return pCameraDXManager;
 }
 
 /*===============================================================================================* 
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::Init()
+void LightDX::Init()
 {
-    // 初期カメラの生成
-    GameObject* pCameraGameObject = new GameObject("MainCamera");
-    pCameraGameObject->AddComponent<CameraDX>();
+    lightType = LIGHTTYPE_DIRECTIONAL;
+    lightID = LightDXManager::LinkList(this);
+
+    // ライトの初期化
+    ZeroMemory(&lightParam, sizeof(D3DLIGHT9));
+
+    lightParam.Type     = D3DLIGHT_DIRECTIONAL;                 // 光源の種類
+    lightParam.Ambient  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);    // 環境光 (間接光)
+    lightParam.Diffuse  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);    // 拡散反射光
+    lightParam.Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);    // 鏡面反射
+
+    D3DXVec3Normalize((D3DXVECTOR3*)&lightParam.Direction, &D3DXVECTOR3(0.0f, -1.0f, 0.0f));    // 各値を正規化する
+
+    // デバイスオブジェクトの取得
+    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+
+    pDevice->SetLight(lightID, &lightParam);    // ライトの設定
+    pDevice->LightEnable(lightID, TRUE);        // ライトの有効
 }
 
 /*===============================================================================================* 
   @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::Uninit()
+void LightDX::Uninit()
 {
-    ReleaseAll();
+    LightDXManager::UnLinkList(this);
+
+    // ライトの無効
+    RenderManagerDX::GetDevice()->LightEnable(lightID, FALSE);
 }
 
 /*===============================================================================================* 
   @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::Update()
+void LightDX::Update()
 {
-    //UpdateAll();
+
 }
 
-/*===============================================================================================*
-  @Summary: 登録された全てのCameraDXを更新する
+/*===============================================================================================* 
+  @Summary: Light の種類を設定する
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::UpdateAll()
+void LightDX::SetLightType(LIGHTTYPE value)
 {
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end(); ++Iterator)
+    lightType = value;
+
+    switch (value)
     {
-        (*Iterator)->Update();
-    }
-}
-
-/*===============================================================================================*
-  @Summary: 登録された全てのCameraDXを削除する
-  @Details: None
- *===============================================================================================*/
-void CameraDXManager::ReleaseAll()
-{
-    CameraDX* pCameraDX;
-
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end();)
-    {
-        pCameraDX = (*Iterator);
-
-        // リストから切り離す
-        Iterator = pCameraDXList.erase(Iterator);
-
-        // GameObjectの削除
-        SafeDeleteUninit(pCameraDX);
-    }
-
-    pCameraDXList.clear();
-}
-
-/*===============================================================================================*
-  @Summary: CameraDXをリストに追加する
-  @Details: None
- *===============================================================================================*/
-void CameraDXManager::LinkList(CameraDX* pCameraDX)
-{
-    pCameraDXList.push_back(pCameraDX);
-}
-
-/*===============================================================================================*
-  @Summary: CameraDXをリストから解除する
-  @Details: None
- *===============================================================================================*/
-void CameraDXManager::UnLinkList(CameraDX* pCameraDX)
-{
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end(); ++Iterator)
-    {
-        if ((*Iterator) == pCameraDX)
-        {
-            // リストから切り離す
-            pCameraDXList.erase(Iterator);
-
+        case LIGHTTYPE_DIRECTIONAL:
+            lightParam.Type = D3DLIGHT_DIRECTIONAL;
             break;
-        }
+
+        case LIGHTTYPE_POINT:
+            lightParam.Type = D3DLIGHT_POINT;
+            break;
+
+        case LIGHTTYPE_SPOT:
+            lightParam.Type = D3DLIGHT_SPOT;
+            break;
     }
+
+    RenderManagerDX::GetDevice()->SetLight(lightID, &lightParam);
 }
 
-/*===============================================================================================*
-  @Summary: 対象のCameraDXを削除する (リストからも取り除く)
-  @Details: 対象のCameraDXのUninit()が呼ばれる
+/*===============================================================================================* 
+  @Summary: ライトが向いている方向を取得する
+  @Details: シェーダー等で D3DXVECTOR4型 を使用する場合はこちらを使う
  *===============================================================================================*/
-void CameraDXManager::Release(CameraDX* pCameraDX)
+D3DXVECTOR4 LightDX::GetDirectionEX()
 {
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end();)
-    {
-        if ((*Iterator) == pCameraDX)
-        {
-            // リストから切り離す
-            Iterator = pCameraDXList.erase(Iterator);
+    D3DXVECTOR4 Vec;
 
-            // GameObjectの削除
-            SafeDeleteUninit(pCameraDX);
+    Vec.x = lightParam.Direction.x;
+    Vec.y = lightParam.Direction.y;
+    Vec.z = lightParam.Direction.z;
+    Vec.w = 1.0f;
 
-            return;
-        }
-
-        ++Iterator;
-    }
+    return Vec;
 }
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //

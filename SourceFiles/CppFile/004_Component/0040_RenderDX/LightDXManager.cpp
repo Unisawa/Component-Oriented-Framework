@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ CameraDXManager.cpp ] CameraDXを管理するクラス
+ @File   : [ LightDXManager.cpp ] LightDXを管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -17,8 +17,8 @@
 #include "000_Main/Main.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/CameraDX.h"
-#include "004_Component/0040_RenderDX/CameraDXManager.h"
+#include "004_Component/0040_RenderDX/LightDX.h"
+#include "004_Component/0040_RenderDX/LightDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -31,105 +31,130 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************/
-std::list<CameraDX*> CameraDXManager::pCameraDXList;
+std::list<LightDX*> LightDXManager::pLightDXList;
+
+bool LightDXManager::useLightID[MAX_LIGHT_NUM] = {};
 
 /*===============================================================================================* 
   @Summary: 生成処理
   @Details: None
  *===============================================================================================*/
-CameraDXManager *CameraDXManager::Create()
+LightDXManager *LightDXManager::Create()
 {
-    CameraDXManager* pCameraDXManager;
-    pCameraDXManager = new CameraDXManager();
-    pCameraDXManager->Init();
+    LightDXManager* pLightDXManager;
+    pLightDXManager = new LightDXManager();
+    pLightDXManager->Init();
 
-    return pCameraDXManager;
+    return pLightDXManager;
 }
 
 /*===============================================================================================* 
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::Init()
+void LightDXManager::Init()
 {
-    // 初期カメラの生成
-    GameObject* pCameraGameObject = new GameObject("MainCamera");
-    pCameraGameObject->AddComponent<CameraDX>();
+    // 初期ライトの生成
+    GameObject* pLightGameObject = new GameObject("Directional Light");
+    pLightGameObject->AddComponent<LightDX>();
 }
 
 /*===============================================================================================* 
   @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::Uninit()
+void LightDXManager::Uninit()
 {
     ReleaseAll();
+
+    for (int Cnt = 0; Cnt < MAX_LIGHT_NUM; Cnt++)
+    {
+        useLightID[Cnt] = false;
+    }
 }
 
 /*===============================================================================================* 
   @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::Update()
+void LightDXManager::Update()
 {
     //UpdateAll();
 }
 
 /*===============================================================================================*
-  @Summary: 登録された全てのCameraDXを更新する
+  @Summary: 登録された全てのLightDXを更新する
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::UpdateAll()
+void LightDXManager::UpdateAll()
 {
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end(); ++Iterator)
+    for (auto Iterator = pLightDXList.begin(); Iterator != pLightDXList.end(); ++Iterator)
     {
         (*Iterator)->Update();
     }
 }
 
 /*===============================================================================================*
-  @Summary: 登録された全てのCameraDXを削除する
+  @Summary: 登録された全てのLightDXを削除する
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::ReleaseAll()
+void LightDXManager::ReleaseAll()
 {
-    CameraDX* pCameraDX;
+    LightDX* pLightDX;
 
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end();)
+    for (auto Iterator = pLightDXList.begin(); Iterator != pLightDXList.end();)
     {
-        pCameraDX = (*Iterator);
+        pLightDX = (*Iterator);
 
         // リストから切り離す
-        Iterator = pCameraDXList.erase(Iterator);
+        Iterator = pLightDXList.erase(Iterator);
 
         // GameObjectの削除
-        SafeDeleteUninit(pCameraDX);
+        SafeDeleteUninit(pLightDX);
     }
 
-    pCameraDXList.clear();
+    pLightDXList.clear();
 }
 
 /*===============================================================================================*
-  @Summary: CameraDXをリストに追加する
+  @Summary: LightDXをリストに追加する
   @Details: None
  *===============================================================================================*/
-void CameraDXManager::LinkList(CameraDX* pCameraDX)
+int LightDXManager::LinkList(LightDX* pLightDX)
 {
-    pCameraDXList.push_back(pCameraDX);
-}
+    int LightDXNum;
 
-/*===============================================================================================*
-  @Summary: CameraDXをリストから解除する
-  @Details: None
- *===============================================================================================*/
-void CameraDXManager::UnLinkList(CameraDX* pCameraDX)
-{
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end(); ++Iterator)
+    for (int Cnt = 0; Cnt < MAX_LIGHT_NUM; Cnt++)
     {
-        if ((*Iterator) == pCameraDX)
+        if (useLightID[Cnt] == false)
         {
+            useLightID[Cnt] = true;
+            LightDXNum = Cnt;
+
+            pLightDXList.push_back(pLightDX);
+
+            break;
+        }
+    }
+
+    return LightDXNum;
+}
+
+/*===============================================================================================*
+  @Summary: LightDXをリストから解除する
+  @Details: None
+ *===============================================================================================*/
+void LightDXManager::UnLinkList(LightDX* pLightDX)
+{
+    for (auto Iterator = pLightDXList.begin(); Iterator != pLightDXList.end(); ++Iterator)
+    {
+        if ((*Iterator) == pLightDX)
+        {
+            // 使用フラグを解放する
+            useLightID[pLightDX->GetLightID()] = false;
+
             // リストから切り離す
-            pCameraDXList.erase(Iterator);
+            pLightDXList.erase(Iterator);
 
             break;
         }
@@ -137,26 +162,45 @@ void CameraDXManager::UnLinkList(CameraDX* pCameraDX)
 }
 
 /*===============================================================================================*
-  @Summary: 対象のCameraDXを削除する (リストからも取り除く)
-  @Details: 対象のCameraDXのUninit()が呼ばれる
+  @Summary: 対象のLightDXを削除する (リストからも取り除く)
+  @Details: 対象のLightDXのUninit()が呼ばれる
  *===============================================================================================*/
-void CameraDXManager::Release(CameraDX* pCameraDX)
+void LightDXManager::Release(LightDX* pLightDX)
 {
-    for (auto Iterator = pCameraDXList.begin(); Iterator != pCameraDXList.end();)
+    for (auto Iterator = pLightDXList.begin(); Iterator != pLightDXList.end();)
     {
-        if ((*Iterator) == pCameraDX)
+        if ((*Iterator) == pLightDX)
         {
             // リストから切り離す
-            Iterator = pCameraDXList.erase(Iterator);
+            Iterator = pLightDXList.erase(Iterator);
 
             // GameObjectの削除
-            SafeDeleteUninit(pCameraDX);
+            SafeDeleteUninit(pLightDX);
 
             return;
         }
 
         ++Iterator;
     }
+}
+
+/*===============================================================================================* 
+  @Summary: 指定して番号のライトクラスを取得する
+  @Details: None
+ *===============================================================================================*/
+LightDX* LightDXManager::GetLight(int LightID)
+{
+    for (auto Iterator = pLightDXList.begin(); Iterator != pLightDXList.end();)
+    {
+        if ((*Iterator)->GetLightID() == LightID)
+        {
+            return (*Iterator);
+        }
+
+        ++Iterator;
+    }
+
+    return NULL;
 }
 
 //===============================================================================================//

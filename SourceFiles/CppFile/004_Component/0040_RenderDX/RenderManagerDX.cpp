@@ -23,6 +23,7 @@
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
 #include "004_Component/0040_RenderDX/CameraDX.h"
 #include "004_Component/0040_RenderDX/CameraDXManager.h"
+#include "004_Component/0040_RenderDX/LightDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,6 +41,7 @@ LPDIRECT3DDEVICE9 RenderManagerDX::pD3DDevice = NULL;
 
 D3DXCOLOR         RenderManagerDX::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
 
+LightDXManager*   RenderManagerDX::pLightDXManager  = NULL;
 CameraDXManager*  RenderManagerDX::pCameraDXManager = NULL;
 
 std::list<RenderDX*> RenderManagerDX::pRenderDXList[GameObject::LAYER_MAX];
@@ -59,12 +61,8 @@ RenderManagerDX *RenderManagerDX::Create()
         return NULL;
     }
 
+    pLightDXManager  = LightDXManager::Create();
     pCameraDXManager = CameraDXManager::Create();
-
-    for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
-    {
-        pRenderDXList[Layer].clear();
-    }
 
     return pRenderManagerDX;
 }
@@ -182,6 +180,7 @@ void RenderManagerDX::Uninit()
     UnLinkListAll();
 
     SafeDeleteUninit(pCameraDXManager);
+    SafeDeleteUninit(pLightDXManager);
 
     SafeRelease(pD3DDevice);
     SafeRelease(pD3DObject);
@@ -193,6 +192,7 @@ void RenderManagerDX::Uninit()
  *===============================================================================================*/
 void RenderManagerDX::Update()
 {
+    pLightDXManager->Update();
     pCameraDXManager->Update();
 
     //UpdateAll();    // GameObject->Update Ç≈å¬ÅXÇÃRenderÇÃUpdateÇÕåƒÇŒÇÍÇƒÇ¢ÇÈ
