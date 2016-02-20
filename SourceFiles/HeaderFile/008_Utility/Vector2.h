@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ CameraDX.h ] 空間内のカメラ情報を持つクラス
+ @File   : [ Vector2.h ] 2Dベクトルと位置の表現
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,20 +13,14 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _CAMERADX_H_
-#define _CAMERADX_H_
+#ifndef _VECTOR2_H_
+#define _VECTOR2_H_
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-
-//-----MainSetting-----//
-#include "002_Manager/Manager.h"
-
-//-----Object-----//
-#include "004_Component/0043_Behaviour/Behaviour.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,44 +33,33 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class CameraDX : public Behaviour
+struct Vector2
 {
-public:
-             CameraDX(GameObject* pObject);
-    virtual ~CameraDX();
+    Vector2()                 { x = 0.0f; y = 0.0f; }
+    Vector2(float X, float Y) { x = X, y = Y; }
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
+    Vector2 operator + (const Vector2 &Vec) const { return Vector2(x + Vec.x, y + Vec.y); }
+    Vector2 operator - (const Vector2 &Vec) const { return Vector2(x - Vec.x, y - Vec.y); }
+    Vector2 operator * (float value) const { return Vector2(x * value, y * value); }
+    Vector2 operator / (float value) const { return (*this) * (1.0f / value); }
 
-    virtual void SetProjection();
-    virtual void SetModelView();
+    void operator += (const Vector2 &Vec) { (*this) = (*this) + Vec; }
+    void operator -= (const Vector2 &Vec) { (*this) = (*this) - Vec; }
+    void operator *= (float value) { (*this) = (*this) * value; }
+    void operator /= (float value) { (*this) *= (1.0f / value); }
 
-    virtual float GetZLengthCamera(D3DXVECTOR3 Position);
+    void operator  = (const Vector2 &Vec) { x = Vec.x; y = Vec.y; }
 
-    virtual D3DXMATRIX GetProjectionMatrix() { return ProjectionMatrix; }
-    virtual D3DXMATRIX GetViewMatrix()       { return ViewMatrix; }
+    static Vector2 one;
+    static Vector2 zero;
 
-    static const std::string className;
+    static Vector2 up;
+    static Vector2 down;
+    static Vector2 right;
+    static Vector2 left;
 
-    D3DXMATRIX  ProjectionMatrix;    // プロジェクションマトリックス
-    D3DXMATRIX  ViewMatrix;          // ビューマトリックス
-
-    D3DXVECTOR3 PointEye;       // 視点
-    D3DXVECTOR3 PointLook;      // 注視点
-    D3DXVECTOR3 UpVector;       // 上方向ベクトル
-
-    D3DXVECTOR3 Direction;      // カメラが向いている方向
-    D3DXVECTOR3 Rotation;       // 回転方向
-    float       Length;         // 視点と注視点との距離
-
-    float ScreenAspect;     // アスペクト比 (スクリーンサイズ比)
-    float ScreenNear;       // 前面クリッピング範囲
-    float ScreenFar;        // 後面クリッピング範囲
-    float ScreenAngle;      // 視野角
-
-private:
-
+    float x;
+    float y;
 };
 
 #endif

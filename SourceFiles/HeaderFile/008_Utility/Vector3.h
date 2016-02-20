@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ CameraDX.h ] 空間内のカメラ情報を持つクラス
+ @File   : [ Vector3.h ] 3Dベクトルと位置の表現
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,20 +13,14 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _CAMERADX_H_
-#define _CAMERADX_H_
+#ifndef _VECTOR3_H_
+#define _VECTOR3_H_
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-
-//-----MainSetting-----//
-#include "002_Manager/Manager.h"
-
-//-----Object-----//
-#include "004_Component/0043_Behaviour/Behaviour.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,44 +33,36 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class CameraDX : public Behaviour
+struct Vector3
 {
-public:
-             CameraDX(GameObject* pObject);
-    virtual ~CameraDX();
+    Vector3()                          { x = 0.0f; y = 0.0f; z = 0.0f; }
+    Vector3(float X, float Y, float Z) { x = X, y = Y; z = Z; }
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
+    Vector3 operator + (const Vector3 &Vec) const { return Vector3(x + Vec.x, y + Vec.y, z + Vec.z); }
+    Vector3 operator - (const Vector3 &Vec) const { return Vector3(x - Vec.x, y - Vec.y, z - Vec.z); }
+    Vector3 operator * (float value) const { return Vector3(x * value, y * value, z * value); }
+    Vector3 operator / (float value) const { return (*this) * (1.0f / value); }
 
-    virtual void SetProjection();
-    virtual void SetModelView();
+    void operator += (const Vector3 &Vec) { (*this) = (*this) + Vec; }
+    void operator -= (const Vector3 &Vec) { (*this) = (*this) - Vec; }
+    void operator *= (float value) { (*this) = (*this) * value; }
+    void operator /= (float value) { (*this) *= (1.0f / value); }
 
-    virtual float GetZLengthCamera(D3DXVECTOR3 Position);
+    void operator  = (const Vector3 &Vec) { x = Vec.x; y = Vec.y; z = Vec.z; }
 
-    virtual D3DXMATRIX GetProjectionMatrix() { return ProjectionMatrix; }
-    virtual D3DXMATRIX GetViewMatrix()       { return ViewMatrix; }
+    static Vector3 one;
+    static Vector3 zero;
 
-    static const std::string className;
+    static Vector3 up;
+    static Vector3 down;
+    static Vector3 right;
+    static Vector3 left;
+    static Vector3 forward;
+    static Vector3 back;
 
-    D3DXMATRIX  ProjectionMatrix;    // プロジェクションマトリックス
-    D3DXMATRIX  ViewMatrix;          // ビューマトリックス
-
-    D3DXVECTOR3 PointEye;       // 視点
-    D3DXVECTOR3 PointLook;      // 注視点
-    D3DXVECTOR3 UpVector;       // 上方向ベクトル
-
-    D3DXVECTOR3 Direction;      // カメラが向いている方向
-    D3DXVECTOR3 Rotation;       // 回転方向
-    float       Length;         // 視点と注視点との距離
-
-    float ScreenAspect;     // アスペクト比 (スクリーンサイズ比)
-    float ScreenNear;       // 前面クリッピング範囲
-    float ScreenFar;        // 後面クリッピング範囲
-    float ScreenAngle;      // 視野角
-
-private:
-
+    float x;
+    float y;
+    float z;
 };
 
 #endif

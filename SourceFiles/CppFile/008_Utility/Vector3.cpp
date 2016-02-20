@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ CameraDX.h ] 空間内のカメラ情報を持つクラス
+ @File   : [ Vector3.cpp ] 3Dベクトルと位置の表現
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -9,24 +9,12 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Include Guard                                                                               //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma once
-#ifndef _CAMERADX_H_
-#define _CAMERADX_H_
-
-//***********************************************************************************************//
-//                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "002_Manager/Manager.h"
-
 //-----Object-----//
-#include "004_Component/0043_Behaviour/Behaviour.h"
+#include "008_Utility/Vector3.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -36,50 +24,24 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Class                                                                                       //
+//  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-class CameraDX : public Behaviour
-{
-public:
-             CameraDX(GameObject* pObject);
-    virtual ~CameraDX();
+Vector3 Vector3::one (1,  1,  1);
+Vector3 Vector3::zero(0,  0,  0);
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
+Vector3 Vector3::up     ( 0,  1,  0);
+Vector3 Vector3::down   ( 0, -1,  0);
+Vector3 Vector3::right  ( 1,  0,  0);
+Vector3 Vector3::left   (-1,  0,  0);
+Vector3 Vector3::forward( 0,  0,  1);
+Vector3 Vector3::back   ( 0,  0, -1);
 
-    virtual void SetProjection();
-    virtual void SetModelView();
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
-    virtual float GetZLengthCamera(D3DXVECTOR3 Position);
-
-    virtual D3DXMATRIX GetProjectionMatrix() { return ProjectionMatrix; }
-    virtual D3DXMATRIX GetViewMatrix()       { return ViewMatrix; }
-
-    static const std::string className;
-
-    D3DXMATRIX  ProjectionMatrix;    // プロジェクションマトリックス
-    D3DXMATRIX  ViewMatrix;          // ビューマトリックス
-
-    D3DXVECTOR3 PointEye;       // 視点
-    D3DXVECTOR3 PointLook;      // 注視点
-    D3DXVECTOR3 UpVector;       // 上方向ベクトル
-
-    D3DXVECTOR3 Direction;      // カメラが向いている方向
-    D3DXVECTOR3 Rotation;       // 回転方向
-    float       Length;         // 視点と注視点との距離
-
-    float ScreenAspect;     // アスペクト比 (スクリーンサイズ比)
-    float ScreenNear;       // 前面クリッピング範囲
-    float ScreenFar;        // 後面クリッピング範囲
-    float ScreenAngle;      // 視野角
-
-private:
-
-};
-
-#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

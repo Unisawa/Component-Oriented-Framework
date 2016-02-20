@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ CameraDX.h ] 空間内のカメラ情報を持つクラス
+ @File   : [ Vector4.h ] 4次元ベクトルの表現
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,20 +13,14 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _CAMERADX_H_
-#define _CAMERADX_H_
+#ifndef _VECTOR4_H_
+#define _VECTOR4_H_
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-
-//-----MainSetting-----//
-#include "002_Manager/Manager.h"
-
-//-----Object-----//
-#include "004_Component/0043_Behaviour/Behaviour.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,44 +33,30 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class CameraDX : public Behaviour
+struct Vector4
 {
-public:
-             CameraDX(GameObject* pObject);
-    virtual ~CameraDX();
+    Vector4()                                   { x = 0.0f; y = 0.0f; z = 0.0f; w = 0.0f; }
+    Vector4(float X, float Y, float Z, float W) { x = X, y = Y; z = Z; w = W; }
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
+    Vector4 operator + (const Vector4 &Vec) const { return Vector4(x + Vec.x, y + Vec.y, z + Vec.z, w + Vec.w); }
+    Vector4 operator - (const Vector4 &Vec) const { return Vector4(x - Vec.x, y - Vec.y, z - Vec.z, w - Vec.w); }
+    Vector4 operator * (float value) const { return Vector4(x * value, y * value, z * value, w * value); }
+    Vector4 operator / (float value) const { return (*this) * (1.0f / value); }
 
-    virtual void SetProjection();
-    virtual void SetModelView();
+    void operator += (const Vector4 &Vec) { (*this) = (*this) + Vec; }
+    void operator -= (const Vector4 &Vec) { (*this) = (*this) - Vec; }
+    void operator *= (float value) { (*this) = (*this) * value; }
+    void operator /= (float value) { (*this) *= (1.0f / value); }
 
-    virtual float GetZLengthCamera(D3DXVECTOR3 Position);
+    void operator  = (const Vector4 &Vec) { x = Vec.x; y = Vec.y; z = Vec.z; w = Vec.w; }
 
-    virtual D3DXMATRIX GetProjectionMatrix() { return ProjectionMatrix; }
-    virtual D3DXMATRIX GetViewMatrix()       { return ViewMatrix; }
+    static Vector4 one;
+    static Vector4 zero;
 
-    static const std::string className;
-
-    D3DXMATRIX  ProjectionMatrix;    // プロジェクションマトリックス
-    D3DXMATRIX  ViewMatrix;          // ビューマトリックス
-
-    D3DXVECTOR3 PointEye;       // 視点
-    D3DXVECTOR3 PointLook;      // 注視点
-    D3DXVECTOR3 UpVector;       // 上方向ベクトル
-
-    D3DXVECTOR3 Direction;      // カメラが向いている方向
-    D3DXVECTOR3 Rotation;       // 回転方向
-    float       Length;         // 視点と注視点との距離
-
-    float ScreenAspect;     // アスペクト比 (スクリーンサイズ比)
-    float ScreenNear;       // 前面クリッピング範囲
-    float ScreenFar;        // 後面クリッピング範囲
-    float ScreenAngle;      // 視野角
-
-private:
-
+    float x;
+    float y;
+    float z;
+    float w;
 };
 
 #endif
