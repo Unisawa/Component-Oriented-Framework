@@ -233,11 +233,10 @@ LRESULT CALLBACK Main::WindowProcedure(HWND hWnd, UINT uMessage, WPARAM wParam, 
         case WM_DESTROY:
             PostQuitMessage(0);
             break;
-        
+
         // ウィンドウ終了ボタン押下時の確認
         case WM_CLOSE:
 
-            // フルスクリーン中なら確認せずに終了する
             if( IDYES == MessageBox(hWnd, "終了しますか？" , "終了", MB_YESNO | MB_ICONQUESTION) )
             {
                 DestroyWindow(hWnd);
@@ -246,7 +245,7 @@ LRESULT CALLBACK Main::WindowProcedure(HWND hWnd, UINT uMessage, WPARAM wParam, 
 
             return 0;
             break;
-        
+
         // マウス操作時
         case WM_MOUSEMOVE:
             break;
@@ -257,12 +256,8 @@ LRESULT CALLBACK Main::WindowProcedure(HWND hWnd, UINT uMessage, WPARAM wParam, 
             {
                 // 終了処理
                 case VK_ESCAPE:
-
-                if( IDYES == MessageBox(hWnd, "終了しますか？" , "終了", MB_YESNO | MB_ICONQUESTION) )
-                {
                     DestroyWindow(hWnd);
-                }
-                break;
+                    break;
             }
             break;
 

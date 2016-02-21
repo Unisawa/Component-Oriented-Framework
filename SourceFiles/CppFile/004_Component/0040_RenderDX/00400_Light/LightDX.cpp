@@ -17,8 +17,8 @@
 #include "002_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/LightDX.h"
-#include "004_Component/0040_RenderDX/LightDXManager.h"
+#include "004_Component/0040_RenderDX/00400_Light/LightDX.h"
+#include "004_Component/0040_RenderDX/00400_Light/LightDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //

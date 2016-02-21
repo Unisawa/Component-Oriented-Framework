@@ -21,9 +21,12 @@
 #include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0040_RenderDX/CameraDX.h"
-#include "004_Component/0040_RenderDX/CameraDXManager.h"
-#include "004_Component/0040_RenderDX/LightDXManager.h"
+#include "004_Component/0040_RenderDX/00400_Light/LightDXManager.h"
+#include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"
+#include "004_Component/0040_RenderDX/00401_Camera/CameraDXManager.h"
+#include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDX.h"
+#include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateNoneDX.h"
+#include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDebugDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,6 +42,7 @@
 LPDIRECT3D9       RenderManagerDX::pD3DObject = NULL;
 LPDIRECT3DDEVICE9 RenderManagerDX::pD3DDevice = NULL;
 
+D3DVIEWPORT9      RenderManagerDX::defaultViewport;
 D3DXCOLOR         RenderManagerDX::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
 
 LightDXManager*   RenderManagerDX::pLightDXManager  = NULL;
@@ -94,8 +98,12 @@ HRESULT RenderManagerDX::Init()
     }
 
     // スクリーンサイズの設定確認
-    //if (IDYES == MessageBox(Main::windowHandle, "ウィンドウモードで実行しますか？", "画面モード", MB_YESNO))
+#ifdef _DEBUG
+    Main::isWindow = true;
+#else
+    if (IDYES == MessageBox(Main::windowHandle, "ウィンドウモードで実行しますか？", "画面モード", MB_YESNO))
         Main::isWindow = true;
+#endif
 
     // ディスプレイモードの設定
     ZeroMemory(&d3dpp, sizeof(d3dpp));
@@ -167,6 +175,11 @@ HRESULT RenderManagerDX::Init()
     // 背景クリア色の初期設定
     SetClearColor(clearColor);
 
+    // 初期ビューポート設定
+    pD3DDevice->GetViewport(&defaultViewport);
+
+    pScreenStateDX = &ScreenStateDX::none;
+
     return S_OK;
 }
 
@@ -204,13 +217,16 @@ void RenderManagerDX::Update()
  *===============================================================================================*/
 void RenderManagerDX::Draw()
 {
-    // 画面のクリア
-    pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), clearColor, 1.0f, 0);
+    // 画面全体のクリア
+    pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
     // 描画開始
     pD3DDevice->BeginScene();
 
+        pScreenStateDX->BeginDraw(this);
+        pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), clearColor, 1.0f, 0);
         DrawAll();
+        pScreenStateDX->EndDraw(this);
 
     pD3DDevice->EndScene();
 
@@ -410,6 +426,17 @@ LPD3DXFONT RenderManagerDX::CreateFontText(int CharacterSize, int CharacterWidth
     }
 
     return FontDevice;
+}
+
+/*===============================================================================================* 
+  @Summary: 描画する領域状態を変更する
+  @Details: None
+ *===============================================================================================*/
+void RenderManagerDX::ChangeState(ScreenStateDX* pState)
+{
+    delete pScreenStateDX;
+
+    pScreenStateDX = pState;
 }
 
 //===============================================================================================//

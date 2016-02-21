@@ -52,6 +52,7 @@
 class RenderDX;
 class LightDXManager;
 class CameraDXManager;
+class ScreenStateDX;
 
 class RenderManagerDX
 {
@@ -65,6 +66,9 @@ public:
     void    Uninit();
     void    Update();
     void    Draw();
+
+    void    SetDefaultViewPort() { pD3DDevice->SetViewport(&defaultViewport); }
+    void    ChangeState(ScreenStateDX* pState);
 
     static void UpdateAll();
     static void DrawAll();
@@ -95,12 +99,15 @@ private:
     static LPDIRECT3D9       pD3DObject;    // Direct3Dオブジェクト
     static LPDIRECT3DDEVICE9 pD3DDevice;    // デバイスオブジェクト
 
-    static D3DXCOLOR clearColor;            // 背景クリア色
+    static D3DVIEWPORT9 defaultViewport;    // 画面の大きさの基本的なビューポート
+    static D3DXCOLOR    clearColor;         // 背景クリア色
 
     static LightDXManager*  pLightDXManager;
     static CameraDXManager* pCameraDXManager;
 
     static std::list<RenderDX*> pRenderDXList[GameObject::LAYER_MAX];
+
+    ScreenStateDX* pScreenStateDX;
 };
 
 #endif

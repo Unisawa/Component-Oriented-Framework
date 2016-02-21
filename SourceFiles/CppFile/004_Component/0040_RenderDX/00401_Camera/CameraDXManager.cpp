@@ -17,8 +17,8 @@
 #include "000_Main/Main.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/CameraDX.h"
-#include "004_Component/0040_RenderDX/CameraDXManager.h"
+#include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"
+#include "004_Component/0040_RenderDX/00401_Camera/CameraDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -54,6 +54,7 @@ void CameraDXManager::Init()
 {
     // 初期カメラの生成
     GameObject* pCameraGameObject = new GameObject("MainCamera");
+    pCameraGameObject->DontDestroyOnLoad(true);
     pCameraGameObject->AddComponent<CameraDX>();
 }
 

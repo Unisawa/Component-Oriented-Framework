@@ -17,8 +17,8 @@
 #include "000_Main/Main.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/LightDX.h"
-#include "004_Component/0040_RenderDX/LightDXManager.h"
+#include "004_Component/0040_RenderDX/00400_Light/LightDX.h"
+#include "004_Component/0040_RenderDX/00400_Light/LightDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -56,6 +56,7 @@ void LightDXManager::Init()
 {
     // 初期ライトの生成
     GameObject* pLightGameObject = new GameObject("Directional Light");
+    pLightGameObject->DontDestroyOnLoad(true);
     pLightGameObject->AddComponent<LightDX>();
 }
 

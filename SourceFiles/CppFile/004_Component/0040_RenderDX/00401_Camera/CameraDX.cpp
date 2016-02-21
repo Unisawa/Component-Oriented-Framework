@@ -18,8 +18,8 @@
 #include "001_Constant/Constant.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/CameraDX.h"
-#include "004_Component/0040_RenderDX/CameraDXManager.h"
+#include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"
+#include "004_Component/0040_RenderDX/00401_Camera/CameraDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //

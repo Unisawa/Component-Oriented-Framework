@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ LightDXManager.h ] LightDXを管理するクラス
+ @File   : [ CameraDXManager.h ] CameraDXを管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _LIGHTMANAGER_H_
-#define _LIGHTMANAGER_H_
+#ifndef _CAMERADXMANAGER_H_
+#define _CAMERADXMANAGER_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -23,29 +23,28 @@
 //***********************************************************************************************//
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/LightDX.h"
+#include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define MAX_LIGHT_NUM (8)
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class LightDX;
+class CameraDX;
 
-class LightDXManager
+class CameraDXManager
 {
 public:
-     LightDXManager() {}
-    ~LightDXManager() {}
+     CameraDXManager() {}
+    ~CameraDXManager() {}
 
-    static LightDXManager* Create();
+    static CameraDXManager* Create();
 
     void Init();
     void Uninit();
@@ -56,18 +55,14 @@ public:
     static void ReleaseAll();
 
     //-----Operation List-----//
-    static int  LinkList(LightDX* pLightDX);
-    static void UnLinkList(LightDX* pLightDX);
-    static void Release(LightDX* pLightDX);
+    static void LinkList(CameraDX* pCameraDX);
+    static void UnLinkList(CameraDX* pCameraDX);
+    static void Release(CameraDX* pCameraDX);
 
-    static void EnableSpecular(BOOL value) { RenderManagerDX::GetDevice()->SetRenderState(D3DRS_SPECULARENABLE, value); }
-
-    static LightDX* GetLight(int LightID);
+    static std::list<CameraDX*> GetCameraDXList() { return pCameraDXList; }
 
 private:
-    static std::list<LightDX*> pLightDXList;
-
-    static bool useLightID[MAX_LIGHT_NUM];    // 固定機能パイプライン使用時の8つのライトを管理するフラグ
+    static std::list<CameraDX*> pCameraDXList;
 };
 
 #endif
