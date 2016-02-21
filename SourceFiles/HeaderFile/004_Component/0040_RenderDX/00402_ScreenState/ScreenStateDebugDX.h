@@ -23,7 +23,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDX.h"
 
 //***********************************************************************************************//
@@ -37,7 +37,7 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderManagerDX;
+class RenderDXManager;
 
 class ScreenStateDebugDX : public ScreenStateDX
 {
@@ -45,7 +45,7 @@ public:
              ScreenStateDebugDX();
     virtual ~ScreenStateDebugDX() {}
 
-    virtual void BeginDraw(RenderManagerDX* pRender) override { pRender->GetDevice()->SetViewport(&debugViewPort); }
+    virtual void BeginDraw(RenderDXManager* pRender) override { pRender->GetDevice()->SetViewport(&debugViewPort); }
 
     D3DVIEWPORT9 debugViewPort;
 };

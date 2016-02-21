@@ -23,7 +23,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -36,7 +36,7 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderManagerDX;
+class RenderDXManager;
 class ScreenStateNoneDX;
 class ScreenStateDebugDX;
 
@@ -46,8 +46,8 @@ public:
              ScreenStateDX() {}
     virtual ~ScreenStateDX() {}
 
-    virtual void BeginDraw(RenderManagerDX* pRender) {}
-    virtual void EndDraw(RenderManagerDX* pRender) { pRender->SetDefaultViewPort(); }
+    virtual void BeginDraw(RenderDXManager* pRender) {}
+    virtual void EndDraw(RenderDXManager* pRender) { pRender->SetDefaultViewPort(); }
 
     static ScreenStateNoneDX  none;
     static ScreenStateDebugDX debug;

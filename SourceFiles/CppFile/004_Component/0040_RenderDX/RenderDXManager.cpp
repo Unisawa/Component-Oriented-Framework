@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderManagerDX.cpp ] DirectXの描画を管理するクラス
+ @File   : [ RenderDXManager.cpp ] DirectXの描画を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -15,18 +15,20 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
-#include "001_Constant/Constant.h"
+#include "002_Constant/Constant.h"
 
 //-----Object-----//
 #include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0040_RenderDX/RenderDXManager.h"
 #include "004_Component/0040_RenderDX/00400_Light/LightDXManager.h"
 #include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"
 #include "004_Component/0040_RenderDX/00401_Camera/CameraDXManager.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDX.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateNoneDX.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDebugDX.h"
+
+#include "005_Debug/DebugManagerDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,43 +41,47 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-LPDIRECT3D9       RenderManagerDX::pD3DObject = NULL;
-LPDIRECT3DDEVICE9 RenderManagerDX::pD3DDevice = NULL;
+LPDIRECT3D9       RenderDXManager::pD3DObject = NULL;
+LPDIRECT3DDEVICE9 RenderDXManager::pD3DDevice = NULL;
 
-D3DVIEWPORT9      RenderManagerDX::defaultViewport;
-D3DXCOLOR         RenderManagerDX::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
+D3DVIEWPORT9      RenderDXManager::defaultViewport;
+D3DXCOLOR         RenderDXManager::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
 
-LightDXManager*   RenderManagerDX::pLightDXManager  = NULL;
-CameraDXManager*  RenderManagerDX::pCameraDXManager = NULL;
+DebugManagerDX*   RenderDXManager::pDebugManagerDX  = NULL;
 
-std::list<RenderDX*> RenderManagerDX::pRenderDXList[GameObject::LAYER_MAX];
+LightDXManager*   RenderDXManager::pLightDXManager  = NULL;
+CameraDXManager*  RenderDXManager::pCameraDXManager = NULL;
+
+std::list<RenderDX*> RenderDXManager::pRenderDXList[GameObject::LAYER_MAX];
 
 /*===============================================================================================* 
   @Summary: 生成処理
   @Details: None
  *===============================================================================================*/
-RenderManagerDX *RenderManagerDX::Create()
+RenderDXManager *RenderDXManager::Create()
 {
-    RenderManagerDX* pRenderManagerDX;
-    pRenderManagerDX = new RenderManagerDX();
-    if (FAILED(pRenderManagerDX->Init()))
+    RenderDXManager* pRenderDXManager;
+    pRenderDXManager = new RenderDXManager();
+    if (FAILED(pRenderDXManager->Init()))
     {
         MessageBox(NULL, "DirectXによる描画設定に失敗しました。", "エラー発生", MB_ICONERROR | MB_OK);
 
         return NULL;
     }
+    
+    pDebugManagerDX  = DebugManagerDX::Create();
 
     pLightDXManager  = LightDXManager::Create();
     pCameraDXManager = CameraDXManager::Create();
 
-    return pRenderManagerDX;
+    return pRenderDXManager;
 }
 
 /*===============================================================================================* 
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-HRESULT RenderManagerDX::Init()
+HRESULT RenderDXManager::Init()
 {
     D3DDISPLAYMODE        d3ddm;
     D3DPRESENT_PARAMETERS d3dpp;
@@ -187,13 +193,15 @@ HRESULT RenderManagerDX::Init()
   @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::Uninit()
+void RenderDXManager::Uninit()
 {
     // 既にGameObjectManager::ReleaseAll()でRenderコンポーネントは削除されているのでリンクを解除する
     UnLinkListAll();
 
     SafeDeleteUninit(pCameraDXManager);
     SafeDeleteUninit(pLightDXManager);
+
+    SafeDeleteUninit(pDebugManagerDX);
 
     SafeRelease(pD3DDevice);
     SafeRelease(pD3DObject);
@@ -203,8 +211,10 @@ void RenderManagerDX::Uninit()
   @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::Update()
+void RenderDXManager::Update()
 {
+    pDebugManagerDX->Update();
+
     pLightDXManager->Update();
     pCameraDXManager->Update();
 
@@ -215,7 +225,7 @@ void RenderManagerDX::Update()
   @Summary: 描画処理
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::Draw()
+void RenderDXManager::Draw()
 {
     // 画面全体のクリア
     pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
@@ -228,6 +238,8 @@ void RenderManagerDX::Draw()
         DrawAll();
         pScreenStateDX->EndDraw(this);
 
+        pDebugManagerDX->Draw();
+
     pD3DDevice->EndScene();
 
     // フロントバッファとバックバッファの入れ替え
@@ -238,7 +250,7 @@ void RenderManagerDX::Draw()
   @Summary: 登録された全てのRenderを更新する
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::UpdateAll()
+void RenderDXManager::UpdateAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
@@ -256,7 +268,7 @@ void RenderManagerDX::UpdateAll()
   @Summary: 登録された全てのRenderの描画をする
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::DrawAll()
+void RenderDXManager::DrawAll()
 {
     // 描画の高速化
     CalculateZSortAll();
@@ -278,7 +290,7 @@ void RenderManagerDX::DrawAll()
   @Summary: 登録された全てのRenderをリストから解除する
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::UnLinkListAll()
+void RenderDXManager::UnLinkListAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
@@ -290,7 +302,7 @@ void RenderManagerDX::UnLinkListAll()
   @Summary: 登録された全てのRenderを削除する
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::ReleaseAll()
+void RenderDXManager::ReleaseAll()
 {
     RenderDX* pRender;
 
@@ -315,7 +327,7 @@ void RenderManagerDX::ReleaseAll()
   @Summary: 各レイヤーのRenderをカメラからの距離によってソートする
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::ZSort()
+void RenderDXManager::ZSort()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
@@ -335,7 +347,7 @@ void RenderManagerDX::ZSort()
   @Summary: 各レイヤーのRenderのZDepthの値を計算する
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::CalculateZSortAll()
+void RenderDXManager::CalculateZSortAll()
 {
     std::list<CameraDX*> pCamera = CameraDXManager::GetCameraDXList();
 
@@ -359,7 +371,7 @@ void RenderManagerDX::CalculateZSortAll()
   @Summary: Renderをリストに追加する
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::LinkList(RenderDX* pRender, GameObject::LAYER Layer)
+void RenderDXManager::LinkList(RenderDX* pRender, GameObject::LAYER Layer)
 {
     pRenderDXList[Layer].push_back(pRender);
 }
@@ -368,7 +380,7 @@ void RenderManagerDX::LinkList(RenderDX* pRender, GameObject::LAYER Layer)
   @Summary: Renderをリストから解除する
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::UnLinkList(RenderDX* pRender)
+void RenderDXManager::UnLinkList(RenderDX* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 
@@ -388,7 +400,7 @@ void RenderManagerDX::UnLinkList(RenderDX* pRender)
   @Summary: 対象のRenderを削除する (リストからも取り除く)
   @Details: 対象のRenderのUninit()が呼ばれる
  *===============================================================================================*/
-void RenderManagerDX::Release(RenderDX* pRender)
+void RenderDXManager::Release(RenderDX* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 
@@ -413,7 +425,7 @@ void RenderManagerDX::Release(RenderDX* pRender)
   @Summary: フォントテキストを生成する
   @Details: None
  *===============================================================================================*/
-LPD3DXFONT RenderManagerDX::CreateFontText(int CharacterSize, int CharacterWidth, int FontSize, bool IsItalic, std::string FontName)
+LPD3DXFONT RenderDXManager::CreateFontText(int CharacterSize, int CharacterWidth, int FontSize, bool IsItalic, std::string FontName)
 {
     LPD3DXFONT FontDevice;
 
@@ -432,10 +444,8 @@ LPD3DXFONT RenderManagerDX::CreateFontText(int CharacterSize, int CharacterWidth
   @Summary: 描画する領域状態を変更する
   @Details: None
  *===============================================================================================*/
-void RenderManagerDX::ChangeState(ScreenStateDX* pState)
+void RenderDXManager::ChangeState(ScreenStateDX* pState)
 {
-    delete pScreenStateDX;
-
     pScreenStateDX = pState;
 }
 

@@ -23,7 +23,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDX.h"
 
 //***********************************************************************************************//
@@ -37,7 +37,7 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderManagerDX;
+class RenderDXManager;
 
 class ScreenStateNoneDX : public ScreenStateDX
 {
@@ -45,7 +45,7 @@ public:
              ScreenStateNoneDX() : ScreenStateDX() {}
     virtual ~ScreenStateNoneDX() {}
 
-    virtual void BeginDraw(RenderManagerDX* pRender) override {}
+    virtual void BeginDraw(RenderDXManager* pRender) override {}
 };
 
 #endif

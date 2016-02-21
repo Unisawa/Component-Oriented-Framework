@@ -14,7 +14,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "007_Scene/SceneManager.h"
@@ -104,6 +104,8 @@ void SceneManager::Uninit()
  *===============================================================================================*/
 void SceneManager::Update()
 {
+    DebugManagerDX::Print("y Œ»İ‚ÌƒV[ƒ“: " + pScene->GetSceneName() + " z");
+
     pScene->Update();
 
     // ‰æ–Ê‘JˆÚ‚Ìó‘ÔŠÇ—

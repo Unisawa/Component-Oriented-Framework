@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderManagerGL.h ] OpneGLの描画を管理するクラス
+ @File   : [ RenderGLManager.h ] OpneGLの描画を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDERMANAGERGL_H_
-#define _RENDERMANAGERGL_H_
+#ifndef _RENDERGLMANAGER_H_
+#define _RENDERGLMANAGER_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -34,9 +34,6 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
-//-----Object-----//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -50,13 +47,13 @@
 //***********************************************************************************************//
 class RenderGL;
 
-class RenderManagerGL
+class RenderGLManager
 {
 public:
-     RenderManagerGL() {}
-    ~RenderManagerGL() {}
+     RenderGLManager() {}
+    ~RenderGLManager() {}
 
-    static RenderManagerGL* Create();
+    static RenderGLManager* Create();
 
     HRESULT Init();
     void    Uninit();

@@ -14,8 +14,8 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
-#include "001_Constant/Constant.h"
+#include "001_Manager/Manager.h"
+#include "002_Constant/Constant.h"
 
 //-----Object-----//
 #include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"
@@ -102,7 +102,7 @@ void CameraDX::Update()
 void CameraDX::SetProjection()
 {
     // デバイスの取得
-    LPDIRECT3DDEVICE9  pDevice = RenderManagerDX::GetDevice();
+    LPDIRECT3DDEVICE9  pDevice = RenderDXManager::GetDevice();
 
     // プロジェクションマトリックスの設定
     D3DXMatrixIdentity(&ProjectionMatrix);
@@ -117,7 +117,7 @@ void CameraDX::SetProjection()
 void CameraDX::SetModelView()
 {
     // デバイスの取得
-    LPDIRECT3DDEVICE9  pDevice = RenderManagerDX::GetDevice();
+    LPDIRECT3DDEVICE9  pDevice = RenderDXManager::GetDevice();
 
     // ビューマトリックスの設定
     D3DXMatrixIdentity(&ViewMatrix);

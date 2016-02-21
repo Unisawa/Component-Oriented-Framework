@@ -14,13 +14,13 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
-#include "001_Constant/Constant.h"
+#include "001_Manager/Manager.h"
+#include "002_Constant/Constant.h"
 
 //-----Manager-----//
 #include "006_Tool/0060_Input/InputManager.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0040_RenderDX/RenderDXManager.h"
+#include "004_Component/0041_RenderGL/RenderGLManager.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "007_Scene/SceneManager.h"
 #include "007_Scene/SceneTitle.h"
@@ -164,11 +164,6 @@ void SceneGame::Update()
         SceneManager::LoadLevel(&Scene::TITLE);
     }
 }
-
-/*===============================================================================================* 
-  @Summary: 
-  @Details: 
- *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //

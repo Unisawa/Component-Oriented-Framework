@@ -14,8 +14,8 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
-#include "001_Constant/Constant.h"
+#include "001_Manager/Manager.h"
+#include "002_Constant/Constant.h"
 
 //-----Object-----//
 #include "007_Scene/Fade.h"

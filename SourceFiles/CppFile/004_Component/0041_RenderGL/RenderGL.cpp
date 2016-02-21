@@ -14,11 +14,11 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "004_Component/0041_RenderGL/RenderGL.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0041_RenderGL/RenderGLManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -43,7 +43,7 @@ RenderGL::RenderGL(GameObject* pObject, std::string ComponentName, GameObject::L
 
     SetLayer(Layer);
 
-    RenderManagerGL::LinkList(this, Layer);
+    RenderGLManager::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
@@ -119,7 +119,7 @@ void RenderGL::SetBlending()
  *===============================================================================================*/
 void RenderGL::SetCulling()
 {
-    //LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    //LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
     //// カリングのリセット (裏カリングを基本とする)
     //pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);

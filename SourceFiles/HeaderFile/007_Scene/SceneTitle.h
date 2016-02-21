@@ -23,7 +23,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "007_Scene/Scene.h"
@@ -48,6 +48,8 @@ public:
     virtual void Init()   override;
     virtual void Uninit() override;
     virtual void Update() override;
+
+    virtual std::string GetSceneName() override { return "SceneTitle"; }
 };
 
 #endif

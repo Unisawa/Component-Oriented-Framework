@@ -15,12 +15,12 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Manager-----//
 #include "006_Tool/0060_Input/InputManager.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0040_RenderDX/RenderDXManager.h"
+#include "004_Component/0041_RenderGL/RenderGLManager.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "007_Scene/SceneManager.h"
 
@@ -37,8 +37,8 @@
 //***********************************************************************************************//
 InputManager* Manager::pInputManager = NULL;
 
-RenderManagerDX* Manager::pRenderManagerDX = NULL;
-RenderManagerGL* Manager::pRenderManagerGL = NULL;
+RenderDXManager* Manager::pRenderDXManager = NULL;
+RenderGLManager* Manager::pRenderGLManager = NULL;
 
 GameObjectManager* Manager::pGameObjectManager = NULL;
 SceneManager*      Manager::pSceneManager      = NULL;
@@ -50,13 +50,13 @@ SceneManager*      Manager::pSceneManager      = NULL;
 HRESULT Manager::Init()
 {
 #ifdef _DIRECTX
-    pRenderManagerDX = RenderManagerDX::Create();
-    if (pRenderManagerDX == NULL) return E_FAIL;    // DirectX ‚Ì‰Šú‰»‚ÉŽ¸”s
+    pRenderDXManager = RenderDXManager::Create();
+    if (pRenderDXManager == NULL) return E_FAIL;    // DirectX ‚Ì‰Šú‰»‚ÉŽ¸”s
 #endif
 
 #ifdef _OPENGL
-    pRenderManagerGL = RenderManagerGL::Create();
-    if (pRenderManagerGL == NULL) return E_FAIL;    // OpenGL ‚Ì‰Šú‰»‚ÉŽ¸”s
+    pRenderGLManager = RenderGLManager::Create();
+    if (pRenderGLManager == NULL) return E_FAIL;    // OpenGL ‚Ì‰Šú‰»‚ÉŽ¸”s
 #endif
 
     pInputManager = InputManager::Create();
@@ -81,11 +81,11 @@ void Manager::Uninit()
     SafeDeleteUninit(pInputManager);
 
 #ifdef _DIRECTX
-    SafeDeleteUninit(pRenderManagerDX);
+    SafeDeleteUninit(pRenderDXManager);
 #endif
 
 #ifdef _OPENGL
-    SafeDeleteUninit(pRenderManagerGL);
+    SafeDeleteUninit(pRenderGLManager);
 #endif
 }
 
@@ -97,17 +97,17 @@ void Manager::Update()
 {
     pInputManager->Update();
 
-    pSceneManager->Update();
-
-    pGameObjectManager->Update();
-
 #ifdef _DIRECTX
-    pRenderManagerDX->Update();
+    pRenderDXManager->Update();
 #endif
 
 #ifdef _OPENGL
-    pRenderManagerGL->Update();
+    pRenderGLManager->Update();
 #endif
+
+    pSceneManager->Update();
+
+    pGameObjectManager->Update();
 }
 
 /*===============================================================================================* 
@@ -117,11 +117,11 @@ void Manager::Update()
 void Manager::Draw()
 {
 #ifdef _DIRECTX
-    pRenderManagerDX->Draw();
+    pRenderDXManager->Draw();
 #endif
 
 #ifdef _OPENGL
-    pRenderManagerGL->Draw();
+    pRenderGLManager->Draw();
 #endif
 }
 

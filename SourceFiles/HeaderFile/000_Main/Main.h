@@ -45,7 +45,7 @@
 #include <list>
 
 //-----Manager-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 #include "006_Tool/0060_Input/InputManager.h"
 
 //-----Debug-----//

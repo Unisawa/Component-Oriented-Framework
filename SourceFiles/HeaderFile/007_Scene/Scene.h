@@ -23,7 +23,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -48,6 +48,8 @@ public:
     virtual void Init()   = 0;
     virtual void Uninit() = 0;
     virtual void Update() = 0;
+
+    virtual std::string GetSceneName() = 0;
 
     static SceneTitle TITLE;
     static SceneGame  GAME;

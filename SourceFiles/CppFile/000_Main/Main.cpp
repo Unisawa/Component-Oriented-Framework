@@ -15,8 +15,10 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
-#include "001_Constant/Constant.h"
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
+#include "002_Constant/Constant.h"
+
+#include "005_Debug/DebugManagerDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -151,8 +153,10 @@ void Main::Update()
 {
     pManager->Update();
 
-    // FPS表示用カウンタの更新
-    //DebugManager::AddFrameCount();
+#ifdef _DIRECTX
+    DebugManagerDX::AddframeCount();    // FPS表示用カウンタの更新
+#endif
+
 }
 
 /*===============================================================================================* 
@@ -198,8 +202,9 @@ MSG Main::MessageLoop()
             // 現在時刻取得
             dwCurrentTime = timeGetTime();
 
-            // FPS 計算
-            //DebugManager::CheckFPS(dwCurrentTime);
+#ifdef _DIRECTX
+            DebugManagerDX::CheckFPS(dwCurrentTime);    // FPS 計算
+#endif
 
             if ((dwCurrentTime - dwExecLastTime) >= (1000 / Main::frameRate))
             {

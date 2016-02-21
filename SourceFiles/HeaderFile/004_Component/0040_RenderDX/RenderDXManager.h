@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderManagerDX.h ] DirectXの描画を管理するクラス
+ @File   : [ RenderDXManager.h ] DirectXの描画を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDERMANAGERDX_H_
-#define _RENDERMANAGERDX_H_
+#ifndef _RENDERDXMANAGER_H_
+#define _RENDERDXMANAGER_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -37,6 +37,7 @@
 
 //-----Object-----//
 #include "004_Component/0042_GameObject/GameObject.h"
+#include "005_Debug/DebugManagerDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -52,15 +53,16 @@
 class RenderDX;
 class LightDXManager;
 class CameraDXManager;
+class DebugManagerDX;
 class ScreenStateDX;
 
-class RenderManagerDX
+class RenderDXManager
 {
 public:
-     RenderManagerDX() {}
-    ~RenderManagerDX() {}
+     RenderDXManager() {}
+    ~RenderDXManager() {}
 
-    static RenderManagerDX* Create();
+    static RenderDXManager* Create();
 
     HRESULT Init();
     void    Uninit();
@@ -91,6 +93,8 @@ public:
 
     static void      SetClearColor(D3DXCOLOR Color) { clearColor = Color; }
     static D3DXCOLOR GetClearColor() { return clearColor; }
+    
+    static DebugManagerDX*  GetDebugManagerDX()  { return pDebugManagerDX; }
 
     static LightDXManager*  GetLightDXManager()  { return pLightDXManager; }
     static CameraDXManager* GetCameraDXManager() { return pCameraDXManager; }
@@ -101,6 +105,8 @@ private:
 
     static D3DVIEWPORT9 defaultViewport;    // 画面の大きさの基本的なビューポート
     static D3DXCOLOR    clearColor;         // 背景クリア色
+    
+    static DebugManagerDX*  pDebugManagerDX;
 
     static LightDXManager*  pLightDXManager;
     static CameraDXManager* pCameraDXManager;

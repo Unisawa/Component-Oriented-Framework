@@ -14,7 +14,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderDX.h"
@@ -63,7 +63,7 @@ void Render2DDX::Init()
     textureID   = -1;
 
     // 頂点バッファーの確保
-    RenderManagerDX::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
+    RenderDXManager::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
 
     SetVertex();
 }
@@ -74,7 +74,7 @@ void Render2DDX::Init()
  *===============================================================================================*/
 void Render2DDX::Uninit()
 {
-    RenderManagerDX::UnLinkList(this);
+    RenderDXManager::UnLinkList(this);
 
     SafeRelease(pVertexBuffer);
 }
@@ -94,7 +94,7 @@ void Render2DDX::Update()
  *===============================================================================================*/
 void Render2DDX::Draw()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
     // 描画設定
     SetBlending();

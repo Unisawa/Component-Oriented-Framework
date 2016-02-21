@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ RenderManagerGL.cpp ] OpneGLの描画を管理するクラス
+ @File   : [ RenderGLManager.cpp ] OpneGLの描画を管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -15,11 +15,11 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
-#include "001_Constant/Constant.h"
+#include "002_Constant/Constant.h"
 
 //-----Object-----//
 #include "004_Component/0041_RenderGL/RenderGL.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
+#include "004_Component/0041_RenderGL/RenderGLManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -32,20 +32,20 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-HDC   RenderManagerGL::hDC   = NULL;
-HGLRC RenderManagerGL::hGLRC = NULL;
+HDC   RenderGLManager::hDC   = NULL;
+HGLRC RenderGLManager::hGLRC = NULL;
 
-std::list<RenderGL*> RenderManagerGL::pRenderGLList[GameObject::LAYER_MAX];
+std::list<RenderGL*> RenderGLManager::pRenderGLList[GameObject::LAYER_MAX];
 
 /*===============================================================================================* 
   @Summary: 生成処理
   @Details: None
  *===============================================================================================*/
-RenderManagerGL *RenderManagerGL::Create()
+RenderGLManager *RenderGLManager::Create()
 {
-    RenderManagerGL* pRenderManagerGL;
-    pRenderManagerGL = new RenderManagerGL();
-    if (FAILED(pRenderManagerGL->Init()))
+    RenderGLManager* pRenderGLManager;
+    pRenderGLManager = new RenderGLManager();
+    if (FAILED(pRenderGLManager->Init()))
     {
         MessageBox(NULL, "OpenGLによる描画設定に失敗しました。", "エラー発生", MB_ICONERROR | MB_OK);
 
@@ -57,14 +57,14 @@ RenderManagerGL *RenderManagerGL::Create()
         pRenderGLList[Layer].clear();
     }
 
-    return pRenderManagerGL;
+    return pRenderGLManager;
 }
 
 /*===============================================================================================* 
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-HRESULT RenderManagerGL::Init()
+HRESULT RenderGLManager::Init()
 {
     // デバイスコンテキストの取得 OpenGL 初期化処理
     hDC = GetDC(Main::windowHandle);
@@ -110,7 +110,7 @@ HRESULT RenderManagerGL::Init()
   @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::Uninit()
+void RenderGLManager::Uninit()
 {
     // 既にGameObjectManager::ReleaseAll()でRenderコンポーネントは削除されているのでリンクを解除する
     UnLinkListAll();
@@ -128,7 +128,7 @@ void RenderManagerGL::Uninit()
   @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::Update()
+void RenderGLManager::Update()
 {
     UpdateAll();
 }
@@ -137,7 +137,7 @@ void RenderManagerGL::Update()
   @Summary: 描画処理
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::Draw()
+void RenderGLManager::Draw()
 {
     // 画面のクリア
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -156,7 +156,7 @@ void RenderManagerGL::Draw()
   @Summary: 登録された全てのRenderを更新する
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::UpdateAll()
+void RenderGLManager::UpdateAll()
 {
     for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
     {
@@ -174,7 +174,7 @@ void RenderManagerGL::UpdateAll()
   @Summary: 登録された全てのRenderの描画をする
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::DrawAll()
+void RenderGLManager::DrawAll()
 {
     // 描画の高速化
     CalculateZSortAll();
@@ -224,7 +224,7 @@ void RenderManagerGL::DrawAll()
   @Summary: 登録された全てのRenderをリストから解除する
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::UnLinkListAll()
+void RenderGLManager::UnLinkListAll()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
@@ -236,7 +236,7 @@ void RenderManagerGL::UnLinkListAll()
   @Summary: 登録された全てのRenderを削除する
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::ReleaseAll()
+void RenderGLManager::ReleaseAll()
 {
     RenderGL* pRender;
 
@@ -261,7 +261,7 @@ void RenderManagerGL::ReleaseAll()
   @Summary: 各レイヤーのRenderをカメラからの距離によってソートする
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::ZSort()
+void RenderGLManager::ZSort()
 {
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
@@ -281,7 +281,7 @@ void RenderManagerGL::ZSort()
   @Summary: 各レイヤーのRenderのZDepthの値を計算する
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::CalculateZSortAll()
+void RenderGLManager::CalculateZSortAll()
 {
     for (int Cnt = 0; Cnt < GameObject::LAYER_MAX; ++Cnt)
     {
@@ -296,7 +296,7 @@ void RenderManagerGL::CalculateZSortAll()
   @Summary: Renderをリストに追加する
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::LinkList(RenderGL* pRender, GameObject::LAYER Layer)
+void RenderGLManager::LinkList(RenderGL* pRender, GameObject::LAYER Layer)
 {
     pRenderGLList[Layer].push_back(pRender);
 }
@@ -305,7 +305,7 @@ void RenderManagerGL::LinkList(RenderGL* pRender, GameObject::LAYER Layer)
   @Summary: Renderをリストから解除する
   @Details: None
  *===============================================================================================*/
-void RenderManagerGL::UnLinkList(RenderGL* pRender)
+void RenderGLManager::UnLinkList(RenderGL* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 
@@ -325,7 +325,7 @@ void RenderManagerGL::UnLinkList(RenderGL* pRender)
   @Summary: 対象のRenderを削除する (リストからも取り除く)
   @Details: 対象のRenderのUninit()が呼ばれる
  *===============================================================================================*/
-void RenderManagerGL::Release(RenderGL* pRender)
+void RenderGLManager::Release(RenderGL* pRender)
 {
     GameObject::LAYER Layer = pRender->GetLayer();
 

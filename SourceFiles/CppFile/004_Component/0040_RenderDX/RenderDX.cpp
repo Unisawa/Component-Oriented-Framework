@@ -15,7 +15,7 @@
 
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0040_RenderDX/RenderDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -43,7 +43,7 @@ RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::L
     blendType   = BLENDTYPE::BLENDTYPE_NORMAL;
     cullingType = CULLTYPE::CULLTYPE_CCW;
 
-    RenderManagerDX::LinkList(this, Layer);
+    RenderDXManager::LinkList(this, Layer);
 }
 
 /*===============================================================================================* 
@@ -79,7 +79,7 @@ bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
  *===============================================================================================*/
 void RenderDX::SetBlending()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
     // ブレンドモードのリセット (アルファブレンドを基本とする)
     pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -131,7 +131,7 @@ void RenderDX::SetBlending()
  *===============================================================================================*/
 void RenderDX::SetCulling()
 {
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
     // カリングのリセット (裏カリングを基本とする)
     pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -167,9 +167,9 @@ void RenderDX::SetLayer(GameObject::LAYER value)
 {
     if (layer == value) return;
 
-    RenderManagerDX::UnLinkList(this);
+    RenderDXManager::UnLinkList(this);
     layer = value;
-    RenderManagerDX::LinkList(this, value);
+    RenderDXManager::LinkList(this, value);
 }
 
 //===============================================================================================//

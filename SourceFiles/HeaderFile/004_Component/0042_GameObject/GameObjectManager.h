@@ -60,6 +60,8 @@ public:
     static void UnLinkList(GameObject* pObject);
     static void Release(GameObject* pObject);
 
+    static std::list<GameObject*>* GetGameObjectList() { return pGameObjectList; }
+
 private:
     static std::list<GameObject*> pGameObjectList[GameObject::LAYER_MAX];
 };

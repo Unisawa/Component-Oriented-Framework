@@ -48,7 +48,8 @@ public:
              Transform(GameObject* pObject = NULL);
     virtual ~Transform();
 
-    void SetParent(Transform& value);
+    void       SetParent(Transform& value);
+    Transform* GetParent() { return parent; }
 
     //-----Setter, Getter-----//
     void    SetPosition(float x, float y, float z) { position.x = x; position.y = y; position.z = z; }

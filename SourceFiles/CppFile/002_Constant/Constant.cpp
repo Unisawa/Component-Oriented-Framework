@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Manager.h ] ゲーム全般に必要な各種Managerを管理するクラス
+ @File   : [ Constant.cpp ] プログラム内で使用する定数を全て管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -9,72 +9,64 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Include Guard                                                                               //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma once
-#ifndef _MANAGER_H_
-#define _MANAGER_H_
-
-//***********************************************************************************************//
-//                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
-#include "004_Component/0041_RenderGL/RenderManagerGL.h"
-#include "004_Component/0042_GameObject/Transform.h"
+
+//-----STL-----//
+#include <String>
+
+//-----Object-----//
+#include "002_Constant/Constant.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define _DIRECTX    // DirectXの使用宣言
-//#define _OPENGL     // OpenGL の使用宣言
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Class                                                                                       //
+//  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-class InputManager;
 
-class RenderManagerDX;
-class RenderManagerGL;
-class GameObjectManager;
-class SceneManager;
+//-----Application Setting-----//
+const std::string Constant::WINDOW_NAME = "UniverseEngine";
 
-class Manager
-{
-public:
-     Manager() {}
-    ~Manager() {}
+//-----Screen Size-----//
+const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
+const float Constant::SCREEN_HEIGHT = 720.0f;
 
-    HRESULT Init();
-    void    Uninit();
-    void    Update();
-    void    Draw();
+//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PC画面最大
+//const float Constant::SCREEN_HEIGHT = 768.0f;
 
-    static InputManager* GetInputManager() { return pInputManager; }
+const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
+const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
 
-    static RenderManagerDX* GetRenderManagerDX() { return pRenderManagerDX; }
-    static RenderManagerGL* GetRenderManagerGL() { return pRenderManagerGL; }
+//-----FilePath-----//
+const std::string Constant::PATH_RESOURCE = "Resource/";
 
-    static GameObjectManager* GetGameObjectManager() { return pGameObjectManager; }
-    static SceneManager*      GetSceneManager() { return pSceneManager; }
+const std::string Constant::PATH_DATABASE = "Database/";
+const std::string Constant::PATH_TEXTURE  = "Texture/";
+const std::string Constant::PATH_SHADER   = "Shader/";
 
-private:
-    static InputManager* pInputManager;
+const std::string Constant::PATH_NETWORK  = "Network/";
 
-    static RenderManagerDX* pRenderManagerDX;
-    static RenderManagerGL* pRenderManagerGL;
+const std::string Constant::PATH_MAP      = "Map/";
 
-    static GameObjectManager* pGameObjectManager;
-    static SceneManager*      pSceneManager;
-};
+const std::string Constant::PATH_MODEL    = "Model/";
+const std::string Constant::PATH_MOTION   = "Motion/";
 
-#endif
+const std::string Constant::PATH_AUDIO    = "Audio/";
+const std::string Constant::PATH_VOICE    = "VOICE";
+const std::string Constant::PATH_BGM      = "BGM/";
+const std::string Constant::PATH_SE       = "SE/";
+
+//-----Message-----//
+const int Constant::MESSAGE_ERROR   = -1;
+const int Constant::MESSAGE_SUCCESS = 1;
+
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

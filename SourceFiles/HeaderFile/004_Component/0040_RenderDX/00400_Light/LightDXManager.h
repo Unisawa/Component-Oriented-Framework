@@ -60,7 +60,7 @@ public:
     static void UnLinkList(LightDX* pLightDX);
     static void Release(LightDX* pLightDX);
 
-    static void EnableSpecular(BOOL value) { RenderManagerDX::GetDevice()->SetRenderState(D3DRS_SPECULARENABLE, value); }
+    static void EnableSpecular(BOOL value) { RenderDXManager::GetDevice()->SetRenderState(D3DRS_SPECULARENABLE, value); }
 
     static LightDX* GetLight(int LightID);
 

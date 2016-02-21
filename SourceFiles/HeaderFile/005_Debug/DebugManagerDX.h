@@ -1,6 +1,6 @@
-/**************************************************************************************************
+Ôªø/**************************************************************************************************
 
- @File   : [ Constant.cpp ] ÉvÉçÉOÉâÉÄì‡Ç≈égópÇ∑ÇÈíËêîÇëSÇƒä«óùÇ∑ÇÈÉNÉâÉX
+ @File   : [ DebugManagerDX.h ] DirectX„ÅÆ„Éá„Éê„ÉÉ„Ç∞„É¢„Éº„Éâ„ÇíÂà∂Âæ°„Åô„Çã„ÇØ„É©„Çπ
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -9,15 +9,21 @@
 
 //***********************************************************************************************//
 //                                                                                               //
+//  @Include Guard                                                                               //
+//                                                                                               //
+//***********************************************************************************************//
+#pragma once
+#ifndef _DEBUGMANAGERDX_H_
+#define _DEBUGMANAGERDX_H_
+
+//***********************************************************************************************//
+//                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----STL-----//
-#include <String>
-
-//-----Object-----//
-#include "001_Constant/Constant.h"
+//-----MainSetting-----//
+#include "001_Manager/Manager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -27,46 +33,47 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Static Variable                                                                             //
+//  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class DebugManagerDX
+{
+public:
+     DebugManagerDX();
+    ~DebugManagerDX();
 
-//-----Application Setting-----//
-const std::string Constant::WINDOW_NAME = "UniverseEngine";
+    static DebugManagerDX* Create();
 
-//-----Screen Size-----//
-const float Constant::SCREEN_WIDTH  = 1280.0f;    // HD (720p)
-const float Constant::SCREEN_HEIGHT = 720.0f;
+    void Init();
+    void Uninit();
+    void Update();
+    void Draw();
 
-//const float Constant::SCREEN_WIDTH  = 1366.0f;    // PCâÊñ ç≈ëÂ
-//const float Constant::SCREEN_HEIGHT = 768.0f;
+    void CheckGameObject();
 
-const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
-const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
+    static void CheckFPS(DWORD NowTime);
+    static void AddframeCount();
 
-//-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
+    static void Print(std::string String, ...);
 
-const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
-const std::string Constant::PATH_SHADER   = "Shader/";
+private:
+    static DWORD currentTime;
+    static DWORD lastTimeFPS;
+    static DWORD frameCount;
+    static int   countFPS;
 
-const std::string Constant::PATH_NETWORK  = "Network/";
+    static std::string messegeFree;
+    static std::string messegeHierarchy;
 
-const std::string Constant::PATH_MAP      = "Map/";
+    LPD3DXFONT pDebugFont;
+    D3DXCOLOR  textColor;
+    RECT       freeRect;
+    RECT       hierarchyRect;
 
-const std::string Constant::PATH_MODEL    = "Model/";
-const std::string Constant::PATH_MOTION   = "Motion/";
+    bool isDebugMode;
+};
 
-const std::string Constant::PATH_AUDIO    = "Audio/";
-const std::string Constant::PATH_VOICE    = "VOICE";
-const std::string Constant::PATH_BGM      = "BGM/";
-const std::string Constant::PATH_SE       = "SE/";
-
-//-----Message-----//
-const int Constant::MESSAGE_ERROR   = -1;
-const int Constant::MESSAGE_SUCCESS = 1;
-
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

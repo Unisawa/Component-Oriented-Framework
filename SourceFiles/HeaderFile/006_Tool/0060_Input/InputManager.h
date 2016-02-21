@@ -30,7 +30,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Input-----//
 #define  DIRECTINPUT_VERSION (0x0800)    // DirectInput のバージョン指定-(0x0800)
@@ -41,7 +41,7 @@
 //#include "InputVirtualKey.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderManagerDX.h"
+#include "004_Component/0040_RenderDX/RenderDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //

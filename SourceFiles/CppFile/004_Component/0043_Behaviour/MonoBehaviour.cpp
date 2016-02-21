@@ -14,7 +14,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "004_Component/0043_Behaviour/MonoBehaviour.h"

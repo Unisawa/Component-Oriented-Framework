@@ -14,7 +14,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "002_Manager/Manager.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "004_Component/0040_RenderDX/00400_Light/LightDX.h"
@@ -71,7 +71,7 @@ void LightDX::Init()
     D3DXVec3Normalize((D3DXVECTOR3*)&lightParam.Direction, &D3DXVECTOR3(0.0f, -1.0f, 0.0f));    // 各値を正規化する
 
     // デバイスオブジェクトの取得
-    LPDIRECT3DDEVICE9 pDevice = RenderManagerDX::GetDevice();
+    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
     pDevice->SetLight(lightID, &lightParam);    // ライトの設定
     pDevice->LightEnable(lightID, TRUE);        // ライトの有効
@@ -86,7 +86,7 @@ void LightDX::Uninit()
     LightDXManager::UnLinkList(this);
 
     // ライトの無効
-    RenderManagerDX::GetDevice()->LightEnable(lightID, FALSE);
+    RenderDXManager::GetDevice()->LightEnable(lightID, FALSE);
 }
 
 /*===============================================================================================* 
@@ -121,7 +121,7 @@ void LightDX::SetLightType(LIGHTTYPE value)
             break;
     }
 
-    RenderManagerDX::GetDevice()->SetLight(lightID, &lightParam);
+    RenderDXManager::GetDevice()->SetLight(lightID, &lightParam);
 }
 
 /*===============================================================================================* 
