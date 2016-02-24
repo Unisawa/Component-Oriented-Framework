@@ -101,13 +101,13 @@ void RenderDX::SetBlending()
             pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
             break;
 
-        // ‰ÁŽZ‡¬
+        // ‰ÁŽZ‡¬ (ƒ¿–³)
         case BLENDTYPE_ADD:
             pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
             pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
             break;
 
-        // ”¼‰ÁŽZ‡¬
+        // ‰ÁŽZ‡¬ (ƒ¿—L)
         case BLENDTYPE_ADD_SOFT:
             pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
             pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);

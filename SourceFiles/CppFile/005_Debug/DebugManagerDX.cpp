@@ -94,7 +94,7 @@ void DebugManagerDX::Init()
 
     isDebugMode = false;
 
-    freeRect.left   = 0;
+    freeRect.left   = (LONG) Constant::SCREEN_WIDTH / 3;
     freeRect.right  = (LONG) Constant::SCREEN_WIDTH;
     freeRect.top    = (LONG) Constant::SCREEN_HEIGHT * 2 / 3;
     freeRect.bottom = (LONG) Constant::SCREEN_HEIGHT;
@@ -137,7 +137,7 @@ void DebugManagerDX::Update()
     messegeFree.clear();
     messegeHierarchy.clear();
 
-    messegeFree += " -FreeMessege Space- \n";
+    messegeFree += " -Free Messege Space- \n";
 
     Keyboard* pKey = InputManager::GetKeyboard();
 
@@ -190,8 +190,8 @@ void DebugManagerDX::Draw()
  *===============================================================================================*/
 void DebugManagerDX::CheckGameObject()
 {
+    // FPSの表示
     char Temp[BUFFER_SIZE];
-
     sprintf_s(Temp, "【 FPS : %d 】\n\n", countFPS);
     messegeHierarchy += Temp;
 

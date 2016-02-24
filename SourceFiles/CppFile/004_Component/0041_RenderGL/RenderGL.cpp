@@ -79,8 +79,9 @@ bool RenderGL::ZSortCompareGreater(RenderGL* RenderA, RenderGL* RenderB)
  *===============================================================================================*/
 void RenderGL::SetBlending()
 {
-    // ブレンド Off
-    glDisable(GL_BLEND);
+    // ブレンドモードのリセット (アルファブレンドを基本とする)
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // ブレンド設定
     switch (blendType)
@@ -92,20 +93,17 @@ void RenderGL::SetBlending()
 
         // アルファブレンド
         case BLENDTYPE_NORMAL:
-            glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             break;
 
-        // 加算合成
+        // 加算合成 (α無)
         case BLENDTYPE_ADD:
+            glBlendFunc(GL_ONE, GL_ONE);
             break;
 
-        // 半加算合成
+        // 加算合成 (α有)
         case BLENDTYPE_ADD_SOFT:
-            break;
-
-        // 減算合成
-        case BLENDTYPE_SUBTRACT:
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
             break;
 
         default:

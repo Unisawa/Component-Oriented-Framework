@@ -352,6 +352,8 @@ void RenderDXManager::CalculateZSortAll()
     std::list<CameraDX*> pCamera = CameraDXManager::GetCameraDXList();
 
     // カメラの個数分、各オブジェクトとの距離を計算する。
+    // 現在カメラごとのZ値を保存しているわけではないので上書きをしている。
+    // レイヤーによって影響を受けるように変更するつもり
     for (auto CameraIterator = pCamera.begin(); CameraIterator != pCamera.end(); ++CameraIterator)
     {
         for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)

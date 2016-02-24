@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ Vector3.cpp ] 3Dベクトルと位置の表現
+ @File   : [ Matrix.h ] 一般的な4x4の行列 Matrix クラスの定義
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -9,12 +9,21 @@
 
 //***********************************************************************************************//
 //                                                                                               //
+//  @Include Guard                                                                               //
+//                                                                                               //
+//***********************************************************************************************//
+#pragma once
+#ifndef _MATRIX_H_
+#define _MATRIX_H_
+
+//***********************************************************************************************//
+//                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "000_Main/Main.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "008_Utility/Vector3.h"
@@ -27,53 +36,55 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Static Variable                                                                             //
+//  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-Vector3 Vector3::one (1,  1,  1);
-Vector3 Vector3::zero(0,  0,  0);
+#ifdef _DIRECTX
 
-Vector3 Vector3::up     ( 0,  1,  0);
-Vector3 Vector3::down   ( 0, -1,  0);
-Vector3 Vector3::right  ( 1,  0,  0);
-Vector3 Vector3::left   (-1,  0,  0);
-Vector3 Vector3::forward( 0,  0,  1);
-Vector3 Vector3::back   ( 0,  0, -1);
+    #define Matrix D3DXMATRIX
 
-/*===============================================================================================* 
-  @Summary: ベクトルの正規化を行う
-  @Details: None
- *===============================================================================================*/
-void Vector3::Normalize()
+#else // OpenGL
+
+struct Matrix
 {
-    float Magnitude = sqrtf((x * x) + (y * y) + (z * z));
+    Matrix();
+    Matrix( float _11, float _12, float _13, float _14,
+            float _21, float _22, float _23, float _24,
+            float _31, float _32, float _33, float _34,
+            float _41, float _42, float _43, float _44 );
 
-    if (Magnitude != 0)
-    {
-        Magnitude = 1 / Magnitude;
+    Matrix operator + (const Matrix &mtx) const;
+    Matrix operator - (const Matrix &mtx) const;
+    Matrix operator * (float value) const;
+    Matrix operator * (const Matrix &mtx) const;
 
-        x = x * Magnitude;
-        y = y * Magnitude;
-        z = z * Magnitude;
-    }
-    else
-    {
-        x = 0.0f;
-        y = 0.0f;
-        z = 0.0f;
-    }
-}
+    void operator += (const Matrix &mtx);
+    void operator -= (const Matrix &mtx);
+    void operator *= (float value);
+    void operator *= (const Matrix &mtx);
+    void operator  = (const Matrix &mtx);
 
-/*===============================================================================================* 
-  @Summary: 
-  @Details: 
- *===============================================================================================*/
+    void Identity();
+    void Inverse();
+    void SetTranslate(const Vector3 &Vec);
+    void SetScaling  (const Vector3 &Vec);
+    void SetRotateYawPitchRoll(const Vector3 &Vec);
 
-/*===============================================================================================* 
-  @Summary: 
-  @Details: 
- *===============================================================================================*/
+    static Matrix GetRoll(float x);
+    static Matrix GetPitch(float y);
+    static Matrix GetYaw(float z);
 
+    static Matrix identity;
+    static Matrix zero;
+
+    float _11; float _12; float _13; float _14;
+    float _21; float _22; float _23; float _24;
+    float _31; float _32; float _33; float _34;
+    float _41; float _42; float _43; float _44;
+};
+#endif
+
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //
