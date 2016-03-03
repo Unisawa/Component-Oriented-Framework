@@ -20,7 +20,6 @@
 //-----Manager-----//
 #include "006_Tool/0060_Input/InputManager.h"
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
-#include "004_Component/0041_RenderGL/RenderGLManager.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "007_Scene/SceneManager.h"
 #include "007_Scene/SceneTitle.h"
@@ -31,7 +30,6 @@
 #include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0042_GameObject/GameObject.h"
 #include "004_Component/0040_RenderDX/Render2DDX.h"
-#include "004_Component/0041_RenderGL/Render2DGL.h"
 #include "004_Component/0040_RenderDX/Render3DDX.h"
 
 //***********************************************************************************************//
@@ -102,12 +100,20 @@ void SceneGame::Init()
     //Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
 
     // 3Dポリゴン描画テスト
-    GameObject* pGameObject3 = new GameObject;
-    pGameObject3->SetName("DDDDD");
+    GameObject* pGameObject3 = new GameObject("DDDDD");
 
     pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
     pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
     pRender3D3->SetColor(D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+    
+    GameObject* pGameObject4 = new GameObject("FFFFF");
+
+    pRender3D3 = pGameObject4->AddComponent<Render3DDX>();
+    pRender3D3->transform->SetPosition(100.0f, 10.0f, 0.0f);
+    pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
+    pRender3D3->SetColor(D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
+
+    pTemp = pGameObject3;
 }
 
 /*===============================================================================================* 
@@ -131,19 +137,17 @@ void SceneGame::Update()
     // コンポーネント追加テスト
     if (pKey->GetKeyboardTrigger(DIK_C))
     {
-        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-
-        if (pRender == NULL)
-            pTemp->AddComponent<Render2DDX>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+        Vector3 Pos = pTemp->transform->GetPosition();
+        Pos.x -= 1.0f;
+        pTemp->transform->SetPosition(Pos);
     }
 
     // コンポーネント取得テスト
     if (pKey->GetKeyboardTrigger(DIK_V))
     {
-        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-
-        if (pRender != NULL)
-            pRender->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+        Vector3 Pos = pTemp->transform->GetPosition();
+        Pos.x += 1.0f;
+        pTemp->transform->SetPosition(Pos);
     }
 
     // ゲームオブジェクトの削除テスト

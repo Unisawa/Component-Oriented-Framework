@@ -98,6 +98,10 @@ void Render3DDX::Draw()
 {
     LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
+    // ƒ[ƒ‹ƒhs—ñ¶¬
+    transform->CreateWorldMatrix();
+    pDevice->SetTransform(D3DTS_WORLD, &transform->GetWorldMatrix());
+
     // •`‰æİ’è
     SetBlending();
     SetCulling();

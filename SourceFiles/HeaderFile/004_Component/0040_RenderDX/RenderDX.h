@@ -101,6 +101,9 @@ public:
     static bool ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB);
     static bool ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB);
 
+    static bool SortingOrderCompareLess(RenderDX* RenderA, RenderDX* RenderB);
+    static bool SortingOrderCompareGreater(RenderDX* RenderA, RenderDX* RenderB);
+
     void SetBlending();
     void SetCulling();
 
@@ -117,6 +120,9 @@ public:
     void  SetZDepth(float value) { zDepth = value; }
     float GetZDepth() const { return zDepth; }
 
+    void  SetSortingOrder(float value) { sortingOrder = value; }
+    float GetSortingOrder() const { return sortingOrder; }
+
     bool enabled;    // True時のみ描画を行う
 
 private:
@@ -124,7 +130,8 @@ private:
     BLENDTYPE         blendType;      // 描画時のブレンド設定
     CULLTYPE          cullingType;    // 描画時のカリング設定
 
-    float zDepth;    // カメラからオブジェクトまでの距離 (Zソート時に利用)
+    float zDepth;                     // カメラからオブジェクトまでの距離 (Zソート時に利用)
+    float sortingOrder;               // 同じレイヤー時の描画順番の制御に使用する
 };
 
 #endif

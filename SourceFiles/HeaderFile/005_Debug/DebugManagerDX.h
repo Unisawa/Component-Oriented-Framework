@@ -64,11 +64,16 @@ private:
 
     static std::string messegeFree;
     static std::string messegeHierarchy;
+    static std::string messegeInspector;
 
     LPD3DXFONT pDebugFont;
     D3DXCOLOR  textColor;
     RECT       freeRect;
     RECT       hierarchyRect;
+    RECT       inspectorRect;
+
+    int  selectGameObjectNumber;
+    int  maxGameObjectNumber;
 
     bool isDebugMode;
 };

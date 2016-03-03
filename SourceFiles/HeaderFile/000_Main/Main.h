@@ -43,6 +43,7 @@
 //-----STL-----//
 #include <String>
 #include <list>
+#include <algorithm>
 
 //-----Manager-----//
 #include "001_Manager/Manager.h"

@@ -35,10 +35,11 @@
 =================================================================================================*/
 RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, RENDERER, ComponentName)
 {
-    enabled   = true;
-    zDepth    = 1.0f;
-    layer     = Layer;
-    transform = pObject->transform;
+    enabled      = true;
+    zDepth       = 1.0f;
+    sortingOrder = 0.0f;
+    layer        = Layer;
+    transform    = pObject->transform;
 
     blendType   = BLENDTYPE::BLENDTYPE_NORMAL;
     cullingType = CULLTYPE::CULLTYPE_CCW;
@@ -71,6 +72,24 @@ bool RenderDX::ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB)
 bool RenderDX::ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
 {
     return RenderA->GetZDepth() > RenderB->GetZDepth();
+}
+
+/*===============================================================================================* 
+  @Summary: sortingOrderの値を参考にソートする Bに対してAの方が小さいか
+  @Details: None
+ *===============================================================================================*/
+bool RenderDX::SortingOrderCompareLess(RenderDX* RenderA, RenderDX* RenderB)
+{
+    return RenderA->GetSortingOrder() < RenderB->GetSortingOrder();
+}
+
+/*===============================================================================================* 
+  @Summary: sortingOrderの値を参考にソートする Bに対してAの方が大きいか
+  @Details: None
+ *===============================================================================================*/
+bool RenderDX::SortingOrderCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
+{
+    return RenderA->GetSortingOrder() > RenderB->GetSortingOrder();
 }
 
 /*===============================================================================================* 

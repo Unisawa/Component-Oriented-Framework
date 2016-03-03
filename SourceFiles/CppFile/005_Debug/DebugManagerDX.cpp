@@ -45,6 +45,7 @@ int   DebugManagerDX::countFPS    = 0;
 
 std::string DebugManagerDX::messegeFree;
 std::string DebugManagerDX::messegeHierarchy;
+std::string DebugManagerDX::messegeInspector;
 
 /*=================================================================================================
   @Summary: コンストラクタ
@@ -92,6 +93,8 @@ void DebugManagerDX::Init()
     textColor  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     pDebugFont = RenderDXManager::CreateFontText(20, 0, FW_BOLD, FALSE, "Terminal");
 
+    selectGameObjectNumber = 0;
+    maxGameObjectNumber    = 0;
     isDebugMode = false;
 
     freeRect.left   = (LONG) Constant::SCREEN_WIDTH / 3;
@@ -103,6 +106,11 @@ void DebugManagerDX::Init()
     hierarchyRect.right  = (LONG) Constant::SCREEN_WIDTH / 3;
     hierarchyRect.top    = 0;
     hierarchyRect.bottom = (LONG) Constant::SCREEN_HEIGHT * 2 / 3;
+
+    inspectorRect.left   = 0;
+    inspectorRect.right  = (LONG) Constant::SCREEN_WIDTH / 3;
+    inspectorRect.top    = (LONG) Constant::SCREEN_HEIGHT * 2 / 3;
+    inspectorRect.bottom = (LONG) Constant::SCREEN_HEIGHT;
 }
 #else
 void DebugManagerDX::Init()
@@ -136,8 +144,10 @@ void DebugManagerDX::Update()
 {
     messegeFree.clear();
     messegeHierarchy.clear();
+    messegeInspector.clear();
 
-    messegeFree += " -Free Messege Space- \n";
+    messegeFree      += " -Free Messege Space- \n";
+    messegeInspector += "【 Inspector 】 \n";
 
     Keyboard* pKey = InputManager::GetKeyboard();
 
@@ -152,6 +162,28 @@ void DebugManagerDX::Update()
         else
         {
             Manager::GetRenderDXManager()->ChangeState(&ScreenStateDX::none);
+        }
+    }
+
+    // SelectGamaObjectの移動
+    if (pKey->GetKeyboardPress(DIK_LSHIFT))
+    {
+        if (pKey->GetKeyboardTrigger(DIK_UP))
+        {
+            selectGameObjectNumber--;
+            if (selectGameObjectNumber < 0)
+            {
+                selectGameObjectNumber = maxGameObjectNumber - 1;
+            }
+        }
+
+        if (pKey->GetKeyboardTrigger(DIK_DOWN))
+        {
+            selectGameObjectNumber++;
+            if (selectGameObjectNumber > (maxGameObjectNumber - 1))
+            {
+                selectGameObjectNumber = 0;
+            }
         }
     }
 }
@@ -176,6 +208,7 @@ void DebugManagerDX::Draw()
 
     pDebugFont->DrawText(NULL, messegeFree.c_str(), -1, &freeRect, DT_LEFT, textColor);
     pDebugFont->DrawText(NULL, messegeHierarchy.c_str(), -1, &hierarchyRect, DT_LEFT, textColor);
+    pDebugFont->DrawText(NULL, messegeInspector.c_str(), -1, &inspectorRect, DT_LEFT, textColor);
 }
 #else
 void DebugManagerDX::Draw()
@@ -191,6 +224,7 @@ void DebugManagerDX::Draw()
 void DebugManagerDX::CheckGameObject()
 {
     // FPSの表示
+    int  GameObjectNum = 0;
     char Temp[BUFFER_SIZE];
     sprintf_s(Temp, "【 FPS : %d 】\n\n", countFPS);
     messegeHierarchy += Temp;
@@ -203,6 +237,27 @@ void DebugManagerDX::CheckGameObject()
     {
         for (auto Iterator = pList[Layer].begin(); Iterator != pList[Layer].end(); ++Iterator)
         {
+            // 選択中のGameObject の Transform の値を表示する
+            if (selectGameObjectNumber == GameObjectNum)
+            {
+                messegeInspector += "【 Transform 】\n";
+
+                sprintf_s(Temp, "Position: (%f, %f, %f) \n", (*Iterator)->transform->GetPosition().x, (*Iterator)->transform->GetPosition().y, (*Iterator)->transform->GetPosition().z);
+                messegeInspector += Temp;
+
+                sprintf_s(Temp, "Rotision: (%f, %f, %f) \n", (*Iterator)->transform->GetRotation().x, (*Iterator)->transform->GetRotation().y, (*Iterator)->transform->GetRotation().z);
+                messegeInspector += Temp;
+
+                sprintf_s(Temp, "Scale   : (%f, %f, %f) \n", (*Iterator)->transform->GetScale().x, (*Iterator)->transform->GetScale().y, (*Iterator)->transform->GetScale().z);
+                messegeInspector += Temp;
+
+                messegeHierarchy += "→";
+            }
+            else
+            {
+                messegeHierarchy += "  ";
+            }
+
             if ((*Iterator)->transform->GetParent() == NULL)
             {
                 messegeHierarchy += "  ";
@@ -214,8 +269,12 @@ void DebugManagerDX::CheckGameObject()
 
             messegeHierarchy += (*Iterator)->GetName();
             messegeHierarchy += "\n";
+
+            GameObjectNum++;
         }
     }
+
+    maxGameObjectNumber = GameObjectNum;
 }
 
 /*===============================================================================================* 

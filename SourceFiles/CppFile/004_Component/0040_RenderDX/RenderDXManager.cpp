@@ -336,9 +336,17 @@ void RenderDXManager::ZSort()
         {
             pRenderDXList[Layer].sort(RenderDX::ZSortCompareLess);
         }
-        else
+        else if (Layer < GameObject::LAYER::OBJECT2D_OPACITY_ONE)
         {
             pRenderDXList[Layer].sort(RenderDX::ZSortCompareGreater);
+        }
+        else if (Layer < GameObject::LAYER::OBJECT2D_TRANSLUCENT_ONE)
+        {
+            std::stable_sort(pRenderDXList[Layer].begin(), pRenderDXList[Layer].end(), &RenderDX::SortingOrderCompareLess);
+        }
+        else
+        {
+            std::stable_sort(pRenderDXList[Layer].begin(), pRenderDXList[Layer].end(), &RenderDX::SortingOrderCompareGreater);
         }
     }
 }
@@ -356,7 +364,7 @@ void RenderDXManager::CalculateZSortAll()
     // ƒŒƒCƒ„[‚É‚æ‚Á‚Ä‰e‹¿‚ðŽó‚¯‚é‚æ‚¤‚É•ÏX‚·‚é‚Â‚à‚è
     for (auto CameraIterator = pCamera.begin(); CameraIterator != pCamera.end(); ++CameraIterator)
     {
-        for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
+        for (int Layer = 0; Layer < GameObject::OBJECT2D_OPACITY_ONE; ++Layer)
         {
             for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
             {

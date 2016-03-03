@@ -1,6 +1,6 @@
-/**************************************************************************************************
+Ôªø/**************************************************************************************************
 
- @File   : [ Transform.h ] ÉIÉuÉWÉFÉNÉgÇÃà íuÅAâÒì]ÅAÉXÉPÅ[ÉãÇàµÇ§ÉNÉâÉX
+ @File   : [ MatrixDX.h ] ‰∏ÄËà¨ÁöÑ„Å™4x4„ÅÆË°åÂàó Matrix „ÇØ„É©„Çπ„ÅÆÂÆöÁæ©
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _TRANSFORM_H_
-#define _TRANSFORM_H_
+#ifndef _MATRIXDX_H_
+#define _MATRIXDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -23,11 +23,10 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "000_Main/Main.h"
 #include "001_Manager/Manager.h"
+#include "004_Component/0040_RenderDX/RenderDXManager.h"
 
 //-----Object-----//
-#include "004_Component/Component.h"
 #include "008_Utility/Vector3.h"
 
 //***********************************************************************************************//
@@ -35,52 +34,52 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_DIRECTX
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class GameObject;
-class Matrix;
-
-class Transform : public Component
+class Matrix : public D3DXMATRIX
 {
 public:
-             Transform(GameObject* pObject = NULL);
-    virtual ~Transform();
 
-    void       SetParent(Transform& value);
-    Transform* GetParent() { return parent; }
+    Matrix() : D3DXMATRIX(identity) {}
+    Matrix( float _11, float _12, float _13, float _14,
+            float _21, float _22, float _23, float _24,
+            float _31, float _32, float _33, float _34,
+            float _41, float _42, float _43, float _44) :
+            D3DXMATRIX(_11, _12, _13, _14, _21, _22, _23, _24, _31, _32, _33, _34, _41, _42, _43, _44) {}
 
-    //-----Setter, Getter-----//
-    void    SetPosition(float x, float y, float z) { position.x = x; position.y = y; position.z = z; }
-    void    SetPosition(const Vector3 &Vec)        { position = Vec; }
-    Vector3 GetPosition() const { return position; }
+    Matrix operator + (const Matrix &mtx) const;
+    Matrix operator - (const Matrix &mtx) const;
+    Matrix operator * (float f) const;
+    Matrix operator * (const Matrix &mtx) const;
+    Matrix operator / (const Matrix &mtx) const;
 
-    void    SetRotation(float x, float y, float z) { rotation.x = x; rotation.y = y; rotation.z = z; }
-    void    SetRotation(const Vector3 &Vec)        { rotation = Vec; }
-    Vector3 GetRotation() const { return rotation; }
+    void operator  += (const Matrix &mtx);
+    void operator  -= (const Matrix &mtx);
+    void operator  *= (float value);
+    void operator  *= (const Matrix &mtx);
+    void operator  /= (const Matrix &mtx);
+    void operator   = (const Matrix &mtx);
 
-    void    SetScale(float x, float y, float z) { lossyScale.x = x; lossyScale.y = y; lossyScale.z = z; }
-    void    SetScale(const Vector3 &Vec)        { lossyScale = Vec; }
-    Vector3 GetScale() const { return lossyScale; }
+    void operator   = (const D3DXMATRIX &v);
 
-    void    CreateWorldMatrix();
-    void    SetWorldMatrix(Matrix value) { worldMatrix = value; }
-    Matrix  GetWorldMatrix() const { return worldMatrix; }
+    void Identity();
 
-    static const std::string Transform::className;
+    void SetTranslate(const Vector3 &Vec);
+    void SetScaling  (const Vector3 &Vec);
+    void SetRotateYawPitchRoll(const Vector3 &Vec);
+    void GetRoll(float x);
+    void GetPitch(float y);
+    void GetYaw(float z);
 
-private:
-    Transform* parent;      // êe GameObject ÇÃ Transform
-
-    Matrix  worldMatrix;    // ÉèÅ[ÉãÉhçsóÒ
-
-    Vector3 position;       // ÉèÅ[ÉãÉhãÛä‘ÇÃ Transform ÇÃà íu
-    Vector3 rotation;       // ÉèÅ[ÉãÉhãÛä‘ÇÃ Transform ÇÃâÒì]
-    Vector3 lossyScale;     // ÉIÉuÉWÉFÉNÉgÇÃÉOÉçÅ[ÉoÉãÉXÉPÅ[Éã
+    static Matrix identity;
+    static Matrix zero;
 };
+#endif
 
 #endif
 //===============================================================================================//

@@ -23,15 +23,24 @@
 //***********************************************************************************************//
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
 #include "004_Component/0041_RenderGL/RenderGLManager.h"
-#include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#define _DIRECTX    // DirectXの使用宣言
-//#define _OPENGL     // OpenGL の使用宣言
+#define USE_DIRECTX    // DirectXの使用宣言
+//#define USE_OPENGL     // OpenGL の使用宣言
+
+#ifdef USE_DIRECTX
+    #include "008_Utility/MatrixDX.h"
+#endif
+
+#ifdef USE_OPENGL
+    #include "008_Utility/MatrixGL.h"
+#endif
+
+#include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
 //                                                                                               //
