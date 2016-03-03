@@ -37,6 +37,7 @@
 //                                                                                               //
 //***********************************************************************************************//
 class CameraDX;
+class Matrix;
 
 class CameraDXManager
 {
@@ -61,8 +62,19 @@ public:
 
     static std::list<CameraDX*> GetCameraDXList() { return pCameraDXList; }
 
+    void SetUpCamera2D();
+    void SetUpCamera3D();
+
 private:
     static std::list<CameraDX*> pCameraDXList;
+
+    // 2D用 Projection, View 行列
+    Matrix  orthoProjection;
+    Matrix  orthoView;
+
+    // 3D用 Projection, View 行列
+    Matrix* pPerspectiveProjection;
+    Matrix* pPerspectiveView;
 };
 
 #endif

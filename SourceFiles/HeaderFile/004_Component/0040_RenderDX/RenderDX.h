@@ -38,8 +38,7 @@
 //-----2DPolygon VertexInformation-----//
 typedef struct
 {
-    Vector3 pos;    // 頂点の位置座標
-    float       rhw;    // 3Dにおける2Dテクスチャのゆがみ補正のデータ パースペクティブコレクト
+    Vector3     pos;    // 頂点の位置座標
     D3DCOLOR    col;    // 頂点カラー
     D3DXVECTOR2 tex;    // テクスチャ座標
 
@@ -48,15 +47,15 @@ typedef struct
 //-----3DPolygon VertexInformation-----//
 typedef struct
 {
-    Vector3 pos;    // 頂点の位置座標
-    Vector3 nor;    // 法線ベクトル
+    Vector3     pos;    // 頂点の位置座標
+    Vector3     nor;    // 法線ベクトル
     D3DCOLOR    col;    // 頂点カラー
     D3DXVECTOR2 tex;    // テクスチャ座標
 
 }VERTEX_3D;
 
 //-----VertexFormat-----//
-#define FVF_VERTEX_2D (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+#define FVF_VERTEX_2D (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 #define FVF_VERTEX_3D (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
 //***********************************************************************************************//

@@ -54,13 +54,13 @@ public:
 
     virtual float GetZLengthCamera(Vector3 Position);
 
-    virtual D3DXMATRIX GetProjectionMatrix() { return ProjectionMatrix; }
-    virtual D3DXMATRIX GetViewMatrix()       { return ViewMatrix; }
+    virtual Matrix GetProjectionMatrix() { return ProjectionMatrix; }
+    virtual Matrix GetViewMatrix()       { return ViewMatrix; }
 
     static const std::string className;
 
-    D3DXMATRIX  ProjectionMatrix;    // プロジェクションマトリックス
-    D3DXMATRIX  ViewMatrix;          // ビューマトリックス
+    Matrix      ProjectionMatrix;    // プロジェクションマトリックス
+    Matrix      ViewMatrix;          // ビューマトリックス
 
     D3DXVECTOR3 PointEye;       // 視点
     D3DXVECTOR3 PointLook;      // 注視点

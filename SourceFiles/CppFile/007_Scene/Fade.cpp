@@ -65,7 +65,6 @@ void Fade::Init()
     fadeState = FADE::IDOL;
 
     gameObject->DontDestroyOnLoad(true);
-    gameObject->transform->SetPosition(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f);
     gameObject->transform->SetScale(Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.0f);
 
     // Fade—p 2Dƒ|ƒŠƒSƒ“’Ç‰Á

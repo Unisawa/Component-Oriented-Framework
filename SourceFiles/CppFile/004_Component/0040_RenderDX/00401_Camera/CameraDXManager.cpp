@@ -15,6 +15,7 @@
 
 //-----MainSetting-----//
 #include "000_Main/Main.h"
+#include "002_Constant/Constant.h"
 
 //-----Object-----//
 #include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"
@@ -53,9 +54,16 @@ CameraDXManager *CameraDXManager::Create()
 void CameraDXManager::Init()
 {
     // 初期カメラの生成
+    D3DXMatrixOrthoLH(&orthoProjection, Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.1f, 100.0f);
+    D3DXMatrixLookAtLH(&orthoView, &D3DXVECTOR3(0, 0, -1), &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 1, 0));
+
+    // MainCamera の生成
     GameObject* pCameraGameObject = new GameObject("MainCamera");
     pCameraGameObject->DontDestroyOnLoad(true);
-    pCameraGameObject->AddComponent<CameraDX>();
+
+    CameraDX* pCamera = pCameraGameObject->AddComponent<CameraDX>();
+    pPerspectiveProjection = &pCamera->ProjectionMatrix;
+    pPerspectiveView       = &pCamera->ViewMatrix;
 }
 
 /*===============================================================================================* 
@@ -158,6 +166,32 @@ void CameraDXManager::Release(CameraDX* pCameraDX)
 
         ++Iterator;
     }
+}
+
+/*===============================================================================================* 
+  @Summary: Projection, View 行列を設定する
+  @Details: None
+ *===============================================================================================*/
+void CameraDXManager::SetUpCamera2D()
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9  pDevice = RenderDXManager::GetDevice();
+
+    pDevice->SetTransform(D3DTS_PROJECTION, &orthoProjection);
+    pDevice->SetTransform(D3DTS_VIEW, &orthoView);
+}
+
+/*===============================================================================================* 
+  @Summary: Projection, View 行列を設定する
+  @Details: None
+ *===============================================================================================*/
+void CameraDXManager::SetUpCamera3D()
+{
+    // デバイスの取得
+    LPDIRECT3DDEVICE9  pDevice = RenderDXManager::GetDevice();
+
+    pDevice->SetTransform(D3DTS_PROJECTION, pPerspectiveProjection);
+    pDevice->SetTransform(D3DTS_VIEW, pPerspectiveView);
 }
 
 //===============================================================================================//

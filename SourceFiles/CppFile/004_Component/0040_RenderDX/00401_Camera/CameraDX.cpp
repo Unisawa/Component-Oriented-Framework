@@ -74,6 +74,9 @@ void CameraDX::Init()
     ScreenNear   = 1.0f;
     ScreenFar    = 10000.0f;
     ScreenAngle  = 45.0f;
+
+    SetProjection();
+    SetModelView();
 }
 
 /*===============================================================================================* 
@@ -91,8 +94,7 @@ void CameraDX::Uninit()
  *===============================================================================================*/
 void CameraDX::Update()
 {
-    SetProjection();
-    SetModelView();
+
 }
 
 /*===============================================================================================* 
@@ -107,7 +109,6 @@ void CameraDX::SetProjection()
     // プロジェクションマトリックスの設定
     D3DXMatrixIdentity(&ProjectionMatrix);
     D3DXMatrixPerspectiveFovLH(&ProjectionMatrix, ScreenAngle, ScreenAspect, ScreenNear, ScreenFar);
-    pDevice->SetTransform(D3DTS_PROJECTION, &ProjectionMatrix);
 }
 
 /*===============================================================================================* 
@@ -122,7 +123,6 @@ void CameraDX::SetModelView()
     // ビューマトリックスの設定
     D3DXMatrixIdentity(&ViewMatrix);
     D3DXMatrixLookAtLH(&ViewMatrix, &PointEye, &PointLook, &UpVector);
-    pDevice->SetTransform(D3DTS_VIEW, &ViewMatrix);
 }
 
 /*===============================================================================================* 

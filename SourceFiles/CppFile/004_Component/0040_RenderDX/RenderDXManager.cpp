@@ -274,8 +274,17 @@ void RenderDXManager::DrawAll()
     CalculateZSortAll();
     ZSort();
 
+    // 3D•`‰æ‚ÌŠJŽn
+    pCameraDXManager->SetUpCamera3D();
+
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
+        // 2D•`‰æ‚ÌŠJŽn
+        if (Layer == GameObject::OBJECT2D_OPACITY_ONE)
+        {
+            pCameraDXManager->SetUpCamera2D();
+        }
+
         for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
         {
             if ((*Iterator)->enabled)

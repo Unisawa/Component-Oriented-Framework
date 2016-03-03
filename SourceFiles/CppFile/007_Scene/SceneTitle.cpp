@@ -71,12 +71,12 @@ void SceneTitle::Init()
     // GameObjectの生成、コンポーネントの追加テスト
     GameObject* pGameObject0 = new GameObject;
     pGameObject0->SetName("AAAAA");
-    pGameObject0->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    //pGameObject0->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
     pGameObject0->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
 
     GameObject* pGameObject1 = new GameObject("BBBBB");
-    pGameObject1->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF + Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    pGameObject1->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
     pGameObject1->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
     pRender2D1->SetColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
@@ -84,7 +84,7 @@ void SceneTitle::Init()
 
     GameObject* pGameObject2 = new GameObject;
     pGameObject2->SetName("CCCCC");
-    pGameObject2->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF - Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+    pGameObject2->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
     pGameObject2->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
     pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
@@ -120,19 +120,25 @@ void SceneTitle::Update()
     // コンポーネント追加テスト
     if (pKey->GetKeyboardTrigger(DIK_C))
     {
-        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
+        if (pTemp != NULL)
+        {
+            Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
 
-        if (pRender == NULL)
-            pTemp->AddComponent<Render2DDX>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+            if (pRender == NULL)
+                pTemp->AddComponent<Render2DDX>()->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+        }
     }
 
     // コンポーネント取得テスト
     if (pKey->GetKeyboardTrigger(DIK_V))
     {
-        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
+        if (pTemp != NULL)
+        {
+            Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
 
-        if (pRender != NULL)
-            pRender->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+            if (pRender != NULL)
+                pRender->SetColor(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+        }
     }
 
     // ゲームオブジェクトの検索テスト
@@ -141,17 +147,41 @@ void SceneTitle::Update()
         pTemp = GameObject::Find("BBBBB");
     }
 
+    // ゲームオブジェクトの生成テスト
+    if (pKey->GetKeyboardTrigger(DIK_J))
+    {
+        if (pTemp == NULL)
+        {
+            GameObject* pGameObject0 = new GameObject("CCCCC");
+            pGameObject0->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
+            pGameObject0->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+            Render2DDX* pRender2D2 = pGameObject0->AddComponent<Render2DDX>();
+            pRender2D2->SetColor(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+
+            pTemp = pGameObject0;
+        }
+    }
+
     // ゲームオブジェクトの削除テスト
     if (pKey->GetKeyboardTrigger(DIK_K))
     {
-        pTemp->Destroy();
+        if (pTemp != NULL)
+        {
+            pTemp->Destroy();
+            pTemp = NULL;
+        }
     }
 
     // コンポーネントの削除テスト
     if (pKey->GetKeyboardTrigger(DIK_L))
     {
-        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-        pRender->Destroy();
+        if (pTemp != NULL)
+        {
+            Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
+
+            if (pRender != NULL)
+                pRender->Destroy();
+        }
     }
 
     if (pKey->GetKeyboardTrigger(DIK_SPACE))

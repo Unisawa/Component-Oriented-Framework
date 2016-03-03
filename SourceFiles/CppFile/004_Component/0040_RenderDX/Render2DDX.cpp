@@ -15,6 +15,7 @@
 
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
+#include "002_Constant/Constant.h"
 
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderDX.h"
@@ -96,6 +97,10 @@ void Render2DDX::Draw()
 {
     LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
+    // ワールド行列生成
+    transform->CreateWorldMatrix();
+    pDevice->SetTransform(D3DTS_WORLD, &transform->GetWorldMatrix());
+
     // 描画設定
     SetBlending();
     SetCulling();
@@ -106,10 +111,12 @@ void Render2DDX::Draw()
 
     // テクスチャの読み込み ポリゴンの描画
     pDevice->SetTexture(0, NULL);
+    pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
     //pDevice->SetTexture(0, TextureManager::GetTexture(TextureID));
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
     // テクスチャリセット
+    pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
     pDevice->SetTexture(0, NULL);
 }
 
@@ -127,27 +134,21 @@ void Render2DDX::SetVertex()
     pVertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
 
     // ポリゴンの位置座標
-    pVtx[0].pos.x = Position.x - Scale.x * 0.5f;
-    pVtx[0].pos.y = Position.y - Scale.y * 0.5f;
-    pVtx[0].pos.z = 0.0f;
+    pVtx[0].pos.x = - 0.5f;
+    pVtx[0].pos.y =   0.5f;
+    pVtx[0].pos.z =   0.0f;
 
-    pVtx[1].pos.x = Position.x + Scale.x * 0.5f;
-    pVtx[1].pos.y = Position.y - Scale.y * 0.5f;
-    pVtx[1].pos.z = 0.0f;
+    pVtx[1].pos.x =   0.5f;
+    pVtx[1].pos.y =   0.5f;
+    pVtx[1].pos.z =   0.0f;
 
-    pVtx[2].pos.x = Position.x - Scale.x * 0.5f;
-    pVtx[2].pos.y = Position.y + Scale.y * 0.5f;
-    pVtx[2].pos.z = 0.0f;
+    pVtx[2].pos.x = - 0.5f;
+    pVtx[2].pos.y = - 0.5f;
+    pVtx[2].pos.z =   0.0f;
 
-    pVtx[3].pos.x = Position.x + Scale.x * 0.5f;
-    pVtx[3].pos.y = Position.y + Scale.y * 0.5f;
-    pVtx[3].pos.z = 0.0f;
-
-    // ポリゴンの同次座標--固定--
-    pVtx[0].rhw = 1.0f;
-    pVtx[1].rhw = 1.0f;
-    pVtx[2].rhw = 1.0f;
-    pVtx[3].rhw = 1.0f;
+    pVtx[3].pos.x =   0.5f;
+    pVtx[3].pos.y = - 0.5f;
+    pVtx[3].pos.z =   0.0f;
 
     // ポリゴンのカラー情報
     pVtx[0].col = vertexColor;
