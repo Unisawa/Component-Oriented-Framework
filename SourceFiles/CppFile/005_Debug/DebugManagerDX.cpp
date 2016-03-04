@@ -93,6 +93,7 @@ void DebugManagerDX::Init()
     textColor  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     pDebugFont = RenderDXManager::CreateFontText(20, 0, FW_BOLD, FALSE, "Terminal");
 
+    selectGameObject       = NULL;
     selectGameObjectNumber = 0;
     maxGameObjectNumber    = 0;
     isDebugMode = false;
@@ -168,23 +169,7 @@ void DebugManagerDX::Update()
     // SelectGamaObjectの移動
     if (pKey->GetKeyboardPress(DIK_LSHIFT))
     {
-        if (pKey->GetKeyboardTrigger(DIK_UP))
-        {
-            selectGameObjectNumber--;
-            if (selectGameObjectNumber < 0)
-            {
-                selectGameObjectNumber = maxGameObjectNumber - 1;
-            }
-        }
-
-        if (pKey->GetKeyboardTrigger(DIK_DOWN))
-        {
-            selectGameObjectNumber++;
-            if (selectGameObjectNumber > (maxGameObjectNumber - 1))
-            {
-                selectGameObjectNumber = 0;
-            }
-        }
+        MoveGameObject();
     }
 }
 #else
@@ -240,15 +225,16 @@ void DebugManagerDX::CheckGameObject()
             // 選択中のGameObject の Transform の値を表示する
             if (selectGameObjectNumber == GameObjectNum)
             {
+                selectGameObject = (*Iterator);
                 messegeInspector += "【 Transform 】\n";
 
-                sprintf_s(Temp, "Position: (%f, %f, %f) \n", (*Iterator)->transform->GetPosition().x, (*Iterator)->transform->GetPosition().y, (*Iterator)->transform->GetPosition().z);
+                sprintf_s(Temp, "Position: (%f, %f, %f) \n", selectGameObject->transform->GetPosition().x, selectGameObject->transform->GetPosition().y, selectGameObject->transform->GetPosition().z);
                 messegeInspector += Temp;
 
-                sprintf_s(Temp, "Rotision: (%f, %f, %f) \n", (*Iterator)->transform->GetRotation().x, (*Iterator)->transform->GetRotation().y, (*Iterator)->transform->GetRotation().z);
+                sprintf_s(Temp, "Rotision: (%f, %f, %f) \n", selectGameObject->transform->GetRotation().x, selectGameObject->transform->GetRotation().y, selectGameObject->transform->GetRotation().z);
                 messegeInspector += Temp;
 
-                sprintf_s(Temp, "Scale   : (%f, %f, %f) \n", (*Iterator)->transform->GetScale().x, (*Iterator)->transform->GetScale().y, (*Iterator)->transform->GetScale().z);
+                sprintf_s(Temp, "Scale   : (%f, %f, %f) \n", selectGameObject->transform->GetScale().x, selectGameObject->transform->GetScale().y, selectGameObject->transform->GetScale().z);
                 messegeInspector += Temp;
 
                 messegeHierarchy += "→";
@@ -278,6 +264,12 @@ void DebugManagerDX::CheckGameObject()
     if (selectGameObjectNumber >= maxGameObjectNumber)
     {
         selectGameObjectNumber = 0;
+    }
+
+    // 現シーンにオブジェクトが一つも存在しない場合
+    if (maxGameObjectNumber == 0)
+    {
+        selectGameObject = NULL;
     }
 }
 
@@ -345,6 +337,84 @@ void DebugManagerDX::Print(std::string String, ...)
 
 }
 #endif
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
+void DebugManagerDX::MoveGameObject()
+{
+    Keyboard* pKey = InputManager::GetKeyboard();
+
+    if (selectGameObject == NULL) return;
+
+    // オブジェクトの選択
+    if (pKey->GetKeyboardTrigger(DIK_UP))
+    {
+        selectGameObjectNumber--;
+        if (selectGameObjectNumber < 0)
+        {
+            selectGameObjectNumber = maxGameObjectNumber - 1;
+        }
+    }
+
+    if (pKey->GetKeyboardTrigger(DIK_DOWN))
+    {
+        selectGameObjectNumber++;
+        if (selectGameObjectNumber >(maxGameObjectNumber - 1))
+        {
+            selectGameObjectNumber = 0;
+        }
+    }
+
+    // 選択オブジェクトの移動
+    if (pKey->GetKeyboardPress(DIK_A))
+    {
+        Vector3 Pos = selectGameObject->transform->GetPosition();
+        Pos.x -= 1.0f;
+        selectGameObject->transform->SetPosition(Pos);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_D))
+    {
+        Vector3 Pos = selectGameObject->transform->GetPosition();
+        Pos.x += 1.0f;
+        selectGameObject->transform->SetPosition(Pos);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_W))
+    {
+        Vector3 Pos = selectGameObject->transform->GetPosition();
+        Pos.z += 1.0f;
+        selectGameObject->transform->SetPosition(Pos);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_S))
+    {
+        Vector3 Pos = selectGameObject->transform->GetPosition();
+        Pos.z -= 1.0f;
+        selectGameObject->transform->SetPosition(Pos);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_E))
+    {
+        Vector3 Pos = selectGameObject->transform->GetPosition();
+        Pos.y += 1.0f;
+        selectGameObject->transform->SetPosition(Pos);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_Q))
+    {
+        Vector3 Pos = selectGameObject->transform->GetPosition();
+        Pos.y -= 1.0f;
+        selectGameObject->transform->SetPosition(Pos);
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 /*===============================================================================================* 
   @Summary: 

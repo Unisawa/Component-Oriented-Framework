@@ -146,22 +146,6 @@ void SceneGame::Update()
     // 入力テスト
     Keyboard* pKey = InputManager::GetKeyboard();
 
-    // コンポーネント追加テスト
-    if (pKey->GetKeyboardTrigger(DIK_C))
-    {
-        Vector3 Pos = pTemp->transform->GetPosition();
-        Pos.x -= 1.0f;
-        pTemp->transform->SetPosition(Pos);
-    }
-
-    // コンポーネント取得テスト
-    if (pKey->GetKeyboardTrigger(DIK_V))
-    {
-        Vector3 Pos = pTemp->transform->GetPosition();
-        Pos.x += 1.0f;
-        pTemp->transform->SetPosition(Pos);
-    }
-
     // ゲームオブジェクトの削除テスト
     if (pKey->GetKeyboardTrigger(DIK_K))
     {

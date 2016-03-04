@@ -36,6 +36,8 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class GameObject;
+
 class DebugManagerDX
 {
 public:
@@ -50,6 +52,7 @@ public:
     void Draw();
 
     void CheckGameObject();
+    void MoveGameObject();
 
     static void CheckFPS(DWORD NowTime);
     static void AddframeCount();
@@ -66,14 +69,15 @@ private:
     static std::string messegeHierarchy;
     static std::string messegeInspector;
 
-    LPD3DXFONT pDebugFont;
-    D3DXCOLOR  textColor;
-    RECT       freeRect;
-    RECT       hierarchyRect;
-    RECT       inspectorRect;
+    LPD3DXFONT  pDebugFont;
+    D3DXCOLOR   textColor;
+    RECT        freeRect;
+    RECT        hierarchyRect;
+    RECT        inspectorRect;
 
-    int  selectGameObjectNumber;
-    int  maxGameObjectNumber;
+    GameObject* selectGameObject;
+    int         selectGameObjectNumber;
+    int         maxGameObjectNumber;
 
     bool isDebugMode;
 };
