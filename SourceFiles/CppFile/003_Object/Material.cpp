@@ -39,7 +39,10 @@ Material::Material() : Object()
 {
     color = Color::white;
 
-    mainTextureID = 0;
+    mainTexture       = NULL;
+    mainTextureID     = 0;
+    mainTextureOffset = Vector2::zero;
+    mainTextureScale  = Vector2::one;
 }
 
 /*===============================================================================================* 

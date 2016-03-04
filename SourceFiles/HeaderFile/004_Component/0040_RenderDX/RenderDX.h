@@ -99,6 +99,8 @@ public:
     virtual void Update() = 0;
     virtual void Draw()   = 0;
 
+    virtual void SetVertex() = 0;
+
     static bool ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB);
     static bool ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB);
 
@@ -124,9 +126,12 @@ public:
     void  SetSortingOrder(float value) { sortingOrder = value; }
     float GetSortingOrder() const { return sortingOrder; }
 
-    void SetTexture(unsigned int TextureID);
-    void SetTexture(std::string TextureName);
-    int  GetTexture() const { return material.mainTextureID; }
+    void     SetTexture(std::string value);
+    void     SetTexture(Texture* value);
+    Texture* GetTexture() { return material.mainTexture; }
+
+    void     SetTextureID(unsigned int value);
+    int      GetTextureID() const { return material.mainTextureID; }
 
     bool enabled;    // True‚Ì‚İ•`‰æ‚ğs‚¤
 

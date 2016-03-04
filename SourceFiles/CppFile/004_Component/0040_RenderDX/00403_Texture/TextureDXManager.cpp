@@ -79,7 +79,7 @@ void TextureDXManager::Update()
   @Summary: 既に読み込まれているか確認する
   @Details: None
  *===============================================================================================*/
-int TextureDXManager::CheckLoaded(const std::string TextureName)
+TextureDX* TextureDXManager::CheckLoaded(const std::string TextureName)
 {
     // ロード済みのテクスチャかどうか、ファイル名から生成したハッシュ値で判定する
     unsigned int HashNumber = Hash::CRC32Hash(TextureName.c_str());
@@ -88,53 +88,51 @@ int TextureDXManager::CheckLoaded(const std::string TextureName)
     {
         if ((*Iterator)->textureID == HashNumber)
         {
-            Debug::Log("[ Loaded Texture Hash: %u ] %s", HashNumber, TextureName.c_str());
+            //Debug::Log("[ Loaded Texture Hash: %u ] %s", HashNumber, TextureName.c_str());
 
             (*Iterator)->repeatedNum++;
 
-            return HashNumber;
+            return (*Iterator);
         }
     }
 
     // 未読み込み
-    return Constant::MESSAGE_ERROR;
+    return NULL;
 }
 
 /*===============================================================================================* 
   @Summary: テクスチャを読み込み、テクスチャ識別番号を返す
   @Details: .bmp、.dds、.dib、.jpg、.png、.tga の読み込みに対応
  *===============================================================================================*/
-int TextureDXManager::Load(const std::string TextureName)
+TextureDX* TextureDXManager::Load(const std::string TextureName)
 {
     std::string FilePath = Constant::PATH_RESOURCE + Constant::PATH_TEXTURE + TextureName;
 
-    unsigned int TextureID = CheckLoaded(FilePath.c_str());
+    TextureDX* pCheckTexture = CheckLoaded(FilePath.c_str());
 
-    // 読み込み済みテクスチャならそのIDを返す
-    if (TextureID != Constant::MESSAGE_ERROR) return TextureID;
+    // 読み込み済みテクスチャならそれを返す
+    if (pCheckTexture != NULL) return pCheckTexture;
 
     // テクスチャのロードを開始する
     LPDIRECT3DDEVICE9  pDevice = RenderDXManager::GetDevice();
-    LPDIRECT3DTEXTURE9 Temp;
+    LPDIRECT3DTEXTURE9 pTempTexture;
 
-    if (D3DXCreateTextureFromFile(pDevice, FilePath.c_str(), &Temp) != D3D_OK)
+    if (D3DXCreateTextureFromFile(pDevice, FilePath.c_str(), &pTempTexture) != D3D_OK)
     {
         Debug::Log("[ Not Find Texture ] : %s", FilePath.c_str());
 
-        return Constant::MESSAGE_ERROR;    // テクスチャ読み込みエラー (FileName間違えの可能性有)
+        return NULL;    // テクスチャ読み込みエラー (FileName間違えの可能性有)
     }
 
     // ロード完了、リストに追加する
-    TextureID = Hash::CRC32Hash(FilePath);
-
     TextureDX* pTexture = new TextureDX();
     pTexture->SetName(TextureName);
-    pTexture->pTexture  = Temp;
-    pTexture->textureID = TextureID;
+    pTexture->pTexture  = pTempTexture;
+    pTexture->textureID = Hash::CRC32Hash(FilePath);
 
     LinkList(pTexture);
 
-    return TextureID;
+    return pTexture;
 }
 
 /*===============================================================================================*

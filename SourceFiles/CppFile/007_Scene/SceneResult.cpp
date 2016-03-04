@@ -73,6 +73,7 @@ void SceneResult::Init()
     pObject[0]->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D0 = pObject[0]->AddComponent<Render2DDX>();
     pRender2D0->SetTexture("Field000.jpg");
+    pRender2D0->SetVertex();
 
     pObject[1] = new GameObject("BBBBB");
     pObject[1]->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
@@ -80,6 +81,7 @@ void SceneResult::Init()
     Render2DDX* pRender2D1 = pObject[1]->AddComponent<Render2DDX>();
     //pRender2D1->SetColor(1.0f, 0.0f, 0.0f, 1.0f);
     pRender2D1->SetTexture("Blade.png");
+    pRender2D1->SetVertex();
 
     pObject[2] = new GameObject("CCCCC");
     pObject[2]->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
@@ -87,6 +89,7 @@ void SceneResult::Init()
     Render2DDX* pRender2D2 = pObject[2]->AddComponent<Render2DDX>();
     //pRender2D2->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
     pRender2D2->SetTexture("snow.tga");
+    pRender2D2->SetVertex();
 }
 
 /*===============================================================================================* 
@@ -117,6 +120,7 @@ void SceneResult::Update()
             Render2DDX* pRender2D0 = pObject[0]->AddComponent<Render2DDX>();
             pRender2D0->SetSortingOrder(0.0f);
             pRender2D0->SetTexture("snow.tga");
+            pRender2D0->SetVertex();
         }
     }
 
@@ -140,6 +144,7 @@ void SceneResult::Update()
             //pRender2D1->SetColor(1.0f, 0.0f, 0.0f, 1.0f);
             pRender2D1->SetSortingOrder(1.0f);
             pRender2D1->SetTexture("Blade.png");
+            pRender2D1->SetVertex();
         }
     }
 
@@ -163,6 +168,7 @@ void SceneResult::Update()
             //pRender2D2->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
             pRender2D2->SetSortingOrder(1.0f);
             pRender2D2->SetTexture("Field000.jpg");
+            pRender2D2->SetVertex();
         }
     }
 

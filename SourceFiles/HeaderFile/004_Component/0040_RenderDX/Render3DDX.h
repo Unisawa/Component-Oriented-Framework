@@ -50,6 +50,8 @@ public:
     virtual void Update() override;
     virtual void Draw()   override;
 
+    virtual void SetVertex() override;
+
     //-----Setter, Getter-----//
     void      SetSize(Vector3 value) { size = value; }
     void      SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
@@ -62,14 +64,9 @@ public:
     static const std::string className;
 
 private:
-    void SetVertex();
-
     LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
 
     Vector3     size;           // ポリゴンの大きさ
-
-    D3DXVECTOR2 textureUV;      // テクスチャのUV座標の視点
-    int         textureID;      // テクスチャ識別番号
 };
 
 #endif

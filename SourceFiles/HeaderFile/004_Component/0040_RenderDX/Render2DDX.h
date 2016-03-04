@@ -50,6 +50,8 @@ public:
     virtual void Update() override;
     virtual void Draw()   override;
 
+    virtual void SetVertex() override;
+
     //-----Setter, Getter-----//
     void  SetColor(Color value) { material.color = value; SetVertex(); }
     void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
@@ -58,12 +60,7 @@ public:
     static const std::string className;
 
 private:
-    void SetVertex();
-
     LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
-
-    D3DXVECTOR2 textureUV;      // テクスチャのUV座標の視点
-    int         textureID;      // テクスチャ識別番号
 };
 
 #endif

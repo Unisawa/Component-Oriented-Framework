@@ -59,10 +59,7 @@ Render3DDX::~Render3DDX()
  *===============================================================================================*/
 void Render3DDX::Init()
 {
-    size        = Vector3(10.0f, 0.0f, 10.0f);
-
-    textureUV   = D3DXVECTOR2(0.0f, 0.0f);
-    textureID   = -1;
+    size = Vector3(1.0f, 0.0f, 1.0f);
 
     // 頂点バッファーの確保
     RenderDXManager::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_3D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
@@ -87,7 +84,7 @@ void Render3DDX::Uninit()
  *===============================================================================================*/
 void Render3DDX::Update()
 {
-    SetVertex();
+
 }
 
 /*===============================================================================================* 
@@ -161,10 +158,10 @@ void Render3DDX::SetVertex()
     pVtx[3].col = material.color.Trans();
 
     // ポリゴンのテクスチャ座標
-    pVtx[0].tex = D3DXVECTOR2(textureUV.x + 0.0f, textureUV.y + 0.0f);
-    pVtx[1].tex = D3DXVECTOR2(textureUV.x + 1.0f, textureUV.y + 0.0f);
-    pVtx[2].tex = D3DXVECTOR2(textureUV.x + 0.0f, textureUV.y + 1.0f);
-    pVtx[3].tex = D3DXVECTOR2(textureUV.x + 1.0f, textureUV.y + 1.0f);
+    pVtx[0].tex = D3DXVECTOR2(material.mainTextureOffset.x                              , material.mainTextureOffset.y);
+    pVtx[1].tex = D3DXVECTOR2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y);
+    pVtx[2].tex = D3DXVECTOR2(material.mainTextureOffset.x                              , material.mainTextureOffset.y + material.mainTextureScale.y);
+    pVtx[3].tex = D3DXVECTOR2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y + material.mainTextureScale.y);
 
     // 頂点バッファ領域のアンロック
     pVertexBuffer->Unlock();

@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ TextureDX.h ] DirectXにてテクスチャを扱うためのクラス
+ @File   : [ TextureDX.h ] テクスチャを扱うための基盤となるクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _TEXTUREDX_H_
-#define _TEXTUREDX_H_
+#ifndef _TEXTURE_H_
+#define _TEXTURE_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,7 +26,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "003_Object/Texture.h"
+#include "003_Object/Object.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,16 +39,17 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class TextureDX : public Texture
+class Texture : public Object
 {
 public:
-             TextureDX();
-    virtual ~TextureDX();
+             Texture();
+    virtual ~Texture();
 
-    void Init();
-    void Uninit();
+    virtual void Init()   = 0;
+    virtual void Uninit() = 0;
 
-    LPDIRECT3DTEXTURE9 pTexture;
+    unsigned int textureID;      // テクスチャの識別番号(ハッシュ値)
+    unsigned int repeatedNum;    // テクスチャの重複数 (何個このテクスチャを使っているか)
 };
 
 #endif

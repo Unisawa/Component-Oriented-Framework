@@ -42,8 +42,8 @@ RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::L
     layer        = Layer;
     transform    = pObject->transform;
 
-    blendType   = BLENDTYPE::BLENDTYPE_NORMAL;
-    cullingType = CULLTYPE::CULLTYPE_CCW;
+    blendType    = BLENDTYPE::BLENDTYPE_NORMAL;
+    cullingType  = CULLTYPE::CULLTYPE_CCW;
 
     RenderDXManager::LinkList(this, Layer);
 }
@@ -196,18 +196,31 @@ void RenderDX::SetLayer(GameObject::LAYER value)
   @Summary: 指定したテクスチャ名のテクスチャを設定する
   @Details: 未読み込みの場合は読み込む
  *===============================================================================================*/
-void RenderDX::SetTexture(std::string TextureName)
+void RenderDX::SetTexture(std::string value)
 {
-    material.mainTextureID = TextureDXManager::Load(TextureName);
+    material.mainTexture   = TextureDXManager::Load(value);
+    material.mainTextureID = material.mainTexture->textureID;
+}
+
+/*===============================================================================================* 
+  @Summary: 指定したテクスチャクラスを直接設定する
+  @Details: None
+ *===============================================================================================*/
+void RenderDX::SetTexture(Texture* value)
+{
+    material.mainTexture   = value;
+    material.mainTextureID = value->textureID;
+
+    value->repeatedNum++;    // このテクスチャを使用している数が増えたため増加させる
 }
 
 /*===============================================================================================* 
   @Summary: 指定したテクスチャID(Hash値)を直接設定する
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetTexture(unsigned int TextureID)
+void RenderDX::SetTextureID(unsigned int value)
 {
-    material.mainTextureID = TextureID;
+    material.mainTextureID = value;
 }
 
 //===============================================================================================//

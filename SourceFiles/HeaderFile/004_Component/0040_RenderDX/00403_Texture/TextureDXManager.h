@@ -50,8 +50,8 @@ public:
     void Uninit();
     void Update();
 
-    static int  CheckLoaded(const std::string TextureName);
-    static int  Load(const std::string TextureName);
+    static TextureDX* CheckLoaded(const std::string TextureName);
+    static TextureDX* Load(const std::string TextureName);
 
     static void Delete(unsigned int TextureID);
 

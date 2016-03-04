@@ -28,6 +28,7 @@
 //-----Object-----//
 #include "003_Object/Object.h"
 #include "008_Utility/Color.h"
+#include "008_Utility/Vector2.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -41,6 +42,7 @@
 //                                                                                               //
 //***********************************************************************************************//
 class Color;
+class Texture;
 
 class Material : public Object
 {
@@ -48,8 +50,12 @@ public:
      Material();
     ~Material();
 
-    Color        color;            // 色情報
-    unsigned int mainTextureID;    // テクスチャID(ハッシュ値)
+    Color        color;                // 色情報
+
+    Texture*     mainTexture;          // テクスチャ情報
+    unsigned int mainTextureID;        // テクスチャID(ハッシュ値)
+    Vector2      mainTextureOffset;    // メインテクスチャのオフセット
+    Vector2      mainTextureScale;     // メインテクスチャのスケール
 };
 
 #endif
