@@ -41,7 +41,7 @@ const std::string Fade::className = "Fade";
 =================================================================================================*/
 Fade::Fade(GameObject* pObject) : MonoBehaviour(pObject, className)
 {
-    fadeTime  = 40;
+    fadeTime  = 20;
     fadeCount = 0;
 
     fadeState = FADE::NONE;
@@ -165,9 +165,15 @@ void Fade::FadeOut()
 }
 
 /*===============================================================================================* 
-  @Summary: 
-  @Details: 
+  @Summary: Fadeする色を設定する
+  @Details: α情報をフェード時に操作するので今は設定できないようにしている
  *===============================================================================================*/
+void Fade::SetColor(Color value)
+{
+    pRender2D->material.color.r = value.r;
+    pRender2D->material.color.g = value.g;
+    pRender2D->material.color.b = value.b;
+};
 
 //===============================================================================================//
 //                                                                                               //

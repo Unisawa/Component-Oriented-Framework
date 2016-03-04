@@ -58,7 +58,7 @@ public:
     COLOR Trans();
 
     static Color black;
-    static Color White;
+    static Color white;
     static Color gray;
 
     static Color red;

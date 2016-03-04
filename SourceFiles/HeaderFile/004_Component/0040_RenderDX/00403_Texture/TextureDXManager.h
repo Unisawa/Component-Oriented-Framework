@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ Material.h ] アニメーションも行えるマテリアルクラス
+ @File   : [ TextureDXManager.h ] TextureDXを管理するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _MATERIAL_H_
-#define _MATERIAL_H_
+#ifndef _TEXTUREDXMANAGER_H_
+#define _TEXTUREDXMANAGER_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -22,12 +22,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "001_Manager/Manager.h"
-
 //-----Object-----//
-#include "003_Object/Object.h"
-#include "008_Utility/Color.h"
+#include "004_Component/0040_RenderDX/00403_Texture/TextureDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,16 +36,37 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Color;
+class TextureDX;
 
-class Material : public Object
+class TextureDXManager
 {
 public:
-     Material();
-    ~Material();
+     TextureDXManager() {}
+    ~TextureDXManager() {}
 
-    Color        color;            // 色情報
-    unsigned int mainTextureID;    // テクスチャID(ハッシュ値)
+    static TextureDXManager* Create();
+
+    void Init();
+    void Uninit();
+    void Update();
+
+    static int  CheckLoaded(const std::string TextureName);
+    static int  Load(const std::string TextureName);
+
+    static void Delete(unsigned int TextureID);
+
+    static LPDIRECT3DTEXTURE9 GetTexture(unsigned int TextureID);
+
+    static void UnLinkListAll();
+    static void ReleaseAll();
+
+    //-----Operation List-----//
+    static void LinkList(TextureDX* pTextureDX);
+    static void UnLinkList(TextureDX* pTextureDX);
+    static void Release(TextureDX* pTextureDX);
+
+private:
+    static std::list<TextureDX*> pTextureDXList;
 };
 
 #endif

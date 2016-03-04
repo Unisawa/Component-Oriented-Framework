@@ -20,6 +20,7 @@
 #include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/Render3DDX.h"
 #include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -110,8 +111,7 @@ void Render3DDX::Draw()
     pDevice->SetFVF(FVF_VERTEX_3D);
 
     // テクスチャの読み込み ポリゴンの描画
-    pDevice->SetTexture(0, NULL);
-    //pDevice->SetTexture(0, TextureManager::GetTexture(TextureID));
+    pDevice->SetTexture(0, TextureDXManager::GetTexture(material.mainTextureID));
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
     // テクスチャリセット

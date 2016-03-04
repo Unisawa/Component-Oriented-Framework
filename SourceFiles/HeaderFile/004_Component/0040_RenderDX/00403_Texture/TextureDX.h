@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ Material.h ] アニメーションも行えるマテリアルクラス
+ @File   : [ TextureDX.h ] テクスチャを扱うための基盤となるクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _MATERIAL_H_
-#define _MATERIAL_H_
+#ifndef _TEXTUREDX_H_
+#define _TEXTUREDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -27,7 +27,6 @@
 
 //-----Object-----//
 #include "003_Object/Object.h"
-#include "008_Utility/Color.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,16 +39,19 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Color;
-
-class Material : public Object
+class TextureDX : public Object
 {
 public:
-     Material();
-    ~Material();
+             TextureDX();
+    virtual ~TextureDX();
 
-    Color        color;            // 色情報
-    unsigned int mainTextureID;    // テクスチャID(ハッシュ値)
+    void Init();
+    void Uninit();
+
+    LPDIRECT3DTEXTURE9 pTexture;
+
+    unsigned int textureID;      // テクスチャの識別番号(ハッシュ値)
+    unsigned int repeatedNum;    // テクスチャの重複数 (何個このテクスチャを使っているか)
 };
 
 #endif

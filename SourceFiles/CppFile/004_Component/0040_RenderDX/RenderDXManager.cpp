@@ -27,6 +27,7 @@
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDX.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateNoneDX.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDebugDX.h"
+#include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 
 #include "005_Debug/DebugManagerDX.h"
 
@@ -47,10 +48,11 @@ LPDIRECT3DDEVICE9 RenderDXManager::pD3DDevice = NULL;
 D3DVIEWPORT9      RenderDXManager::defaultViewport;
 D3DXCOLOR         RenderDXManager::clearColor = D3DCOLOR_RGBA(55, 55, 170, 255);
 
-DebugManagerDX*   RenderDXManager::pDebugManagerDX  = NULL;
+DebugManagerDX*   RenderDXManager::pDebugManagerDX = NULL;
 
-LightDXManager*   RenderDXManager::pLightDXManager  = NULL;
-CameraDXManager*  RenderDXManager::pCameraDXManager = NULL;
+LightDXManager*   RenderDXManager::pLightDXManager   = NULL;
+CameraDXManager*  RenderDXManager::pCameraDXManager  = NULL;
+TextureDXManager* RenderDXManager::pTextureDXManager = NULL;
 
 std::list<RenderDX*> RenderDXManager::pRenderDXList[GameObject::LAYER_MAX];
 
@@ -71,8 +73,9 @@ RenderDXManager *RenderDXManager::Create()
     
     pDebugManagerDX  = DebugManagerDX::Create();
 
-    pLightDXManager  = LightDXManager::Create();
-    pCameraDXManager = CameraDXManager::Create();
+    pLightDXManager   = LightDXManager::Create();
+    pCameraDXManager  = CameraDXManager::Create();
+    pTextureDXManager = TextureDXManager::Create();
 
     return pRenderDXManager;
 }
@@ -172,11 +175,11 @@ HRESULT RenderDXManager::Init()
     pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
     // フォグの設定
-    pD3DDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
-    pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, clearColor);
-    pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_EXP);
-    float FogDensity = 0.001f;
-    pD3DDevice->SetRenderState(D3DRS_FOGDENSITY, *((DWORD*)(&FogDensity)));
+    //pD3DDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
+    //pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, clearColor);
+    //pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_EXP);
+    //float FogDensity = 0.001f;
+    //pD3DDevice->SetRenderState(D3DRS_FOGDENSITY, *((DWORD*)(&FogDensity)));
 
     // 背景クリア色の初期設定
     SetClearColor(clearColor);
@@ -198,6 +201,7 @@ void RenderDXManager::Uninit()
     // 既にGameObjectManager::ReleaseAll()でRenderコンポーネントは削除されているのでリンクを解除する
     UnLinkListAll();
 
+    SafeDeleteUninit(pTextureDXManager);
     SafeDeleteUninit(pCameraDXManager);
     SafeDeleteUninit(pLightDXManager);
 
@@ -283,6 +287,7 @@ void RenderDXManager::DrawAll()
         if (Layer == GameObject::OBJECT2D_OPACITY_ONE)
         {
             pCameraDXManager->SetUpCamera2D();
+            pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
         }
 
         for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
@@ -293,6 +298,8 @@ void RenderDXManager::DrawAll()
             }
         }
     }
+
+    pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 /*===============================================================================================*

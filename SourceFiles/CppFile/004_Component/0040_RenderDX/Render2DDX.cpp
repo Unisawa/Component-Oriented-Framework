@@ -21,6 +21,7 @@
 #include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/Render2DDX.h"
 #include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -109,13 +110,10 @@ void Render2DDX::Draw()
     pDevice->SetFVF(FVF_VERTEX_2D);
 
     // テクスチャの読み込み ポリゴンの描画
-    pDevice->SetTexture(0, NULL);
-    pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-    //pDevice->SetTexture(0, TextureManager::GetTexture(TextureID));
+    pDevice->SetTexture(0, TextureDXManager::GetTexture(material.mainTextureID));
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
     // テクスチャリセット
-    pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
     pDevice->SetTexture(0, NULL);
 }
 

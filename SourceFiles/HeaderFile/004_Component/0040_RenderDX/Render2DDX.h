@@ -51,9 +51,6 @@ public:
     virtual void Draw()   override;
 
     //-----Setter, Getter-----//
-    void SetTexture(std::string TextureName);
-    int  GetTexture() const { return textureID; }
-
     void  SetColor(Color value) { material.color = value; SetVertex(); }
     void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
     Color GetColor() const { return material.color; }

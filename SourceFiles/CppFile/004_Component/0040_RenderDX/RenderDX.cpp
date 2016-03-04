@@ -16,6 +16,7 @@
 //-----Object-----//
 #include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
+#include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -189,6 +190,24 @@ void RenderDX::SetLayer(GameObject::LAYER value)
     RenderDXManager::UnLinkList(this);
     layer = value;
     RenderDXManager::LinkList(this, value);
+}
+
+/*===============================================================================================* 
+  @Summary: 指定したテクスチャ名のテクスチャを設定する
+  @Details: 未読み込みの場合は読み込む
+ *===============================================================================================*/
+void RenderDX::SetTexture(std::string TextureName)
+{
+    material.mainTextureID = TextureDXManager::Load(TextureName);
+}
+
+/*===============================================================================================* 
+  @Summary: 指定したテクスチャID(Hash値)を直接設定する
+  @Details: None
+ *===============================================================================================*/
+void RenderDX::SetTexture(unsigned int TextureID)
+{
+    material.mainTextureID = TextureID;
 }
 
 //===============================================================================================//

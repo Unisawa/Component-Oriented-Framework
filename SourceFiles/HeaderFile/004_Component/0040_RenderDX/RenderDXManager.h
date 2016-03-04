@@ -55,6 +55,7 @@ class LightDXManager;
 class CameraDXManager;
 class DebugManagerDX;
 class ScreenStateDX;
+class TextureDXManager;
 
 class RenderDXManager
 {
@@ -96,8 +97,9 @@ public:
     
     static DebugManagerDX*  GetDebugManagerDX()  { return pDebugManagerDX; }
 
-    static LightDXManager*  GetLightDXManager()  { return pLightDXManager; }
-    static CameraDXManager* GetCameraDXManager() { return pCameraDXManager; }
+    static LightDXManager*   GetLightDXManager()   { return pLightDXManager; }
+    static CameraDXManager*  GetCameraDXManager()  { return pCameraDXManager; }
+    static TextureDXManager* GetTextureDXManager() { return pTextureDXManager; }
 
 private:
     static LPDIRECT3D9       pD3DObject;    // Direct3Dオブジェクト
@@ -108,8 +110,9 @@ private:
     
     static DebugManagerDX*  pDebugManagerDX;
 
-    static LightDXManager*  pLightDXManager;
-    static CameraDXManager* pCameraDXManager;
+    static LightDXManager*   pLightDXManager;
+    static CameraDXManager*  pCameraDXManager;
+    static TextureDXManager* pTextureDXManager;
 
     static std::list<RenderDX*> pRenderDXList[GameObject::LAYER_MAX];
 

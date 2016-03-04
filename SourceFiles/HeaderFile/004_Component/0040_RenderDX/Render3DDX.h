@@ -51,9 +51,6 @@ public:
     virtual void Draw()   override;
 
     //-----Setter, Getter-----//
-    void SetTexture(std::string TextureName);
-    int  GetTexture() const { return textureID; }
-
     void      SetSize(Vector3 value) { size = value; }
     void      SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
     Vector3   GetSize() { return size; }

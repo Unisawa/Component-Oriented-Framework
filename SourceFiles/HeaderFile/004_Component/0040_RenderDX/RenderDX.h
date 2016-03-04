@@ -124,6 +124,10 @@ public:
     void  SetSortingOrder(float value) { sortingOrder = value; }
     float GetSortingOrder() const { return sortingOrder; }
 
+    void SetTexture(unsigned int TextureID);
+    void SetTexture(std::string TextureName);
+    int  GetTexture() const { return material.mainTextureID; }
+
     bool enabled;    // True時のみ描画を行う
 
     Material          material;       // マテリアル情報

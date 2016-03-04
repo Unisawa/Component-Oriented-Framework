@@ -31,7 +31,7 @@
 //                                                                                               //
 //***********************************************************************************************//
 Color Color::black = Color(0.0f, 0.0f, 0.0f, 1.0f);
-Color Color::White = Color(1.0f, 1.0f, 1.0f, 1.0f);
+Color Color::white = Color(1.0f, 1.0f, 1.0f, 1.0f);
 Color Color::gray  = Color(0.5f, 0.5f, 0.5f, 1.0f);
 
 Color Color::red   = Color(1.0f, 0.0f, 0.0f, 1.0f);
@@ -50,7 +50,7 @@ Color Color::clear   = Color(0.0f, 0.0f, 0.0f, 0.0f);
  *===============================================================================================*/
 COLOR Color::Trans()
 {
-    COLOR color;
+    COLOR color = 0;
 
     color = ( (COLOR)  ( ((((long)(a * 255.0f)) & 0xff) << 24) | ((((long)(r * 255.0f)) & 0xff) << 16) | ((((long)(g * 255.0f)) & 0xff) << 8) | ((((long)(b * 255.0f)) & 0xff))) );
 

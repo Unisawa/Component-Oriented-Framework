@@ -21,6 +21,7 @@
 #include "006_Tool/0060_Input/InputManager.h"
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
+#include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 #include "007_Scene/SceneManager.h"
 #include "007_Scene/SceneTitle.h"
 #include "007_Scene/SceneGame.h"
@@ -104,14 +105,18 @@ void SceneGame::Init()
 
     pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
     pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
-    pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
-    
+    //pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
+    pRender3D3->SetTexture("Field000.jpg");
+
     GameObject* pGameObject4 = new GameObject("FFFFF");
+    unsigned int TextureID = pRender3D3->GetTexture();
 
     pRender3D3 = pGameObject4->AddComponent<Render3DDX>();
     pRender3D3->transform->SetPosition(100.0f, 10.0f, 0.0f);
     pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
-    pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
+    //pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
+    pRender3D3->SetLayer(GameObject::LAYER::OBJECT3D_TRANSLUCENT_ONE);
+    pRender3D3->SetTexture("snow.tga");
 
     pTemp = pGameObject3;
 }

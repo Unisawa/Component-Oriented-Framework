@@ -41,6 +41,7 @@
 //                                                                                               //
 //***********************************************************************************************//
 class Render2DDX;
+class Color;
 
 class Fade : public MonoBehaviour
 {
@@ -66,6 +67,8 @@ public:
 
     void FadeIn();
     void FadeOut();
+
+    void SetColor(Color value);
 
     static const std::string className;
 

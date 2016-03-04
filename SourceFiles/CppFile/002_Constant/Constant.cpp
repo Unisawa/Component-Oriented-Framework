@@ -45,10 +45,10 @@ const float Constant::SCREEN_WIDTH_HALF  = SCREEN_WIDTH  * 0.5f;
 const float Constant::SCREEN_HEIGHT_HALF = SCREEN_HEIGHT * 0.5f;
 
 //-----FilePath-----//
-const std::string Constant::PATH_RESOURCE = "Resource/";
+const std::string Constant::PATH_RESOURCE = "Resources/";
 
 const std::string Constant::PATH_DATABASE = "Database/";
-const std::string Constant::PATH_TEXTURE  = "Texture/";
+const std::string Constant::PATH_TEXTURE  = "Textures/";
 const std::string Constant::PATH_SHADER   = "Shader/";
 
 const std::string Constant::PATH_NETWORK  = "Network/";

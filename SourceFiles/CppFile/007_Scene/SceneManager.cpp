@@ -22,6 +22,7 @@
 #include "007_Scene/SceneGame.h"
 #include "007_Scene/SceneResult.h"
 #include "007_Scene/Fade.h"
+#include "008_Utility/Color.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -83,6 +84,7 @@ void SceneManager::Init()
     // フェードフィルターの作成
     GameObject* pFadeGameObject = new GameObject("Fade Filter");
     pFade = pFadeGameObject->AddComponent<Fade>();
+    pFade->SetColor(Color::white);
 
     // 初回起動時のシーンの初期化
     pScene->Init();

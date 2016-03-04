@@ -73,20 +73,22 @@ void SceneTitle::Init()
     pGameObject0->SetName("AAAAA");
     pGameObject0->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
+    pRender2D0->SetTexture("Field000.jpg");
 
     GameObject* pGameObject1 = new GameObject("BBBBB");
     pGameObject1->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
     pGameObject1->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
-    pRender2D1->SetColor(1.0f, 0.0f, 0.0f, 1.0f);
-    //pGameObject1->DontDestroyOnLoad(true);
+    //pRender2D1->SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+    pRender2D1->SetTexture("Blade.png");
 
     GameObject* pGameObject2 = new GameObject;
     pGameObject2->SetName("CCCCC");
     pGameObject2->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
     pGameObject2->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
     Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
-    pRender2D2->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
+    //pRender2D2->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
+    pRender2D2->SetTexture("snow.tga");
 
     pTemp = pGameObject2;
 
