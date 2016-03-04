@@ -349,11 +349,7 @@ void RenderDXManager::ZSort()
         {
             pRenderDXList[Layer].sort(RenderDX::ZSortCompareGreater);
         }
-        else if (Layer < GameObject::LAYER::OBJECT2D_TRANSLUCENT_ONE)
-        {
-            std::stable_sort(pRenderDXList[Layer].begin(), pRenderDXList[Layer].end(), &RenderDX::SortingOrderCompareLess);
-        }
-        else
+        else    // 2Dƒ|ƒŠƒSƒ“‚ÍZÀ•WŽ²‚ÌŒü‚«(+)‚ª‘å‚«‚¯‚ê‚Î‘å‚«‚¢‚Ù‚ÇÅ‰‚É•`‰æ‚³‚ê‚é
         {
             std::stable_sort(pRenderDXList[Layer].begin(), pRenderDXList[Layer].end(), &RenderDX::SortingOrderCompareGreater);
         }

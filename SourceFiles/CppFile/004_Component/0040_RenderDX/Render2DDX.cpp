@@ -59,9 +59,8 @@ Render2DDX::~Render2DDX()
  *===============================================================================================*/
 void Render2DDX::Init()
 {
-    vertexColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-    textureUV   = D3DXVECTOR2(0.0f, 0.0f);
-    textureID   = -1;
+    textureUV  = D3DXVECTOR2(0.0f, 0.0f);
+    textureID  = -1;
 
     // 頂点バッファーの確保
     RenderDXManager::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
@@ -151,10 +150,10 @@ void Render2DDX::SetVertex()
     pVtx[3].pos.z =   0.0f;
 
     // ポリゴンのカラー情報
-    pVtx[0].col = vertexColor;
-    pVtx[1].col = vertexColor;
-    pVtx[2].col = vertexColor;
-    pVtx[3].col = vertexColor;
+    pVtx[0].col = material.color.Trans();
+    pVtx[1].col = material.color.Trans();
+    pVtx[2].col = material.color.Trans();
+    pVtx[3].col = material.color.Trans();
 
     // ポリゴンのテクスチャ座標
     pVtx[0].tex = D3DXVECTOR2(textureUV.x + 0.0f, textureUV.y + 0.0f);

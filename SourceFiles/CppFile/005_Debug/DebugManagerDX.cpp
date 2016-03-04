@@ -275,6 +275,10 @@ void DebugManagerDX::CheckGameObject()
     }
 
     maxGameObjectNumber = GameObjectNum;
+    if (selectGameObjectNumber >= maxGameObjectNumber)
+    {
+        selectGameObjectNumber = 0;
+    }
 }
 
 /*===============================================================================================* 

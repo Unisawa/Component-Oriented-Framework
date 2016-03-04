@@ -54,9 +54,9 @@ public:
     void SetTexture(std::string TextureName);
     int  GetTexture() const { return textureID; }
 
-    void      SetColor(D3DXCOLOR value) { vertexColor = value; SetVertex(); }
-    void      SetColor(float red, float green, float blue, float alpha) { vertexColor.r = red; vertexColor.g = green; vertexColor.b = blue; vertexColor.a = alpha; SetVertex(); }
-    D3DXCOLOR GetColor() const { return vertexColor; }
+    void  SetColor(Color value) { material.color = value; SetVertex(); }
+    void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
+    Color GetColor() const { return material.color; }
 
     static const std::string className;
 
@@ -65,7 +65,6 @@ private:
 
     LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
 
-    D3DXCOLOR   vertexColor;    // カラー情報
     D3DXVECTOR2 textureUV;      // テクスチャのUV座標の視点
     int         textureID;      // テクスチャ識別番号
 };

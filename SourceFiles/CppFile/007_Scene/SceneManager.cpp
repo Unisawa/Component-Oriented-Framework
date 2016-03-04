@@ -20,6 +20,7 @@
 #include "007_Scene/SceneManager.h"
 #include "007_Scene/SceneTitle.h"
 #include "007_Scene/SceneGame.h"
+#include "007_Scene/SceneResult.h"
 #include "007_Scene/Fade.h"
 
 //***********************************************************************************************//
@@ -46,7 +47,7 @@ Fade*  SceneManager::pFade = NULL;
 =================================================================================================*/
 SceneManager::SceneManager()
 {
-    pScene = &Scene::GAME;
+    pScene = &Scene::RESULT;
 }
 
 /*===============================================================================================* 

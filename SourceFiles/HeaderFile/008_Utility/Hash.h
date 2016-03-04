@@ -1,6 +1,6 @@
-/**************************************************************************************************
+ï»¿/**************************************************************************************************
 
- @File   : [ Render3DDX.h ] DirectX‚Å3DlŠpŒ`ƒ|ƒŠƒSƒ“‚ğ•`‰æ‚·‚éRenderƒNƒ‰ƒX
+ @File   : [ Hash.h ] ãƒãƒƒã‚·ãƒ¥å€¤ã®ç”Ÿæˆã‚’è¡Œã†ã‚¯ãƒ©ã‚¹
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,20 +13,14 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDER3DDX_H_
-#define _RENDER3DDX_H_
+#ifndef _HASH_H_
+#define _HASH_H_
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-
-//-----MainSetting-----//
-#include "001_Manager/Manager.h"
-
-//-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,40 +33,21 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Render3DDX : public RenderDX
+class Hash
 {
 public:
-             Render3DDX(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT3D_OPACITY_ONE);
-    virtual ~Render3DDX();
+     Hash() {}
+    ~Hash() {}
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
-    virtual void Draw()   override;
+    //-----String -> Hash-----//
+    static unsigned int CRC32Hash(char* value);
+    static unsigned int CRC32Hash(std::string value);
 
-    //-----Setter, Getter-----//
-    void SetTexture(std::string TextureName);
-    int  GetTexture() const { return textureID; }
+    //-----Number -> Hash-----//
+    static unsigned int CRC32Hash(int value);
+    static unsigned int CRC32Hash(unsigned int value);
 
-    void      SetSize(Vector3 value) { size = value; }
-    void      SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
-    Vector3   GetSize() { return size; }
-
-    void  SetColor(Color value) { material.color = value; };
-    void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
-    Color GetColor() const { return material.color; }
-
-    static const std::string className;
-
-private:
-    void SetVertex();
-
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // ’¸“_ƒoƒbƒtƒ@
-
-    Vector3     size;           // ƒ|ƒŠƒSƒ“‚Ì‘å‚«‚³
-
-    D3DXVECTOR2 textureUV;      // ƒeƒNƒXƒ`ƒƒ‚ÌUVÀ•W‚Ì‹“_
-    int         textureID;      // ƒeƒNƒXƒ`ƒƒ¯•Ê”Ô†
+    static const unsigned int CRC32Table[256];
 };
 
 #endif

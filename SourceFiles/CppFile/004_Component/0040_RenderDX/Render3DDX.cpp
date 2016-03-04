@@ -60,7 +60,6 @@ void Render3DDX::Init()
 {
     size        = Vector3(10.0f, 0.0f, 10.0f);
 
-    vertexColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     textureUV   = D3DXVECTOR2(0.0f, 0.0f);
     textureID   = -1;
 
@@ -150,16 +149,16 @@ void Render3DDX::SetVertex()
     pVtx[3].pos.z = -size.z;
 
     // ポリゴンの同次座標--固定--
-    pVtx[0].nor = Vector3(0.0f, 1.0f, 0.0f);
-    pVtx[1].nor = Vector3(0.0f, 1.0f, 0.0f);
-    pVtx[2].nor = Vector3(0.0f, 1.0f, 0.0f);
-    pVtx[3].nor = Vector3(0.0f, 1.0f, 0.0f);
+    pVtx[0].nor = Vector3::up;
+    pVtx[1].nor = Vector3::up;
+    pVtx[2].nor = Vector3::up;
+    pVtx[3].nor = Vector3::up;
 
     // ポリゴンのカラー情報
-    pVtx[0].col = vertexColor;
-    pVtx[1].col = vertexColor;
-    pVtx[2].col = vertexColor;
-    pVtx[3].col = vertexColor;
+    pVtx[0].col = material.color.Trans();
+    pVtx[1].col = material.color.Trans();
+    pVtx[2].col = material.color.Trans();
+    pVtx[3].col = material.color.Trans();
 
     // ポリゴンのテクスチャ座標
     pVtx[0].tex = D3DXVECTOR2(textureUV.x + 0.0f, textureUV.y + 0.0f);

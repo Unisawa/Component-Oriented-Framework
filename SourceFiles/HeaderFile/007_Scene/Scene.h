@@ -38,6 +38,7 @@
 //***********************************************************************************************//
 class SceneTitle;
 class SceneGame;
+class SceneResult;
 
 class Scene
 {
@@ -51,8 +52,9 @@ public:
 
     virtual std::string GetSceneName() = 0;
 
-    static SceneTitle TITLE;
-    static SceneGame  GAME;
+    static SceneTitle  TITLE;
+    static SceneGame   GAME;
+    static SceneResult RESULT;
 };
 
 #endif

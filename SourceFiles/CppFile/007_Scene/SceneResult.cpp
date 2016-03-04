@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ SceneTitle.cpp ] タイトルシーンのクラス
+ @File   : [ SceneResult.cpp ] タイトルシーンのクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -22,8 +22,8 @@
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
 #include "007_Scene/SceneManager.h"
+#include "007_Scene/SceneResult.h"
 #include "007_Scene/SceneTitle.h"
-#include "007_Scene/SceneGame.h"
 
 //-----Object-----//
 #include "004_Component/Component.h"
@@ -42,13 +42,13 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-static GameObject* pTemp = NULL;
+static GameObject* pObject[3] = {};
 
 /*=================================================================================================
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-SceneTitle::SceneTitle()
+SceneResult::SceneResult()
 {
 
 }
@@ -57,7 +57,7 @@ SceneTitle::SceneTitle()
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-SceneTitle::~SceneTitle()
+SceneResult::~SceneResult()
 {
 
 }
@@ -66,43 +66,32 @@ SceneTitle::~SceneTitle()
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-void SceneTitle::Init()
+void SceneResult::Init()
 {
     // GameObjectの生成、コンポーネントの追加テスト
-    GameObject* pGameObject0 = new GameObject;
-    pGameObject0->SetName("AAAAA");
-    pGameObject0->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
-    Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
+    pObject[0] = new GameObject("AAAAA");
+    pObject[0]->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    Render2DDX* pRender2D0 = pObject[0]->AddComponent<Render2DDX>();
+    pRender2D0->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-    GameObject* pGameObject1 = new GameObject("BBBBB");
-    pGameObject1->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
-    pGameObject1->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
-    Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
+    pObject[1] = new GameObject("BBBBB");
+    pObject[1]->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
+    pObject[1]->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    Render2DDX* pRender2D1 = pObject[1]->AddComponent<Render2DDX>();
     pRender2D1->SetColor(1.0f, 0.0f, 0.0f, 1.0f);
-    //pGameObject1->DontDestroyOnLoad(true);
 
-    GameObject* pGameObject2 = new GameObject;
-    pGameObject2->SetName("CCCCC");
-    pGameObject2->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
-    pGameObject2->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
-    Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
+    pObject[2] = new GameObject("CCCCC");
+    pObject[2]->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
+    pObject[2]->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+    Render2DDX* pRender2D2 = pObject[2]->AddComponent<Render2DDX>();
     pRender2D2->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
-
-    pTemp = pGameObject2;
-
-    //GameObject* pGameObject9 = new GameObject;
-    //pGameObject9->SetName("OpenGL");
-    //pGameObject9->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
-    //pGameObject9->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
-    //Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
-
 }
 
 /*===============================================================================================* 
   @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void SceneTitle::Uninit()
+void SceneResult::Uninit()
 {
     GameObjectManager::ReleaseAllScene();
 }
@@ -111,81 +100,80 @@ void SceneTitle::Uninit()
   @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void SceneTitle::Update()
+void SceneResult::Update()
 {
     // 入力テスト
     Keyboard* pKey = InputManager::GetKeyboard();
 
-    // コンポーネント追加テスト
-    if (pKey->GetKeyboardTrigger(DIK_C))
+    // オブジェクト生成
+    if (pKey->GetKeyboardTrigger(DIK_Q))
     {
-        if (pTemp != NULL)
+        if (pObject[0] == NULL)
         {
-            Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-
-            if (pRender == NULL)
-                pTemp->AddComponent<Render2DDX>()->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
+            pObject[0] = new GameObject("AAAAA");
+            pObject[0]->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF, 0.0f));
+            Render2DDX* pRender2D0 = pObject[0]->AddComponent<Render2DDX>();
+            pRender2D0->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+            pRender2D0->SetSortingOrder(0.0f);
         }
     }
 
-    // コンポーネント取得テスト
-    if (pKey->GetKeyboardTrigger(DIK_V))
+    if (pKey->GetKeyboardTrigger(DIK_A))
     {
-        if (pTemp != NULL)
+        if (pObject[0] != NULL)
         {
-            Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-
-            if (pRender != NULL)
-                pRender->SetColor(0.0f, 1.0f, 0.0f, 1.0f);
+            pObject[0]->Destroy();
+            pObject[0] = NULL;
         }
     }
 
-    // ゲームオブジェクトの検索テスト
-    if (pKey->GetKeyboardTrigger(DIK_H))
+    if (pKey->GetKeyboardTrigger(DIK_W))
     {
-        pTemp = GameObject::Find("BBBBB");
+        if (pObject[1] == NULL)
+        {
+            pObject[1] = new GameObject("BBBBB");
+            pObject[1]->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
+            pObject[1]->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+            Render2DDX* pRender2D1 = pObject[1]->AddComponent<Render2DDX>();
+            pRender2D1->SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+            pRender2D1->SetSortingOrder(1.0f);
+        }
     }
 
-    // ゲームオブジェクトの生成テスト
-    if (pKey->GetKeyboardTrigger(DIK_J))
+    if (pKey->GetKeyboardTrigger(DIK_S))
     {
-        if (pTemp == NULL)
+        if (pObject[1] != NULL)
         {
-            GameObject* pGameObject0 = new GameObject("CCCCC");
-            pGameObject0->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
-            pGameObject0->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
-            Render2DDX* pRender2D2 = pGameObject0->AddComponent<Render2DDX>();
+            pObject[1]->Destroy();
+            pObject[1] = NULL;
+        }
+    }
+
+    if (pKey->GetKeyboardTrigger(DIK_E))
+    {
+        if (pObject[2] == NULL)
+        {
+            pObject[2] = new GameObject("CCCCC");
+            pObject[2]->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
+            pObject[2]->transform->SetScale(Vector3(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF, 0.0f));
+            Render2DDX* pRender2D2 = pObject[2]->AddComponent<Render2DDX>();
             pRender2D2->SetColor(0.0f, 0.0f, 1.0f, 1.0f);
-
-            pTemp = pGameObject0;
+            pRender2D2->SetSortingOrder(-1.0f);
         }
     }
 
-    // ゲームオブジェクトの削除テスト
-    if (pKey->GetKeyboardTrigger(DIK_K))
+    if (pKey->GetKeyboardTrigger(DIK_D))
     {
-        if (pTemp != NULL)
+        if (pObject[2] != NULL)
         {
-            pTemp->Destroy();
-            pTemp = NULL;
-        }
-    }
-
-    // コンポーネントの削除テスト
-    if (pKey->GetKeyboardTrigger(DIK_L))
-    {
-        if (pTemp != NULL)
-        {
-            Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-
-            if (pRender != NULL)
-                pRender->Destroy();
+            pObject[2]->Destroy();
+            pObject[2] = NULL;
         }
     }
 
     if (pKey->GetKeyboardTrigger(DIK_SPACE))
     {
-        SceneManager::LoadLevel(&Scene::GAME);
+        SceneManager::LoadLevel(&Scene::TITLE);
     }
 }
 

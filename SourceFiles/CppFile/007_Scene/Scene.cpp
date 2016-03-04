@@ -20,6 +20,7 @@
 #include "007_Scene/Scene.h"
 #include "007_Scene/SceneTitle.h"
 #include "007_Scene/SceneGame.h"
+#include "007_Scene/SceneResult.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -32,8 +33,9 @@
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-SceneTitle Scene::TITLE;
-SceneGame  Scene::GAME;
+SceneTitle  Scene::TITLE;
+SceneGame   Scene::GAME;
+SceneResult Scene::RESULT;
 
 /*===============================================================================================* 
   @Summary: 

@@ -28,6 +28,8 @@
 //-----Object-----//
 #include "004_Component/Component.h"
 #include "004_Component/0042_GameObject/GameObject.h"
+#include "003_Object/Material.h"
+#include "008_Utility/Color.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,7 +41,7 @@
 typedef struct
 {
     Vector3     pos;    // 頂点の位置座標
-    D3DCOLOR    col;    // 頂点カラー
+    COLOR       col;    // 頂点カラー
     D3DXVECTOR2 tex;    // テクスチャ座標
 
 }VERTEX_2D;
@@ -49,7 +51,7 @@ typedef struct
 {
     Vector3     pos;    // 頂点の位置座標
     Vector3     nor;    // 法線ベクトル
-    D3DCOLOR    col;    // 頂点カラー
+    COLOR       col;    // 頂点カラー
     D3DXVECTOR2 tex;    // テクスチャ座標
 
 }VERTEX_3D;
@@ -123,6 +125,8 @@ public:
     float GetSortingOrder() const { return sortingOrder; }
 
     bool enabled;    // True時のみ描画を行う
+
+    Material          material;       // マテリアル情報
 
 private:
     GameObject::LAYER layer;          // 描画順

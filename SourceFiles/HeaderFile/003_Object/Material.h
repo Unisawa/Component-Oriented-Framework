@@ -1,6 +1,6 @@
-/**************************************************************************************************
+Ôªø/**************************************************************************************************
 
- @File   : [ Render3DDX.h ] DirectXÇ≈3Déläpå`É|ÉäÉSÉìÇï`âÊÇ∑ÇÈRenderÉNÉâÉX
+ @File   : [ Material.h ] „Ç¢„Éã„É°„Éº„Ç∑„Éß„É≥„ÇÇË°å„Åà„Çã„Éû„ÉÜ„É™„Ç¢„É´„ÇØ„É©„Çπ
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDER3DDX_H_
-#define _RENDER3DDX_H_
+#ifndef _MATERIAL_H_
+#define _MATERIAL_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,7 +26,8 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
+#include "003_Object/Object.h"
+#include "008_Utility/Color.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -39,40 +40,15 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Render3DDX : public RenderDX
+class Color;
+
+class Material : public Object
 {
 public:
-             Render3DDX(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT3D_OPACITY_ONE);
-    virtual ~Render3DDX();
+     Material();
+    ~Material();
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
-    virtual void Draw()   override;
-
-    //-----Setter, Getter-----//
-    void SetTexture(std::string TextureName);
-    int  GetTexture() const { return textureID; }
-
-    void      SetSize(Vector3 value) { size = value; }
-    void      SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
-    Vector3   GetSize() { return size; }
-
-    void  SetColor(Color value) { material.color = value; };
-    void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
-    Color GetColor() const { return material.color; }
-
-    static const std::string className;
-
-private:
-    void SetVertex();
-
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // í∏ì_ÉoÉbÉtÉ@
-
-    Vector3     size;           // É|ÉäÉSÉìÇÃëÂÇ´Ç≥
-
-    D3DXVECTOR2 textureUV;      // ÉeÉNÉXÉ`ÉÉÇÃUVç¿ïWÇÃéãì_
-    int         textureID;      // ÉeÉNÉXÉ`ÉÉéØï î‘çÜ
+    Color color;    // Ëâ≤ÊÉÖÂ†±
 };
 
 #endif

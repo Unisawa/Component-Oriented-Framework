@@ -1,6 +1,6 @@
-/**************************************************************************************************
+Ôªø/**************************************************************************************************
 
- @File   : [ Render3DDX.h ] DirectXÇ≈3Déläpå`É|ÉäÉSÉìÇï`âÊÇ∑ÇÈRenderÉNÉâÉX
+ @File   : [ Color.h ] RGBA „Ç´„É©„Éº„ÅÆË°®Áèæ„Çí„Åô„Çã„ÇØ„É©„Çπ
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDER3DDX_H_
-#define _RENDER3DDX_H_
+#ifndef _COLOR_H_
+#define _COLOR_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -25,54 +25,56 @@
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
 
-//-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+typedef DWORD COLOR;
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Render3DDX : public RenderDX
+class Color
 {
 public:
-             Render3DDX(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT3D_OPACITY_ONE);
-    virtual ~Render3DDX();
+    Color() {}
+    Color(float R, float G, float B, float A) { r = R; g = G; b = B; a = A; }
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
-    virtual void Draw()   override;
+    Color operator + (const Color &Vec) const { return Color(r + Vec.r, g + Vec.g, b + Vec.b, a + Vec.a); }
+    Color operator - (const Color &Vec) const { return Color(r - Vec.r, g - Vec.g, b - Vec.b, a - Vec.a); }
+    Color operator * (float value) const { return Color(r * value, g * value, b * value, a * value); }
+    Color operator / (float value) const { return (*this) * (1.0f / value); }
 
-    //-----Setter, Getter-----//
-    void SetTexture(std::string TextureName);
-    int  GetTexture() const { return textureID; }
+    void operator += (const Color &Vec) { (*this) = (*this) + Vec; }
+    void operator -= (const Color &Vec) { (*this) = (*this) - Vec; }
+    void operator *= (float value) { (*this) = (*this) * value; }
+    void operator /= (float value) { (*this) *= (1.0f / value); }
 
-    void      SetSize(Vector3 value) { size = value; }
-    void      SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
-    Vector3   GetSize() { return size; }
+    void operator = (const Color &Vec) { r = Vec.r; g = Vec.g; b = Vec.b; a = Vec.a; }
 
-    void  SetColor(Color value) { material.color = value; };
-    void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
-    Color GetColor() const { return material.color; }
+    COLOR Trans();
 
-    static const std::string className;
+    static Color black;
+    static Color White;
+    static Color gray;
 
-private:
-    void SetVertex();
+    static Color red;
+    static Color green;
+    static Color blue;
 
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // í∏ì_ÉoÉbÉtÉ@
+    static Color cyan;
+    static Color magenta;
+    static Color yellow;
 
-    Vector3     size;           // É|ÉäÉSÉìÇÃëÂÇ´Ç≥
+    static Color clear;
 
-    D3DXVECTOR2 textureUV;      // ÉeÉNÉXÉ`ÉÉÇÃUVç¿ïWÇÃéãì_
-    int         textureID;      // ÉeÉNÉXÉ`ÉÉéØï î‘çÜ
+    float r;
+    float g;
+    float b;
+    float a;
 };
 
 #endif

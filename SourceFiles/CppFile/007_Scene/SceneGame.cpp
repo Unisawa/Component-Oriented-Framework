@@ -104,14 +104,14 @@ void SceneGame::Init()
 
     pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
     pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
-    pRender3D3->SetColor(D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+    pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
     
     GameObject* pGameObject4 = new GameObject("FFFFF");
 
     pRender3D3 = pGameObject4->AddComponent<Render3DDX>();
     pRender3D3->transform->SetPosition(100.0f, 10.0f, 0.0f);
     pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
-    pRender3D3->SetColor(D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
+    pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
 
     pTemp = pGameObject3;
 }

@@ -101,11 +101,11 @@ void Fade::UpdateFadeIn()
     if (fadeState != FADE::FADEIN) return;
 
     // α計算
-    D3DXCOLOR Color = pRender2D->GetColor();
-    Color.a = 1.0f * (1 - ((float) fadeCount / fadeTime));
+    Color color = pRender2D->GetColor();
+    color.a = 1.0f * (1 - ((float)fadeCount / fadeTime));
 
     // 頂点情報の更新
-    pRender2D->SetColor(Color);
+    pRender2D->SetColor(color);
 
     // フェードが終われば、フェード実行状態を解除
     if (fadeTime < ++fadeCount)
@@ -124,11 +124,11 @@ void Fade::UpdateFadeOut()
     if (fadeState != FADE::FADEOUT) return;
 
     // α計算
-    D3DXCOLOR Color = pRender2D->GetColor();
-    Color.a = 1.0f * ((float) fadeCount / fadeTime);
+    Color color = pRender2D->GetColor();
+    color.a     = 1.0f * ((float)fadeCount / fadeTime);
 
     // 頂点情報の更新
-    pRender2D->SetColor(Color);
+    pRender2D->SetColor(color);
 
     // フェードが終われば、フェード実行状態を解除
     if (fadeTime < ++fadeCount)
