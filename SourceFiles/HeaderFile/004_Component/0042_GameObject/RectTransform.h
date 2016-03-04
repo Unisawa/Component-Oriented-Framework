@@ -1,6 +1,6 @@
-/**************************************************************************************************
+ï»¿/**************************************************************************************************
 
- @File   : [ Render2DDX.h ] DirectX‚Å2DlŠpŒ`ƒ|ƒŠƒSƒ“‚ğ•`‰æ‚·‚éRenderƒNƒ‰ƒX
+ @File   : [ RectTransform.h ] ã‚¢ãƒ³ã‚«ãƒ¼åŠã³ãƒ”ãƒœãƒƒãƒˆã®æƒ…å ±ã‚’è¿½åŠ ã—ãŸTransform
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDER2DDX_H_
-#define _RENDER2DDX_H_
+#ifndef _RECTTRANSFORM_H_
+#define _RECTTRANSFORM_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,7 +26,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
+#include "004_Component/0042_GameObject/Transform.h"
 #include "008_Utility/Vector2.h"
 
 //***********************************************************************************************//
@@ -40,34 +40,15 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Render2DDX : public RenderDX
+class RectTransform : public Transform
 {
 public:
-             Render2DDX(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT2D_OPACITY_ONE);
-    virtual ~Render2DDX();
-
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
-    virtual void Draw()   override;
-
-    virtual void SetVertex() override;
-
-    //-----Setter, Getter-----//
-    void  SetColor(Color value) { material.color = value; SetVertex(); }
-    void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
-    Color GetColor() const { return material.color; }
-
-    void    SetSize(float x, float y, float z) { size.x = x; size.y = y; }
-    void    SetSize(const Vector2 &Vec)        { size = Vec; }
-    Vector2 GetSize() const { return size; }
+             RectTransform(GameObject* pObject = NULL);
+    virtual ~RectTransform();
 
     static const std::string className;
 
-private:
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // ’¸“_ƒoƒbƒtƒ@
-
-    Vector2 size;    // 2Dƒ|ƒŠƒSƒ“‚Ì‘å‚«‚³
+    Vector2 pivot;    // æ­£è¦åŒ–ã•ã‚ŒãŸä½ç½®ã®å›ã‚Šã«å›è»¢ã™ã‚‹
 };
 
 #endif

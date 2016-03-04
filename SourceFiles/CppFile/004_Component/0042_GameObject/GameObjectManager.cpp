@@ -190,7 +190,7 @@ void GameObjectManager::UnLinkList(GameObject* pObject)
 
     for (auto Iterator = pGameObjectList[Layer].begin(); Iterator != pGameObjectList[Layer].end(); ++Iterator)
     {
-        if (*Iterator == pObject)
+        if ((*Iterator) == pObject)
         {
             // ƒŠƒXƒg‚©‚çØ‚è—£‚·
             pGameObjectList[Layer].erase(Iterator);

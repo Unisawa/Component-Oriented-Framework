@@ -50,10 +50,21 @@ public:
              Transform(GameObject* pObject = NULL);
     virtual ~Transform();
 
-    void       SetParent(Transform& value);
-    Transform* GetParent() { return parent; }
+    void CreateWorldMatrix();
+
+    bool IsChildOf(Transform* value);
+
+    void DetachParent();
+    void DetachChildren(Transform* value);
+    void DetachChildrenAll();
 
     //-----Setter, Getter-----//
+    void       SetParent(Transform* value);
+    Transform* GetParent() { return parent; }
+
+    void                  SetChild(Transform* value);
+    std::list<Transform*> GetChildren() { return childrentList; }
+
     void    SetPosition(float x, float y, float z) { position.x = x; position.y = y; position.z = z; }
     void    SetPosition(const Vector3 &Vec)        { position = Vec; }
     Vector3 GetPosition() const { return position; }
@@ -66,14 +77,15 @@ public:
     void    SetScale(const Vector3 &Vec)        { lossyScale = Vec; }
     Vector3 GetScale() const { return lossyScale; }
 
-    void    CreateWorldMatrix();
     void    SetWorldMatrix(Matrix value) { worldMatrix = value; }
     Matrix  GetWorldMatrix() const { return worldMatrix; }
 
-    static const std::string Transform::className;
+    static const std::string className;
 
-private:
-    Transform* parent;      // 親 GameObject の Transform
+    std::list<Transform*> childrentList;    // 子 GameObject の Transform
+
+protected:
+    Transform*            parent;           // 親 GameObject の Transform
 
     Matrix  worldMatrix;    // ワールド行列
 

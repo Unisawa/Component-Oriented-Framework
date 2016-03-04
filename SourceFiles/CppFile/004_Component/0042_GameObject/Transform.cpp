@@ -15,6 +15,7 @@
 
 //-----Object-----//
 #include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0042_GameObject/GameObjectManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -63,15 +64,6 @@ Transform::~Transform()
 }
 
 /*===============================================================================================* 
-  @Summary: 
-  @Details: 
- *===============================================================================================*/
-void Transform::SetParent(Transform& value)
-{
-    this->parent = &value;
-}
-
-/*===============================================================================================* 
   @Summary: ワールド行列の生成
   @Details: None
  *===============================================================================================*/
@@ -97,14 +89,172 @@ void Transform::CreateWorldMatrix()
 }
 
 /*===============================================================================================* 
-  @Summary: 
-  @Details: 
+  @Summary: 対象の親オブジェクトの子かどうか判定する。
+  @Details: True なら valueの子に自身が存在する。
  *===============================================================================================*/
+bool Transform::IsChildOf(Transform* value)
+{
+    for (auto Iterator = value->childrentList.begin(); Iterator != value->childrentList.end();)
+    {
+        if ((*Iterator) == this)
+        {
+            return true;
+        }
+
+        Iterator++;
+    }
+
+    return false;
+}
 
 /*===============================================================================================* 
-  @Summary: 
-  @Details: 
+  @Summary: 親オブジェクトを自身から切り離す
+  @Details: None
  *===============================================================================================*/
+void Transform::DetachParent()
+{
+    if (this->parent == NULL) return;
+
+    GameObject* pGameObject;
+
+    for (auto Iterator = this->parent->childrentList.begin(); Iterator != this->parent->childrentList.end();)
+    {
+        pGameObject = (*Iterator)->gameObject;
+
+        if ((*Iterator)->gameObject == this->gameObject)
+        {
+            // リストから切り離す
+            this->parent->childrentList.erase(Iterator);
+
+            // リスト登録
+            GameObjectManager::LinkList(pGameObject, pGameObject->GetLayer());
+
+            // 親のTransformを自分に反映させる
+            Matrix TransMatrix;
+            TransMatrix.SetTranslate(this->transform->GetPosition());
+            TransMatrix *= this->parent->GetWorldMatrix();
+            this->SetPosition(TransMatrix._41, TransMatrix._42, TransMatrix._43);
+
+            pGameObject->transform->parent = NULL;
+
+            return;
+        }
+
+        Iterator++;
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: 対象の子オブジェクトを親オブジェクト(自身)から切り離す
+  @Details: None
+ *===============================================================================================*/
+void Transform::DetachChildren(Transform* value)
+{
+    GameObject* pGameObject;
+
+    for (auto Iterator = this->childrentList.begin(); Iterator != this->childrentList.end();)
+    {
+        pGameObject = (*Iterator)->gameObject;
+
+        if (pGameObject == value->gameObject)
+        {
+            // リスト登録
+            GameObjectManager::LinkList(pGameObject, pGameObject->GetLayer());
+
+            // リストから切り離す
+            this->childrentList.erase(Iterator);
+
+            // 親のTransformを自分に反映させる
+            Matrix TransMatrix;
+            TransMatrix.SetTranslate(pGameObject->transform->GetPosition());
+            TransMatrix *= pGameObject->transform->parent->GetWorldMatrix();
+            pGameObject->transform->SetPosition(TransMatrix._41, TransMatrix._42, TransMatrix._43);
+
+            pGameObject->transform->parent = NULL;
+
+            return;
+        }
+
+        Iterator++;
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: 全ての子オブジェクトを親オブジェクト(自身)から切り離す
+  @Details: None
+ *===============================================================================================*/
+void Transform::DetachChildrenAll()
+{
+    GameObject* pGameObject;
+
+    for (auto Iterator = this->childrentList.begin(); Iterator != this->childrentList.end();)
+    {
+        pGameObject = (*Iterator)->gameObject;
+
+        // リスト登録
+        GameObjectManager::LinkList(pGameObject, pGameObject->GetLayer());
+
+        // 親のTransformを自分に反映させる
+        Matrix TransMatrix;
+        TransMatrix.SetTranslate(pGameObject->transform->GetPosition());
+        TransMatrix *= pGameObject->transform->parent->GetWorldMatrix();
+        pGameObject->transform->SetPosition(TransMatrix._41, TransMatrix._42, TransMatrix._43);
+
+        pGameObject->transform->parent = NULL;
+
+        Iterator++;
+    }
+
+    childrentList.clear();
+}
+
+/*===============================================================================================* 
+  @Summary: 指定したオブジェクトを親としてこのGameObjectに設定する
+  @Details: None
+ *===============================================================================================*/
+void Transform::SetParent(Transform* value)
+{
+    // 既に親の子になっている場合、終了
+    if (this->IsChildOf(value)) return;
+
+    value->childrentList.push_back(this);
+    GameObjectManager::UnLinkList(this->gameObject);    // 親のUpdate()内で子のUpdateを呼ぶため自身をリストから外す
+    this->parent = value;
+
+    // 親のTransformを自分に反映させる
+    Matrix TransMatrix, InverseMatrix;
+    TransMatrix.SetTranslate(this->position);
+    InverseMatrix = value->worldMatrix.Inverse();
+    if (InverseMatrix != NULL)
+    {
+        Matrix ReturnMatrix = TransMatrix * InverseMatrix;
+        this->SetPosition(ReturnMatrix._41, ReturnMatrix._42, ReturnMatrix._43);
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: 指定したオブジェクトを子としてこのGameObjectに設定する
+  @Details: None
+ *===============================================================================================*/
+void Transform::SetChild(Transform* value)
+{
+    // 既に親の子になっている場合、終了
+    if (value->IsChildOf(this)) return;
+
+    this->childrentList.push_back(value);
+    GameObjectManager::UnLinkList(value->gameObject);    // 親のUpdate()内で子のUpdateを呼ぶため自身をリストから外す
+    value->parent = this;
+
+    // 親のTransformを自分に反映させる
+    Matrix TransMatrix, InverseMatrix;
+    TransMatrix.SetTranslate(value->position);
+    InverseMatrix = this->worldMatrix.Inverse();
+    if (InverseMatrix != NULL)
+    {
+        Matrix ReturnMatrix = TransMatrix * InverseMatrix;
+        value->SetPosition(ReturnMatrix._41, ReturnMatrix._42, ReturnMatrix._43);
+    }
+}
 
 /*===============================================================================================* 
   @Summary: 

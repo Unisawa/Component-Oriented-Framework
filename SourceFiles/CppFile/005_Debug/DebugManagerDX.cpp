@@ -93,6 +93,8 @@ void DebugManagerDX::Init()
     textColor  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     pDebugFont = RenderDXManager::CreateFontText(20, 0, FW_BOLD, FALSE, "Terminal");
 
+    indentSpace = "";
+
     selectGameObject       = NULL;
     selectGameObjectNumber = 0;
     maxGameObjectNumber    = 0;
@@ -209,7 +211,7 @@ void DebugManagerDX::Draw()
 void DebugManagerDX::CheckGameObject()
 {
     // FPSの表示
-    int  GameObjectNum = 0;
+    selectGameObjectCount = 0;
     char Temp[BUFFER_SIZE];
     sprintf_s(Temp, "【 FPS : %d 】\n\n", countFPS);
     messegeHierarchy += Temp;
@@ -217,13 +219,14 @@ void DebugManagerDX::CheckGameObject()
     messegeHierarchy += "【 Hierarchy 】\n";
 
     std::list<GameObject*>* pList = GameObjectManager::GetGameObjectList();
+    std::list<Transform*> pChildren;
 
     for (int Layer = 0; Layer < GameObject::LAYER_MAX; ++Layer)
     {
         for (auto Iterator = pList[Layer].begin(); Iterator != pList[Layer].end(); ++Iterator)
         {
             // 選択中のGameObject の Transform の値を表示する
-            if (selectGameObjectNumber == GameObjectNum)
+            if (selectGameObjectNumber == selectGameObjectCount)
             {
                 selectGameObject = (*Iterator);
                 messegeInspector += "【 Transform 】\n";
@@ -244,23 +247,31 @@ void DebugManagerDX::CheckGameObject()
                 messegeHierarchy += "  ";
             }
 
-            if ((*Iterator)->transform->GetParent() == NULL)
+            pChildren = (*Iterator)->transform->GetChildren();
+            selectGameObjectCount++;
+
+            if (pChildren.size() == 0)
             {
                 messegeHierarchy += "  ";
+                messegeHierarchy += (*Iterator)->GetName();
+                messegeHierarchy += "\n";
             }
             else
             {
                 messegeHierarchy += "▼";
+                messegeHierarchy += (*Iterator)->GetName();
+                messegeHierarchy += "\n";
+
+                for (auto IteratorChild = pChildren.begin(); IteratorChild != pChildren.end(); ++IteratorChild)
+                {
+                    indentSpace += "  ";
+                    CheckGameObjectChild((*IteratorChild)->gameObject);
+                }
             }
-
-            messegeHierarchy += (*Iterator)->GetName();
-            messegeHierarchy += "\n";
-
-            GameObjectNum++;
         }
     }
 
-    maxGameObjectNumber = GameObjectNum;
+    maxGameObjectNumber = selectGameObjectCount;
     if (selectGameObjectNumber >= maxGameObjectNumber)
     {
         selectGameObjectNumber = 0;
@@ -274,73 +285,65 @@ void DebugManagerDX::CheckGameObject()
 }
 
 /*===============================================================================================* 
-  @Summary: FPSを計測する
-  @Details: None
- *===============================================================================================*/
-#ifdef _DEBUG
-void DebugManagerDX::CheckFPS(DWORD NowTime)
-{
-    // FPS計算
-    currentTime = NowTime;
-
-    if ((NowTime - lastTimeFPS) >= 500)    // 500 / 1000s = 0.5s
-    {
-        countFPS = (frameCount * 1000) / (NowTime - lastTimeFPS);
-        lastTimeFPS = NowTime;
-        frameCount = 0;
-    }
-}
-#else
-void DebugManagerDX::CheckFPS(DWORD NowTime)
-{
-
-}
-#endif
-
-/*===============================================================================================* 
-  @Summary: FPS計測のためのカウント追加
-  @Details: None
- *===============================================================================================*/
-#ifdef _DEBUG
-void DebugManagerDX::AddframeCount()
-{
-    frameCount++;
-}
-#else
-void DebugManagerDX::AddframeCount()
-{
-
-}
-#endif
-
-/*===============================================================================================* 
-  @Summary: スクリーンへ文字を表示させるための処理
-  @Details: None
- *===============================================================================================*/
-#ifdef _DEBUG
-void DebugManagerDX::Print(std::string String, ...)
-{
-    va_list Argument;
-    CHAR    Buffer[BUFFER_SIZE];
-
-    // 可変引数から文字列へ
-    va_start(Argument, String);
-    vsprintf_s(Buffer, String.c_str(), Argument);
-    va_end(Argument);
-
-    messegeFree += Buffer;
-    messegeFree += "\n";
-}
-#else
-void DebugManagerDX::Print(std::string String, ...)
-{
-
-}
-#endif
-
-/*===============================================================================================* 
   @Summary: 
   @Details: 
+ *===============================================================================================*/
+void DebugManagerDX::CheckGameObjectChild(GameObject* value)
+{
+    char Temp[BUFFER_SIZE];
+    std::list<Transform*> pChildren;
+
+    // 選択中のGameObject の Transform の値を表示する
+    if (selectGameObjectNumber == selectGameObjectCount)
+    {
+        selectGameObject = value;
+        messegeInspector += "【 Transform 】\n";
+
+        sprintf_s(Temp, "Position: (%f, %f, %f) \n", selectGameObject->transform->GetPosition().x, selectGameObject->transform->GetPosition().y, selectGameObject->transform->GetPosition().z);
+        messegeInspector += Temp;
+
+        sprintf_s(Temp, "Rotision: (%f, %f, %f) \n", selectGameObject->transform->GetRotation().x, selectGameObject->transform->GetRotation().y, selectGameObject->transform->GetRotation().z);
+        messegeInspector += Temp;
+
+        sprintf_s(Temp, "Scale   : (%f, %f, %f) \n", selectGameObject->transform->GetScale().x, selectGameObject->transform->GetScale().y, selectGameObject->transform->GetScale().z);
+        messegeInspector += Temp;
+
+        messegeHierarchy += indentSpace + "→";
+    }
+    else
+    {
+        messegeHierarchy += indentSpace + "  ";
+    }
+
+    pChildren = value->transform->GetChildren();
+    selectGameObjectCount++;
+
+    if (pChildren.size() == 0)
+    {
+        messegeHierarchy += indentSpace;
+        messegeHierarchy += value->GetName();
+        messegeHierarchy += "\n";
+    }
+    else
+    {
+        messegeHierarchy += indentSpace + "▼";
+        messegeHierarchy += value->GetName();
+        messegeHierarchy += "\n";
+
+        for (auto IteratorChild = pChildren.begin(); IteratorChild != pChildren.end(); ++IteratorChild)
+        {
+            indentSpace += "  ";
+            CheckGameObjectChild((*IteratorChild)->gameObject);
+        }
+    }
+
+    indentSpace.pop_back();
+    indentSpace.pop_back();
+}
+
+/*===============================================================================================* 
+  @Summary: 選択中のGameObjectのTransformを操作する
+  @Details: None
  *===============================================================================================*/
 void DebugManagerDX::MoveGameObject()
 {
@@ -412,9 +415,69 @@ void DebugManagerDX::MoveGameObject()
 }
 
 /*===============================================================================================* 
-  @Summary: 
-  @Details: 
+  @Summary: FPSを計測する
+  @Details: None
  *===============================================================================================*/
+#ifdef _DEBUG
+void DebugManagerDX::CheckFPS(DWORD NowTime)
+{
+    // FPS計算
+    currentTime = NowTime;
+
+    if ((NowTime - lastTimeFPS) >= 500)    // 500 / 1000s = 0.5s
+    {
+        countFPS = (frameCount * 1000) / (NowTime - lastTimeFPS);
+        lastTimeFPS = NowTime;
+        frameCount = 0;
+    }
+}
+#else
+void DebugManagerDX::CheckFPS(DWORD NowTime)
+{
+
+}
+#endif
+
+/*===============================================================================================* 
+  @Summary: FPS計測のためのカウント追加
+  @Details: None
+ *===============================================================================================*/
+#ifdef _DEBUG
+void DebugManagerDX::AddframeCount()
+{
+    frameCount++;
+}
+#else
+void DebugManagerDX::AddframeCount()
+{
+
+}
+#endif
+
+/*===============================================================================================* 
+  @Summary: スクリーンへ文字を表示させるための処理
+  @Details: None
+ *===============================================================================================*/
+#ifdef _DEBUG
+void DebugManagerDX::Print(std::string String, ...)
+{
+    va_list Argument;
+    CHAR    Buffer[BUFFER_SIZE];
+
+    // 可変引数から文字列へ
+    va_start(Argument, String);
+    vsprintf_s(Buffer, String.c_str(), Argument);
+    va_end(Argument);
+
+    messegeFree += Buffer;
+    messegeFree += "\n";
+}
+#else
+void DebugManagerDX::Print(std::string String, ...)
+{
+
+}
+#endif
 
 /*===============================================================================================* 
   @Summary: 

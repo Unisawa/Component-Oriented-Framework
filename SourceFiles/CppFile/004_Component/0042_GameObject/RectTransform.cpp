@@ -1,20 +1,11 @@
 ﻿/**************************************************************************************************
 
- @File   : [ DebugManagerDX.h ] DirectXのデバッグモードを制御するクラス
+ @File   : [ RectTransform.cpp ] アンカー及びピボットの情報を追加したTransform
  @Auther : Unisawa
 
 **************************************************************************************************/
 
 
-
-//***********************************************************************************************//
-//                                                                                               //
-//  @Include Guard                                                                               //
-//                                                                                               //
-//***********************************************************************************************//
-#pragma once
-#ifndef _DEBUGMANAGERDX_H_
-#define _DEBUGMANAGERDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -25,6 +16,10 @@
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
 
+//-----Object-----//
+#include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0042_GameObject/RectTransform.h"
+
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -33,60 +28,34 @@
 
 //***********************************************************************************************//
 //                                                                                               //
-//  @Class                                                                                       //
+//  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-class GameObject;
+const std::string RectTransform::className = "RectTransform";
 
-class DebugManagerDX
+/*=================================================================================================
+  @Summary: コンストラクタ
+  @Details: None
+=================================================================================================*/
+RectTransform::RectTransform(GameObject* pObject) : Transform(pObject)
 {
-public:
-     DebugManagerDX();
-    ~DebugManagerDX();
 
-    static DebugManagerDX* Create();
+}
 
-    void Init();
-    void Uninit();
-    void Update();
-    void Draw();
+/*===============================================================================================* 
+  @Summary: デストラクタ
+  @Details: None
+ *===============================================================================================*/
+RectTransform::~RectTransform()
+{
 
-    void CheckGameObject();
-    void CheckGameObjectChild(GameObject* value);
-    void MoveGameObject();
+}
 
-    static void CheckFPS(DWORD NowTime);
-    static void AddframeCount();
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
-    static void Print(std::string String, ...);
-
-private:
-    static DWORD currentTime;
-    static DWORD lastTimeFPS;
-    static DWORD frameCount;
-    static int   countFPS;
-
-    static std::string messegeFree;
-    static std::string messegeHierarchy;
-    static std::string messegeInspector;
-
-    LPD3DXFONT  pDebugFont;
-    D3DXCOLOR   textColor;
-    RECT        freeRect;
-    RECT        hierarchyRect;
-    RECT        inspectorRect;
-
-    std::string indentSpace;
-
-    GameObject* selectGameObject;
-    int         selectGameObjectNumber;
-    int         selectGameObjectCount;
-    int         maxGameObjectNumber;
-
-    bool isDebugMode;
-};
-
-#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

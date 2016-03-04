@@ -54,8 +54,8 @@ CameraDXManager *CameraDXManager::Create()
 void CameraDXManager::Init()
 {
     // 初期カメラの生成
-    D3DXMatrixOrthoLH(&orthoProjection, Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.1f, 100.0f);
-    D3DXMatrixLookAtLH(&orthoView, &D3DXVECTOR3(0, 0, -1), &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 1, 0));
+    D3DXMatrixOrthoLH(&orthoProjection, Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.1f, 500.0f);
+    D3DXMatrixLookAtLH(&orthoView, &D3DXVECTOR3(0, 0, -250), &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 1, 0));
 
     // MainCamera の生成
     GameObject* pCameraGameObject = new GameObject("MainCamera");

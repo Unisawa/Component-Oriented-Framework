@@ -42,7 +42,7 @@ const std::string Render2DDX::className = "Render2DDX";
 =================================================================================================*/
 Render2DDX::Render2DDX(GameObject* pObject, GameObject::LAYER Layer) : RenderDX(pObject, className, Layer)
 {
-
+    size = Vector2::one;
 }
 
 /*===============================================================================================* 
@@ -128,20 +128,20 @@ void Render2DDX::SetVertex()
     pVertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
 
     // ポリゴンの位置座標
-    pVtx[0].pos.x = - 0.5f;
-    pVtx[0].pos.y =   0.5f;
+    pVtx[0].pos.x = - size.x * 0.5f;
+    pVtx[0].pos.y =   size.y * 0.5f;
     pVtx[0].pos.z =   0.0f;
 
-    pVtx[1].pos.x =   0.5f;
-    pVtx[1].pos.y =   0.5f;
+    pVtx[1].pos.x =   size.x * 0.5f;
+    pVtx[1].pos.y =   size.y * 0.5f;
     pVtx[1].pos.z =   0.0f;
 
-    pVtx[2].pos.x = - 0.5f;
-    pVtx[2].pos.y = - 0.5f;
+    pVtx[2].pos.x = - size.x * 0.5f;
+    pVtx[2].pos.y = - size.y * 0.5f;
     pVtx[2].pos.z =   0.0f;
 
-    pVtx[3].pos.x =   0.5f;
-    pVtx[3].pos.y = - 0.5f;
+    pVtx[3].pos.x =   size.x * 0.5f;
+    pVtx[3].pos.y = - size.y * 0.5f;
     pVtx[3].pos.z =   0.0f;
 
     // ポリゴンのカラー情報

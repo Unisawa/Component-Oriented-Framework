@@ -67,7 +67,8 @@ public:
 
     void operator   = (const D3DXMATRIX &v);
 
-    void Identity();
+    void   Identity();
+    Matrix Inverse();
 
     void SetTranslate(const Vector3 &Vec);
     void SetScaling  (const Vector3 &Vec);

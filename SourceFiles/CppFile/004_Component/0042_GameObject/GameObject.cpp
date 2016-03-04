@@ -90,14 +90,27 @@ void GameObject::Init()
  *===============================================================================================*/
 void GameObject::Uninit()
 {
-    Component* pComponent;
+    Component*  pComponent;
+    GameObject* pGameObject;
 
+    // 所持している各コンポーネント
     for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end();)
     {
         pComponent = (*Iterator);
 
         // コンポーネントの削除
         SafeDeleteUninit(pComponent);
+
+        Iterator++;
+    }
+
+    // 所持している子オブジェクト
+    for (auto Iterator = transform->childrentList.begin(); Iterator != transform->childrentList.end();)
+    {
+        pGameObject = (*Iterator)->gameObject;
+
+        // コンポーネントの削除
+        SafeDeleteUninit(pGameObject);
 
         Iterator++;
     }
@@ -112,9 +125,21 @@ void GameObject::Update()
     // 所持している各コンポーネントの更新処理
     for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end();)
     {
+        auto Next = Iterator;
+        Next++;
         (*Iterator)->ComponentUpdate();
 
-        Iterator++;
+        Iterator = Next;
+    }
+
+    // 子の更新処理
+    for (auto Iterator = transform->childrentList.begin(); Iterator != transform->childrentList.end();)
+    {
+        auto Next = Iterator;
+        Next++;
+        (*Iterator)->gameObject->Update();
+
+        Iterator = Next;
     }
 }
 
@@ -171,6 +196,31 @@ void GameObject::SetLayer(LAYER value)
     layer = value;
     GameObjectManager::LinkList(this, value);
 }
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 //===============================================================================================//
 //                                                                                               //
