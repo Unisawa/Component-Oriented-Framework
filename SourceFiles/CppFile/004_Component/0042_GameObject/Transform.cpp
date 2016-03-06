@@ -108,8 +108,8 @@ bool Transform::IsChildOf(Transform* value)
 }
 
 /*===============================================================================================* 
-  @Summary: 親オブジェクトを自身から切り離す
-  @Details: None
+  @Summary: 親オブジェクトから自身を切り離す
+  @Details: pGameObject が親のオブジェクト
  *===============================================================================================*/
 void Transform::DetachParent()
 {
@@ -121,21 +121,27 @@ void Transform::DetachParent()
     {
         pGameObject = (*Iterator)->gameObject;
 
-        if ((*Iterator)->gameObject == this->gameObject)
+        if (pGameObject == this->gameObject)
         {
             // リストから切り離す
             this->parent->childrentList.erase(Iterator);
 
             // リスト登録
-            GameObjectManager::LinkList(pGameObject, pGameObject->GetLayer());
+            GameObjectManager::LinkList(this->gameObject, this->gameObject->GetLayer());
 
             // 親のTransformを自分に反映させる
             Matrix TransMatrix;
             TransMatrix.SetTranslate(this->transform->GetPosition());
             TransMatrix *= this->parent->GetWorldMatrix();
             this->SetPosition(TransMatrix._41, TransMatrix._42, TransMatrix._43);
+            this->rotation += this->transform->parent->rotation;
+            //for (Transform *pParent = pGameObject->transform->parent; pParent != NULL;)
+            //{
+            //    this->rotation += pParent->rotation;
+            //    pParent = pParent->parent;
+            //}
 
-            pGameObject->transform->parent = NULL;
+            this->transform->parent = NULL;
 
             return;
         }
@@ -169,6 +175,12 @@ void Transform::DetachChildren(Transform* value)
             TransMatrix.SetTranslate(pGameObject->transform->GetPosition());
             TransMatrix *= pGameObject->transform->parent->GetWorldMatrix();
             pGameObject->transform->SetPosition(TransMatrix._41, TransMatrix._42, TransMatrix._43);
+            pGameObject->transform->rotation += this->rotation;
+            //for (Transform *pParent = this->parent; pParent != NULL;)
+            //{
+            //    pGameObject->transform->rotation -= pParent->rotation;
+            //    pParent = pParent->parent;
+            //}
 
             pGameObject->transform->parent = NULL;
 
@@ -199,6 +211,12 @@ void Transform::DetachChildrenAll()
         TransMatrix.SetTranslate(pGameObject->transform->GetPosition());
         TransMatrix *= pGameObject->transform->parent->GetWorldMatrix();
         pGameObject->transform->SetPosition(TransMatrix._41, TransMatrix._42, TransMatrix._43);
+        pGameObject->transform->rotation += this->rotation;
+        //for (Transform *pParent = this->parent; pParent != NULL;)
+        //{
+        //    pGameObject->transform->rotation -= pParent->rotation;
+        //    pParent = pParent->parent;
+        //}
 
         pGameObject->transform->parent = NULL;
 
@@ -229,6 +247,7 @@ void Transform::SetParent(Transform* value)
     {
         Matrix ReturnMatrix = TransMatrix * InverseMatrix;
         this->SetPosition(ReturnMatrix._41, ReturnMatrix._42, ReturnMatrix._43);
+        this->rotation -= value->rotation;
     }
 }
 
@@ -253,6 +272,12 @@ void Transform::SetChild(Transform* value)
     {
         Matrix ReturnMatrix = TransMatrix * InverseMatrix;
         value->SetPosition(ReturnMatrix._41, ReturnMatrix._42, ReturnMatrix._43);
+        value->rotation -= this->rotation;
+        //for (Transform *pParent = this->parent; pParent != NULL;)
+        //{
+        //    value->rotation += pParent->rotation;
+        //    pParent = pParent->parent;
+        //}
     }
 }
 

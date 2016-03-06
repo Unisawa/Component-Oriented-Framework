@@ -119,7 +119,7 @@ void SceneResult::Update()
     Keyboard* pKey = InputManager::GetKeyboard();
 
     // オブジェクト生成
-    if (pKey->GetKeyboardTrigger(DIK_Y))
+    if (pKey->GetKeyboardTrigger(DIK_I))
     {
         if (pObject[0] == NULL)
         {
@@ -133,7 +133,7 @@ void SceneResult::Update()
         }
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_H))
+    if (pKey->GetKeyboardTrigger(DIK_J))
     {
         if (pObject[0] != NULL)
         {
@@ -142,7 +142,7 @@ void SceneResult::Update()
         }
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_U))
+    if (pKey->GetKeyboardTrigger(DIK_O))
     {
         if (pObject[1] == NULL)
         {
@@ -157,7 +157,7 @@ void SceneResult::Update()
         }
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_J))
+    if (pKey->GetKeyboardTrigger(DIK_K))
     {
         if (pObject[1] != NULL)
         {
@@ -166,7 +166,7 @@ void SceneResult::Update()
         }
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_I))
+    if (pKey->GetKeyboardTrigger(DIK_P))
     {
         if (pObject[2] == NULL)
         {
@@ -181,7 +181,7 @@ void SceneResult::Update()
         }
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_K))
+    if (pKey->GetKeyboardTrigger(DIK_L))
     {
         if (pObject[2] != NULL)
         {
@@ -190,32 +190,32 @@ void SceneResult::Update()
         }
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_F))
+    if (pKey->GetKeyboardTrigger(DIK_5))
     {
         pObject[2]->transform->SetParent(pObject[0]->transform);
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_G))
+    if (pKey->GetKeyboardTrigger(DIK_6))
     {
         pObject[2]->transform->DetachParent();
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_V))
+    if (pKey->GetKeyboardTrigger(DIK_7))
     {
         pObject[2]->transform->SetChild(pObject[1]->transform);
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_B))
+    if (pKey->GetKeyboardTrigger(DIK_8))
     {
         pObject[2]->transform->DetachChildren(pObject[1]->transform);
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_N))
+    if (pKey->GetKeyboardTrigger(DIK_9))
     {
         pObject[2]->transform->SetChild(pObject[3]->transform);
     }
 
-    if (pKey->GetKeyboardTrigger(DIK_M))
+    if (pKey->GetKeyboardTrigger(DIK_0))
     {
         pObject[2]->transform->DetachChildren(pObject[3]->transform);
     }

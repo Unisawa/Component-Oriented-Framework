@@ -59,11 +59,16 @@ void CameraDXManager::Init()
 
     // MainCamera の生成
     GameObject* pCameraGameObject = new GameObject("MainCamera");
+    pCameraGameObject->transform->SetPosition(0.0f, 100.0f, -200.0f);
+    pCameraGameObject->transform->SetRotation(0.55f, 0.0f, 0.0f);
     pCameraGameObject->DontDestroyOnLoad(true);
 
     CameraDX* pCamera = pCameraGameObject->AddComponent<CameraDX>();
     pPerspectiveProjection = &pCamera->ProjectionMatrix;
     pPerspectiveView       = &pCamera->ViewMatrix;
+
+    //GameObject* pGameObject = new GameObject("Camera");
+    //pCameraGameObject->transform->SetParent(pGameObject->transform);
 }
 
 /*===============================================================================================* 
@@ -81,7 +86,7 @@ void CameraDXManager::Uninit()
  *===============================================================================================*/
 void CameraDXManager::Update()
 {
-    //UpdateAll();
+
 }
 
 /*===============================================================================================*

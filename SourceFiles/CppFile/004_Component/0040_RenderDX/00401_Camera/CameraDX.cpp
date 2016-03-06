@@ -94,7 +94,22 @@ void CameraDX::Uninit()
  *===============================================================================================*/
 void CameraDX::Update()
 {
+    // 視点の変更
+    if (gameObject->transform->GetParent() != NULL)
+    {
+        gameObject->transform->GetParent()->CreateWorldMatrix();
+        D3DXVec3TransformCoord(&PointEye, &gameObject->transform->GetPosition().GetDX(), &gameObject->transform->GetParent()->GetWorldMatrix());
+        gameObject->transform->CreateWorldMatrix();
+    }
+    else
+    {
+        gameObject->transform->CreateWorldMatrix();
+        D3DXVec3TransformCoord(&PointEye, &Vector3(0, 0, 0).GetDX(), &gameObject->transform->GetWorldMatrix());
+    }
 
+    D3DXVec3TransformCoord(&PointLook, &Vector3(0, 0, 1).GetDX(), &gameObject->transform->GetWorldMatrix());
+
+    SetModelView();
 }
 
 /*===============================================================================================* 

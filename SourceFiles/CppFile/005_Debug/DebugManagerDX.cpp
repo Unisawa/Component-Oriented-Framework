@@ -215,6 +215,7 @@ void DebugManagerDX::CheckGameObject()
     char Temp[BUFFER_SIZE];
     sprintf_s(Temp, "【 FPS : %d 】\n\n", countFPS);
     messegeHierarchy += Temp;
+    //Debug::Log("CountFPS: %d", countFPS);
 
     messegeHierarchy += "【 Hierarchy 】\n";
 
@@ -411,6 +412,49 @@ void DebugManagerDX::MoveGameObject()
         Vector3 Pos = selectGameObject->transform->GetPosition();
         Pos.y -= 1.0f;
         selectGameObject->transform->SetPosition(Pos);
+    }
+
+    // 回転
+    if (pKey->GetKeyboardPress(DIK_R))
+    {
+        Vector3 Rot = selectGameObject->transform->GetRotation();
+        Rot.x += 0.01f;
+        selectGameObject->transform->SetRotation(Rot);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_F))
+    {
+        Vector3 Rot = selectGameObject->transform->GetRotation();
+        Rot.x -= 0.01f;
+        selectGameObject->transform->SetRotation(Rot);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_T))
+    {
+        Vector3 Rot = selectGameObject->transform->GetRotation();
+        Rot.y += 0.01f;
+        selectGameObject->transform->SetRotation(Rot);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_G))
+    {
+        Vector3 Rot = selectGameObject->transform->GetRotation();
+        Rot.y -= 0.01f;
+        selectGameObject->transform->SetRotation(Rot);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_Y))
+    {
+        Vector3 Rot = selectGameObject->transform->GetRotation();
+        Rot.z += 0.01f;
+        selectGameObject->transform->SetRotation(Rot);
+    }
+
+    if (pKey->GetKeyboardPress(DIK_H))
+    {
+        Vector3 Rot = selectGameObject->transform->GetRotation();
+        Rot.z -= 0.01f;
+        selectGameObject->transform->SetRotation(Rot);
     }
 }
 

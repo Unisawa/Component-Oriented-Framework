@@ -153,7 +153,7 @@ void Main::Update()
 {
     pManager->Update();
 
-#ifdef _DIRECTX
+#ifdef USE_DIRECTX
     DebugManagerDX::AddframeCount();    // FPS表示用カウンタの更新
 #endif
 
@@ -202,7 +202,7 @@ MSG Main::MessageLoop()
             // 現在時刻取得
             dwCurrentTime = timeGetTime();
 
-#ifdef _DIRECTX
+#ifdef USE_DIRECTX
             DebugManagerDX::CheckFPS(dwCurrentTime);    // FPS 計算
 #endif
 

@@ -33,6 +33,8 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class Matrix;
+
 struct Vector3
 {
     Vector3()                          { x = 0.0f; y = 0.0f; z = 0.0f; }
@@ -51,6 +53,10 @@ struct Vector3
     void operator  = (const Vector3 &Vec) { x = Vec.x; y = Vec.y; z = Vec.z; }
 
     void Normalize();
+
+#ifdef USE_DIRECTX
+    D3DXVECTOR3 GetDX();
+#endif
 
     static Vector3 one;
     static Vector3 zero;
