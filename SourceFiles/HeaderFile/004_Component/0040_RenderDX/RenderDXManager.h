@@ -16,6 +16,7 @@
 #ifndef _RENDERDXMANAGER_H_
 #define _RENDERDXMANAGER_H_
 
+#ifdef USE_DIRECTX
 //***********************************************************************************************//
 //                                                                                               //
 //  @Link Library                                                                                //
@@ -37,7 +38,6 @@
 
 //-----Object-----//
 #include "004_Component/0042_GameObject/GameObject.h"
-#include "005_Debug/DebugManagerDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -118,6 +118,7 @@ private:
 
     ScreenStateDX* pScreenStateDX;
 };
+#endif
 
 #endif
 //===============================================================================================//

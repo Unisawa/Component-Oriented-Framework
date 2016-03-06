@@ -26,6 +26,8 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_OPENGL
+
 const std::string Render2DGL::className = "Render2DGL";
 
 //***********************************************************************************************//
@@ -40,7 +42,7 @@ const std::string Render2DGL::className = "Render2DGL";
 =================================================================================================*/
 Render2DGL::Render2DGL(GameObject* pObject, GameObject::LAYER Layer) : RenderGL(pObject, className, Layer)
 {
-
+    size = Vector2::one;
 }
 
 /*===============================================================================================* 
@@ -58,7 +60,7 @@ Render2DGL::~Render2DGL()
  *===============================================================================================*/
 void Render2DGL::Init()
 {
-    textureID = -1;
+
 }
 
 /*===============================================================================================* 
@@ -67,7 +69,7 @@ void Render2DGL::Init()
  *===============================================================================================*/
 void Render2DGL::Uninit()
 {
-
+    RenderGLManager::UnLinkList(this);
 }
 
 /*===============================================================================================* 
@@ -85,51 +87,46 @@ void Render2DGL::Update()
  *===============================================================================================*/
 void Render2DGL::Draw()
 {
-    Transform* pTransform = this->gameObject->transform;
-
-    float x = pTransform->GetPosition().x;
-    float y = pTransform->GetPosition().y;
-
-    float SizeX = pTransform->GetScale().x;
-    float SizeY = pTransform->GetScale().y;
+    float x = this->gameObject->transform->GetPosition().x;
+    float y = this->gameObject->transform->GetPosition().y;
 
     // 描画設定
     SetBlending();
     SetCulling();
 
     // テクスチャセット
-    //glBindTexture(GL_TEXTURE_2D,textureID);
+    //glBindTexture(GL_TEXTURE_2D, material.mainTextureID);
 
     // 描画開始
     glBegin(GL_TRIANGLE_STRIP);
 
     // 左奥
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glColor4f(material.color.r, material.color.g, material.color.b, material.color.a);
     glTexCoord2f(0.0f, 0.0f);
-    glVertex3f(x - SizeX * 0.5f,
-               y - SizeY * 0.5f,
-                           0.0f);
+    glVertex3f(x - size.x * 0.5f,
+               y - size.y * 0.5f,
+                            0.0f);
 
     // 右奥
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glColor4f(material.color.r, material.color.g, material.color.b, material.color.a);
     glTexCoord2f(1.0f, 0.0f);
-    glVertex3f(x + SizeX * 0.5f,
-               y - SizeY * 0.5f,
-                           0.0f);
+    glVertex3f(x + size.x * 0.5f,
+               y - size.y * 0.5f,
+                            0.0f);
 
     // 左手前
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glColor4f(material.color.r, material.color.g, material.color.b, material.color.a);
     glTexCoord2f(0.0f, 1.0f);
-    glVertex3f(x - SizeX * 0.5f,
-               y + SizeY * 0.5f,
-                           0.0f);
+    glVertex3f(x - size.x * 0.5f,
+               y + size.y * 0.5f,
+                            0.0f);
 
     // 右手前
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glColor4f(material.color.r, material.color.g, material.color.b, material.color.a);
     glTexCoord2f(1.0f, 1.0f);
-    glVertex3f(x + SizeX * 0.5f,
-               y + SizeY * 0.5f,
-                           0.0f);
+    glVertex3f(x + size.x * 0.5f,
+               y + size.y * 0.5f,
+                            0.0f);
 
     // 描画終了
     glEnd();
@@ -140,6 +137,7 @@ void Render2DGL::Draw()
   @Details: 
  *===============================================================================================*/
 
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

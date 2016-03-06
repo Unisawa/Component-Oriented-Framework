@@ -1,6 +1,6 @@
-Ôªø/**************************************************************************************************
+/**************************************************************************************************
 
- @File   : [ ScreenStateNoneDX.h ] ÊèèÁîª„Åô„ÇãÈ†òÂüü„ÇíÂà∂Âæ°„Åô„Çã„Çπ„ÉÜ„Éº„Éà„ÇØ„É©„Çπ (Á©∫„ÅÆ„Çπ„ÉÜ„Éº„Éà)
+ @File   : [ Fade.h ] âÊñ ëSëÃÇÃè∆ìxÇïœâªÇ≥ÇπÇÈÉtÉFÅ[ÉhÉNÉâÉX
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _SCREENSTATENONEDX_H_
-#define _SCREENSTATENONEDX_H_
+#ifndef _FADE_H_
+#define _FADE_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -24,31 +24,61 @@
 
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
-#include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDX.h"
+
+//-----Object-----//
+#include "004_Component/0043_Behaviour/MonoBehaviour.h"
+#include "008_Utility/Color.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#ifdef USE_DIRECTX
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderDXManager;
+class Color;
 
-class ScreenStateNoneDX : public ScreenStateDX
+class Fade : public MonoBehaviour
 {
 public:
-             ScreenStateNoneDX() : ScreenStateDX() {}
-    virtual ~ScreenStateNoneDX() {}
 
-    virtual void BeginDraw(RenderDXManager* pRender) override {}
+    static const enum FADE
+    {
+        NONE = -1,
+
+        IDOL,
+        FADEIN,
+        FADEOUT,
+
+        MAX
+    };
+
+             Fade(GameObject* pObject, std::string className);
+    virtual ~Fade();
+
+    virtual void Init()   = 0;
+    virtual void Uninit() = 0;
+    virtual void Update() = 0;
+
+    void FadeIn();
+    void FadeOut();
+
+    virtual void SetColor(Color value) {}
+
+    FADE GetFadeState() const { return fadeState; }
+
+protected:
+    virtual void UpdateFadeIn()  {}
+    virtual void UpdateFadeOut() {}
+
+    FADE fadeState;
+    int  fadeTime;
+    int  fadeCount;
 };
-#endif
 
 #endif
 //===============================================================================================//

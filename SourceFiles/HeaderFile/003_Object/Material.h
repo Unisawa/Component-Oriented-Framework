@@ -22,9 +22,6 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "001_Manager/Manager.h"
-
 //-----Object-----//
 #include "003_Object/Object.h"
 #include "008_Utility/Color.h"

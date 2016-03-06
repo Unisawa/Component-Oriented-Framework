@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Fade.cpp ] 画面全体の照度を変化させるフェードクラス
+ @File   : [ FadeDX.cpp ] 画面全体の照度を変化させるフェードクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -18,7 +18,7 @@
 #include "002_Constant/Constant.h"
 
 //-----Object-----//
-#include "007_Scene/Fade.h"
+#include "007_Scene/0070_Fade/FadeDX.h"
 #include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0040_RenderDX/Render2DDX.h"
 
@@ -27,19 +27,20 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_DIRECTX
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-const std::string Fade::className = "Fade";
+const std::string FadeDX::className = "FadeDX";
 
 /*=================================================================================================
   @Summary: コンストラクタ
   @Details: None
 =================================================================================================*/
-Fade::Fade(GameObject* pObject) : MonoBehaviour(pObject, className)
+FadeDX::FadeDX(GameObject* pObject) : Fade(pObject, className)
 {
     fadeTime  = 20;
     fadeCount = 0;
@@ -51,7 +52,7 @@ Fade::Fade(GameObject* pObject) : MonoBehaviour(pObject, className)
   @Summary: デストラクタ
   @Details: None
  *===============================================================================================*/
-Fade::~Fade()
+FadeDX::~FadeDX()
 {
 
 }
@@ -60,15 +61,16 @@ Fade::~Fade()
   @Summary: 初期化処理
   @Details: None
  *===============================================================================================*/
-void Fade::Init()
+void FadeDX::Init()
 {
     fadeState = FADE::IDOL;
 
+    // 画面遷移中の処理なので画面遷移しても消さない
     gameObject->DontDestroyOnLoad(true);
-    gameObject->transform->SetScale(Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT, 0.0f);
 
-    // Fade用 2Dポリゴン追加
+    // FadeDX用 2Dポリゴン追加
     pRender2D = gameObject->AddComponent<Render2DDX>();
+    pRender2D->SetSize(Vector2(Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT));
     pRender2D->SetLayer(GameObject::LAYER::OBJECT2D_TRANSLUCENT_TWO);
     pRender2D->SetColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
@@ -77,7 +79,7 @@ void Fade::Init()
   @Summary: 終了処理
   @Details: None
  *===============================================================================================*/
-void Fade::Uninit()
+void FadeDX::Uninit()
 {
 
 }
@@ -86,7 +88,7 @@ void Fade::Uninit()
   @Summary: 更新処理
   @Details: None
  *===============================================================================================*/
-void Fade::Update()
+void FadeDX::Update()
 {
     UpdateFadeIn();
     UpdateFadeOut();
@@ -96,7 +98,7 @@ void Fade::Update()
   @Summary: FadeIn中の処理
   @Details: None
  *===============================================================================================*/
-void Fade::UpdateFadeIn()
+void FadeDX::UpdateFadeIn()
 {
     if (fadeState != FADE::FADEIN) return;
 
@@ -119,7 +121,7 @@ void Fade::UpdateFadeIn()
   @Summary: FadeOut中の処理
   @Details: None
  *===============================================================================================*/
-void Fade::UpdateFadeOut()
+void FadeDX::UpdateFadeOut()
 {
     if (fadeState != FADE::FADEOUT) return;
 
@@ -139,42 +141,17 @@ void Fade::UpdateFadeOut()
 }
 
 /*===============================================================================================* 
-  @Summary: FadeInを開始する
-  @Details: None
- *===============================================================================================*/
-void Fade::FadeIn()
-{
-    if (fadeState == FADE::IDOL)
-    {
-        fadeState = FADE::FADEIN;
-        fadeCount = 0;
-    }
-}
-
-/*===============================================================================================* 
-  @Summary: FadeOutを開始する
-  @Details: None
- *===============================================================================================*/
-void Fade::FadeOut()
-{
-    if (fadeState == FADE::IDOL)
-    {
-        fadeState = FADE::FADEOUT;
-        fadeCount = 0;
-    }
-}
-
-/*===============================================================================================* 
-  @Summary: Fadeする色を設定する
+  @Summary: FadeDXする色を設定する
   @Details: α情報をフェード時に操作するので今は設定できないようにしている
  *===============================================================================================*/
-void Fade::SetColor(Color value)
+void FadeDX::SetColor(Color value)
 {
     pRender2D->material.color.r = value.r;
     pRender2D->material.color.g = value.g;
     pRender2D->material.color.b = value.b;
 };
 
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

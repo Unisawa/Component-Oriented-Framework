@@ -1,6 +1,6 @@
-Ôªø/**************************************************************************************************
+/**************************************************************************************************
 
- @File   : [ ScreenStateNoneDX.h ] ÊèèÁîª„Åô„ÇãÈ†òÂüü„ÇíÂà∂Âæ°„Åô„Çã„Çπ„ÉÜ„Éº„Éà„ÇØ„É©„Çπ (Á©∫„ÅÆ„Çπ„ÉÜ„Éº„Éà)
+ @File   : [ FadeDX.h ] âÊñ ëSëÃÇÃè∆ìxÇïœâªÇ≥ÇπÇÈÉtÉFÅ[ÉhÉNÉâÉX
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _SCREENSTATENONEDX_H_
-#define _SCREENSTATENONEDX_H_
+#ifndef _FADEDX_H_
+#define _FADEDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -24,7 +24,9 @@
 
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
-#include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDX.h"
+
+//-----Object-----//
+#include "007_Scene/0070_Fade/Fade.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -38,15 +40,31 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class RenderDXManager;
+class Render2DDX;
+class Color;
 
-class ScreenStateNoneDX : public ScreenStateDX
+class FadeDX : public Fade
 {
 public:
-             ScreenStateNoneDX() : ScreenStateDX() {}
-    virtual ~ScreenStateNoneDX() {}
+             FadeDX(GameObject* pObject);
+    virtual ~FadeDX();
 
-    virtual void BeginDraw(RenderDXManager* pRender) override {}
+    virtual void Init()   override;
+    virtual void Uninit() override;
+    virtual void Update() override;
+
+    void FadeIn();
+    void FadeOut();
+
+    void SetColor(Color value);
+
+    static const std::string className;
+
+private:
+    void UpdateFadeIn()  override;
+    void UpdateFadeOut() override;
+
+    Render2DDX* pRender2D;
 };
 #endif
 

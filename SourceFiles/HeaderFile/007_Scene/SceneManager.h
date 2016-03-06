@@ -58,6 +58,8 @@ public:
     static void LoadLevel(Scene* pNext, int IntervalFrame = 0.0f);
     static void LoadLevelQuick(Scene* pNext);
 
+    std::string GetNowSceneName();
+
 private:
     static Scene* pScene;                  // 現在のシーン
     static Scene* pSceneNext;              // 次に変更するシーン

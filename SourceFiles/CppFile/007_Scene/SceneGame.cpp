@@ -47,7 +47,7 @@
 //                                                                                               //
 //***********************************************************************************************//
 static GameObject* pTemp = NULL;
-static Render3DDX* pRender3D3 = NULL;
+//static Render3DDX* pRender3D3 = NULL;
 
 /*=================================================================================================
   @Summary: コンストラクタ
@@ -103,29 +103,29 @@ void SceneGame::Init()
     //Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
 
     // 3Dポリゴン描画テスト
-    Texture* pTexture;
+    //Texture* pTexture;
 
-    GameObject* pGameObject3 = new GameObject("DDDDD");
+    //GameObject* pGameObject3 = new GameObject("DDDDD");
 
-    pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
-    pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
-    //pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
-    pRender3D3->SetTexture("Field000.jpg");
-    pRender3D3->SetVertex();
-    pTexture = pRender3D3->GetTexture();
+    //pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
+    //pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
+    ////pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
+    //pRender3D3->SetTexture("Field000.jpg");
+    //pRender3D3->SetVertex();
+    //pTexture = pRender3D3->GetTexture();
 
-    GameObject* pGameObject4 = new GameObject("FFFFF");
-    unsigned int TextureID = pRender3D3->GetTextureID();
+    //GameObject* pGameObject4 = new GameObject("FFFFF");
+    //unsigned int TextureID = pRender3D3->GetTextureID();
 
-    pRender3D3 = pGameObject4->AddComponent<Render3DDX>();
-    pRender3D3->transform->SetPosition(100.0f, 10.0f, 0.0f);
-    pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
-    //pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
-    pRender3D3->SetLayer(GameObject::LAYER::OBJECT3D_TRANSLUCENT_ONE);
-    pRender3D3->SetTexture(pTexture);
-    pRender3D3->SetVertex();
+    //pRender3D3 = pGameObject4->AddComponent<Render3DDX>();
+    //pRender3D3->transform->SetPosition(100.0f, 10.0f, 0.0f);
+    //pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
+    ////pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
+    //pRender3D3->SetLayer(GameObject::LAYER::OBJECT3D_TRANSLUCENT_ONE);
+    //pRender3D3->SetTexture(pTexture);
+    //pRender3D3->SetVertex();
 
-    pTemp = pGameObject3;
+    //pTemp = pGameObject3;
 }
 
 /*===============================================================================================* 
@@ -147,17 +147,17 @@ void SceneGame::Update()
     Keyboard* pKey = InputManager::GetKeyboard();
 
     // ゲームオブジェクトの削除テスト
-    if (pKey->GetKeyboardTrigger(DIK_K))
-    {
-        pTemp->Destroy();
-    }
+    //if (pKey->GetKeyboardTrigger(DIK_K))
+    //{
+    //    pTemp->Destroy();
+    //}
 
-    // コンポーネントの削除テスト
-    if (pKey->GetKeyboardTrigger(DIK_L))
-    {
-        Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-        pRender->Destroy();
-    }
+    //// コンポーネントの削除テスト
+    //if (pKey->GetKeyboardTrigger(DIK_L))
+    //{
+    //    Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
+    //    pRender->Destroy();
+    //}
 
     if (pKey->GetKeyboardTrigger(DIK_SPACE))
     {

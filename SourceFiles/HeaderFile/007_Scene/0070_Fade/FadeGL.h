@@ -1,6 +1,6 @@
 /**************************************************************************************************
 
- @File   : [ Fade.h ] 画面全体の照度を変化させるフェードクラス
+ @File   : [ FadeGL.h ] 画面全体の照度を変化させるフェードクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _FADE_H_
-#define _FADE_H_
+#ifndef _FADEGL_H_
+#define _FADEGL_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,40 +26,28 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0043_Behaviour/MonoBehaviour.h"
-#include "007_Scene/Fade.h"
+#include "007_Scene/0070_Fade/Fade.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_OPENGL
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Render2DDX;
+class Render2DGL;
 class Color;
 
-class Fade : public MonoBehaviour
+class FadeGL : public Fade
 {
 public:
-
-    static const enum FADE
-    {
-        NONE = -1,
-
-        IDOL,
-        FADEIN,
-        FADEOUT,
-
-        MAX
-    };
-
-             Fade(GameObject* pObject);
-    virtual ~Fade();
+             FadeGL(GameObject* pObject);
+    virtual ~FadeGL();
 
     virtual void Init()   override;
     virtual void Uninit() override;
@@ -72,18 +60,13 @@ public:
 
     static const std::string className;
 
-    FADE GetFadeState() const { return fadeState; }
-
 private:
-    void UpdateFadeIn();
-    void UpdateFadeOut();
+    void UpdateFadeIn()  override;
+    void UpdateFadeOut() override;
 
-    Render2DDX* pRender2D;
-
-    FADE fadeState;
-    int  fadeTime;
-    int  fadeCount;
+    Render2DGL* pRender2D;
 };
+#endif
 
 #endif
 //===============================================================================================//

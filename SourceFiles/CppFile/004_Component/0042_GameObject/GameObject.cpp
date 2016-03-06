@@ -13,9 +13,6 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "001_Manager/Manager.h"
-
 //-----Object-----//
 #include "004_Component/Component.h"
 #include "004_Component/0042_GameObject/Transform.h"

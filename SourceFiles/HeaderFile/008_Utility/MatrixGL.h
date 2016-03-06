@@ -23,7 +23,6 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "001_Manager/Manager.h"
 #include "004_Component/0041_RenderGL/RenderGLManager.h"
 
 //-----Object-----//
@@ -41,8 +40,9 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-struct Matrix
+class Matrix
 {
+public:
     Matrix();
     Matrix( float _11, float _12, float _13, float _14,
             float _21, float _22, float _23, float _24,
@@ -60,8 +60,12 @@ struct Matrix
     void operator *= (const Matrix &mtx);
     void operator  = (const Matrix &mtx);
 
-    void Identity();
-    void Inverse();
+    bool operator == (const Matrix&) const;
+    bool operator != (const Matrix&) const;
+
+    void   Identity();
+    Matrix Inverse();
+
     void SetTranslate(const Vector3 &Vec);
     void SetScaling  (const Vector3 &Vec);
     void SetRotateYawPitchRoll(const Vector3 &Vec);

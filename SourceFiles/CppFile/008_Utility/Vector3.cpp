@@ -14,7 +14,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "000_Main/Main.h"
+#include "001_Manager/Manager.h"
 
 //-----Object-----//
 #include "008_Utility/Vector3.h"

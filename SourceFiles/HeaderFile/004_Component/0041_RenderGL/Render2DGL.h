@@ -27,12 +27,14 @@
 
 //-----Object-----//
 #include "004_Component/0041_RenderGL/RenderGL.h"
+#include "008_Utility/Vector2.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_OPENGL
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -51,14 +53,20 @@ public:
     virtual void Draw()   override;
 
     //-----Setter, Getter-----//
-    void SetTexture(std::string TextureName);
-    int  GetTexture() const { return textureID; }
+    void  SetColor(Color value) { material.color = value; }
+    void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; }
+    Color GetColor() const { return material.color; }
+    
+    void    SetSize(float x, float y) { size.x = x; size.y = y; }
+    void    SetSize(const Vector2 &Vec) { size = Vec; }
+    Vector2 GetSize() const { return size; }
 
     static const std::string className;
 
 private:
-    int textureID;    // テクスチャ識別番号
+    Vector2 size;    // 2Dポリゴンの大きさ
 };
+#endif
 
 #endif
 //===============================================================================================//

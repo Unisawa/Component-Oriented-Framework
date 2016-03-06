@@ -35,11 +35,15 @@
 //***********************************************************************************************//
 InputManager* Manager::pInputManager = NULL;
 
-RenderDXManager* Manager::pRenderDXManager = NULL;
-RenderGLManager* Manager::pRenderGLManager = NULL;
-
 GameObjectManager* Manager::pGameObjectManager = NULL;
-SceneManager*      Manager::pSceneManager      = NULL;
+SceneManager*      Manager::pSceneManager = NULL;
+
+#ifdef USE_DIRECTX
+    RenderDXManager* Manager::pRenderDXManager = NULL;
+#endif
+#ifdef USE_OPENGL
+    RenderGLManager* Manager::pRenderGLManager = NULL;
+#endif
 
 /*===============================================================================================* 
   @Summary: ‰Šú‰»ˆ—

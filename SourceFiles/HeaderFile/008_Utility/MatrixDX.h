@@ -23,7 +23,6 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
-#include "001_Manager/Manager.h"
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
 
 //-----Object-----//

@@ -13,9 +13,6 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "001_Manager/Manager.h"
-
 //-----Object-----//
 #include "004_Component/0041_RenderGL/RenderGL.h"
 #include "004_Component/0041_RenderGL/RenderGLManager.h"
@@ -25,6 +22,7 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_OPENGL
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -38,10 +36,14 @@
 =================================================================================================*/
 RenderGL::RenderGL(GameObject* pObject, std::string ComponentName, GameObject::LAYER Layer) : Component(pObject, RENDERER, ComponentName)
 {
-    enabled = true;
-    zDepth  = 1.0f;
+    enabled      = true;
+    zDepth       = 1.0f;
+    sortingOrder = 0.0f;
+    layer        = Layer;
+    transform    = pObject->transform;
 
-    SetLayer(Layer);
+    blendType    = BLENDTYPE::BLENDTYPE_NORMAL;
+    cullingType  = CULLTYPE::CULLTYPE_CCW;
 
     RenderGLManager::LinkList(this, Layer);
 }
@@ -71,6 +73,24 @@ bool RenderGL::ZSortCompareLess(RenderGL* RenderA, RenderGL* RenderB)
 bool RenderGL::ZSortCompareGreater(RenderGL* RenderA, RenderGL* RenderB)
 {
     return RenderA->GetZDepth() > RenderB->GetZDepth();
+}
+
+/*===============================================================================================* 
+  @Summary: sortingOrderの値を参考にソートする Bに対してAの方が小さいか
+  @Details: None
+ *===============================================================================================*/
+bool RenderGL::SortingOrderCompareLess(RenderGL* RenderA, RenderGL* RenderB)
+{
+    return RenderA->GetSortingOrder() < RenderB->GetSortingOrder();
+}
+
+/*===============================================================================================* 
+  @Summary: sortingOrderの値を参考にソートする Bに対してAの方が大きいか
+  @Details: None
+ *===============================================================================================*/
+bool RenderGL::SortingOrderCompareGreater(RenderGL* RenderA, RenderGL* RenderB)
+{
+    return RenderA->GetSortingOrder() > RenderB->GetSortingOrder();
 }
 
 /*===============================================================================================* 
@@ -146,10 +166,24 @@ void RenderGL::SetCulling()
 }
 
 /*===============================================================================================* 
+  @Summary: Layer (描画順) を変更する
+  @Details: None
+ *===============================================================================================*/
+void RenderGL::SetLayer(GameObject::LAYER value)
+{
+    if (layer == value) return;
+
+    RenderGLManager::UnLinkList(this);
+    layer = value;
+    RenderGLManager::LinkList(this, value);
+}
+
+/*===============================================================================================* 
   @Summary: 
   @Details: 
  *===============================================================================================*/
 
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

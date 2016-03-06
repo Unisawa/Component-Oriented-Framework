@@ -1,6 +1,6 @@
-ï»¿/**************************************************************************************************
+/**************************************************************************************************
 
- @File   : [ LightDX.cpp ] ç©ºé–“å†…ã®ãƒ©ã‚¤ãƒˆæƒ…å ±ã‚’æŒã¤ã‚¯ãƒ©ã‚¹
+ @File   : [ FadeGL.cpp ] ‰æ–Ê‘S‘Ì‚ÌÆ“x‚ğ•Ï‰»‚³‚¹‚éƒtƒF[ƒhƒNƒ‰ƒX
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -15,136 +15,142 @@
 
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
+#include "002_Constant/Constant.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/00400_Light/LightDX.h"
-#include "004_Component/0040_RenderDX/00400_Light/LightDXManager.h"
+#include "007_Scene/0070_Fade/FadeGL.h"
+#include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0041_RenderGL/Render2DGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-#ifdef USE_DIRECTX
+#ifdef USE_OPENGL
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-const std::string LightDX::className = "LightDX";
+const std::string FadeGL::className = "FadeGL";
 
 /*=================================================================================================
-  @Summary: ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+  @Summary: ƒRƒ“ƒXƒgƒ‰ƒNƒ^
   @Details: None
 =================================================================================================*/
-LightDX::LightDX(GameObject* pObject) : Behaviour(pObject, className)
+FadeGL::FadeGL(GameObject* pObject) : Fade(pObject, className)
+{
+    fadeTime  = 20;
+    fadeCount = 0;
+
+    fadeState = FADE::NONE;
+}
+
+/*===============================================================================================* 
+  @Summary: ƒfƒXƒgƒ‰ƒNƒ^
+  @Details: None
+ *===============================================================================================*/
+FadeGL::~FadeGL()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+  @Summary: ‰Šú‰»ˆ—
   @Details: None
  *===============================================================================================*/
-LightDX::~LightDX()
+void FadeGL::Init()
+{
+    fadeState = FADE::IDOL;
+
+    // ‰æ–Ê‘JˆÚ’†‚Ìˆ—‚È‚Ì‚Å‰æ–Ê‘JˆÚ‚µ‚Ä‚àÁ‚³‚È‚¢
+    gameObject->transform->SetPosition(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f);
+    gameObject->DontDestroyOnLoad(true);
+
+    // FadeGL—p 2Dƒ|ƒŠƒSƒ“’Ç‰Á
+    pRender2D = gameObject->AddComponent<Render2DGL>();
+    pRender2D->SetSize(Vector2(Constant::SCREEN_WIDTH, Constant::SCREEN_HEIGHT));
+    pRender2D->SetLayer(GameObject::LAYER::OBJECT2D_TRANSLUCENT_TWO);
+    pRender2D->SetColor(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+/*===============================================================================================* 
+  @Summary: I—¹ˆ—
+  @Details: None
+ *===============================================================================================*/
+void FadeGL::Uninit()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: åˆæœŸåŒ–å‡¦ç†
+  @Summary: XVˆ—
   @Details: None
  *===============================================================================================*/
-void LightDX::Init()
+void FadeGL::Update()
 {
-    lightType = LIGHTTYPE_DIRECTIONAL;
-    lightID = LightDXManager::LinkList(this);
-
-    // ãƒ©ã‚¤ãƒˆã®åˆæœŸåŒ–
-    ZeroMemory(&lightParam, sizeof(D3DLIGHT9));
-
-    lightParam.Type     = D3DLIGHT_DIRECTIONAL;                 // å…‰æºã®ç¨®é¡
-    lightParam.Ambient  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);    // ç’°å¢ƒå…‰ (é–“æ¥å…‰)
-    lightParam.Diffuse  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);    // æ‹¡æ•£åå°„å…‰
-    lightParam.Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);    // é¡é¢åå°„
-
-    D3DXVec3Normalize((D3DXVECTOR3*)&lightParam.Direction, &D3DXVECTOR3(0.0f, -1.0f, 0.0f));    // å„å€¤ã‚’æ­£è¦åŒ–ã™ã‚‹
-
-    // ãƒ‡ãƒã‚¤ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å–å¾—
-    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
-
-    pDevice->SetLight(lightID, &lightParam);    // ãƒ©ã‚¤ãƒˆã®è¨­å®š
-    pDevice->LightEnable(lightID, TRUE);        // ãƒ©ã‚¤ãƒˆã®æœ‰åŠ¹
+    UpdateFadeIn();
+    UpdateFadeOut();
 }
 
 /*===============================================================================================* 
-  @Summary: çµ‚äº†å‡¦ç†
+  @Summary: FadeIn’†‚Ìˆ—
   @Details: None
  *===============================================================================================*/
-void LightDX::Uninit()
+void FadeGL::UpdateFadeIn()
 {
-    LightDXManager::UnLinkList(this);
+    if (fadeState != FADE::FADEIN) return;
 
-    // ãƒ©ã‚¤ãƒˆã®ç„¡åŠ¹
-    RenderDXManager::GetDevice()->LightEnable(lightID, FALSE);
-}
+    // ƒ¿ŒvZ
+    Color color = pRender2D->GetColor();
+    color.a = 1.0f * (1 - ((float)fadeCount / fadeTime));
 
-/*===============================================================================================* 
-  @Summary: æ›´æ–°å‡¦ç†
-  @Details: None
- *===============================================================================================*/
-void LightDX::Update()
-{
+    // ’¸“_î•ñ‚ÌXV
+    pRender2D->SetColor(color);
 
-}
-
-/*===============================================================================================* 
-  @Summary: Light ã®ç¨®é¡ã‚’è¨­å®šã™ã‚‹
-  @Details: None
- *===============================================================================================*/
-void LightDX::SetLightType(LIGHTTYPE value)
-{
-    lightType = value;
-
-    switch (value)
+    // ƒtƒF[ƒh‚ªI‚í‚ê‚ÎAƒtƒF[ƒhÀsó‘Ô‚ğ‰ğœ
+    if (fadeTime < ++fadeCount)
     {
-        case LIGHTTYPE_DIRECTIONAL:
-            lightParam.Type = D3DLIGHT_DIRECTIONAL;
-            break;
-
-        case LIGHTTYPE_POINT:
-            lightParam.Type = D3DLIGHT_POINT;
-            break;
-
-        case LIGHTTYPE_SPOT:
-            lightParam.Type = D3DLIGHT_SPOT;
-            break;
+        fadeCount = fadeTime;
+        fadeState = FADE::IDOL;
     }
-
-    RenderDXManager::GetDevice()->SetLight(lightID, &lightParam);
 }
 
 /*===============================================================================================* 
-  @Summary: ãƒ©ã‚¤ãƒˆãŒå‘ã„ã¦ã„ã‚‹æ–¹å‘ã‚’å–å¾—ã™ã‚‹
-  @Details: ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ç­‰ã§ D3DXVECTOR4å‹ ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã¯ã“ã¡ã‚‰ã‚’ä½¿ã†
+  @Summary: FadeOut’†‚Ìˆ—
+  @Details: None
  *===============================================================================================*/
-D3DXVECTOR4 LightDX::GetDirectionEX()
+void FadeGL::UpdateFadeOut()
 {
-    D3DXVECTOR4 Vec;
+    if (fadeState != FADE::FADEOUT) return;
 
-    Vec.x = lightParam.Direction.x;
-    Vec.y = lightParam.Direction.y;
-    Vec.z = lightParam.Direction.z;
-    Vec.w = 1.0f;
+    // ƒ¿ŒvZ
+    Color color = pRender2D->GetColor();
+    color.a     = 1.0f * ((float)fadeCount / fadeTime);
 
-    return Vec;
+    // ’¸“_î•ñ‚ÌXV
+    pRender2D->SetColor(color);
+
+    // ƒtƒF[ƒh‚ªI‚í‚ê‚ÎAƒtƒF[ƒhÀsó‘Ô‚ğ‰ğœ
+    if (fadeTime < ++fadeCount)
+    {
+        fadeCount = fadeTime;
+        fadeState = FADE::IDOL;
+    }
 }
 
 /*===============================================================================================* 
-  @Summary: 
-  @Details: 
+  @Summary: FadeGL‚·‚éF‚ğİ’è‚·‚é
+  @Details: ƒ¿î•ñ‚ğƒtƒF[ƒh‚É‘€ì‚·‚é‚Ì‚Å¡‚Íİ’è‚Å‚«‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¢‚é
  *===============================================================================================*/
+void FadeGL::SetColor(Color value)
+{
+    pRender2D->material.color.r = value.r;
+    pRender2D->material.color.g = value.g;
+    pRender2D->material.color.b = value.b;
+};
 
 #endif
 //===============================================================================================//

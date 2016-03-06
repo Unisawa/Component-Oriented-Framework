@@ -21,8 +21,6 @@
 //  @Include File                                                                                //
 //                                                                                               //
 //***********************************************************************************************//
-#include "004_Component/0040_RenderDX/RenderDXManager.h"
-#include "004_Component/0041_RenderGL/RenderGLManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -33,10 +31,12 @@
 //#define USE_OPENGL     // OpenGL ÇÃégópêÈåæ
 
 #ifdef USE_DIRECTX
+    #include "004_Component/0040_RenderDX/RenderDXManager.h"
     #include "008_Utility/MatrixDX.h"
 #endif
 
 #ifdef USE_OPENGL
+    #include "004_Component/0041_RenderGL/RenderGLManager.h"
     #include "008_Utility/MatrixGL.h"
 #endif
 
@@ -48,11 +48,15 @@
 //                                                                                               //
 //***********************************************************************************************//
 class InputManager;
-
-class RenderDXManager;
-class RenderGLManager;
 class GameObjectManager;
 class SceneManager;
+
+#ifdef USE_DIRECTX
+    class RenderDXManager;
+#endif
+#ifdef USE_OPENGL
+    class RenderGLManager;
+#endif
 
 class Manager
 {
@@ -65,22 +69,30 @@ public:
     void    Update();
     void    Draw();
 
-    static InputManager* GetInputManager() { return pInputManager; }
-
-    static RenderDXManager* GetRenderDXManager() { return pRenderDXManager; }
-    static RenderGLManager* GetRenderGLManager() { return pRenderGLManager; }
+    static InputManager*      GetInputManager() { return pInputManager; }
 
     static GameObjectManager* GetGameObjectManager() { return pGameObjectManager; }
     static SceneManager*      GetSceneManager() { return pSceneManager; }
 
-private:
-    static InputManager* pInputManager;
+#ifdef USE_DIRECTX
+    static RenderDXManager* GetRenderDXManager() { return pRenderDXManager; }
+#endif
+#ifdef USE_OPENGL
+    static RenderGLManager* GetRenderGLManager() { return pRenderGLManager; }
+#endif
 
-    static RenderDXManager* pRenderDXManager;
-    static RenderGLManager* pRenderGLManager;
+private:
+    static InputManager*      pInputManager;
 
     static GameObjectManager* pGameObjectManager;
     static SceneManager*      pSceneManager;
+
+#ifdef USE_DIRECTX
+    static RenderDXManager* pRenderDXManager;
+#endif
+#ifdef USE_OPENGL
+    static RenderGLManager* pRenderGLManager;
+#endif
 };
 
 #endif

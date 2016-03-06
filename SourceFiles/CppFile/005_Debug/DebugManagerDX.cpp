@@ -25,12 +25,15 @@
 
 #include "005_Debug/DebugManagerDX.h"
 #include "006_Tool/0060_Input/InputManager.h"
+#include "007_Scene/SceneManager.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_DIRECTX
+
 #define BUFFER_SIZE (256)    // DebugManagerDX::Printを使用した際の最大文字数
 
 //***********************************************************************************************//
@@ -151,6 +154,8 @@ void DebugManagerDX::Update()
 
     messegeFree      += " -Free Messege Space- \n";
     messegeInspector += "【 Inspector 】 \n";
+
+    DebugManagerDX::Print("【 現在のシーン: " + Manager::GetSceneManager()->GetNowSceneName() + " 】");
 
     Keyboard* pKey = InputManager::GetKeyboard();
 
@@ -528,6 +533,7 @@ void DebugManagerDX::Print(std::string String, ...)
   @Details: 
  *===============================================================================================*/
 
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //

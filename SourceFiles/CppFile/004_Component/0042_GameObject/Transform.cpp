@@ -243,7 +243,7 @@ void Transform::SetParent(Transform* value)
     Matrix TransMatrix, InverseMatrix;
     TransMatrix.SetTranslate(this->position);
     InverseMatrix = value->worldMatrix.Inverse();
-    if (InverseMatrix != NULL)
+    if (InverseMatrix != Matrix::zero)
     {
         Matrix ReturnMatrix = TransMatrix * InverseMatrix;
         this->SetPosition(ReturnMatrix._41, ReturnMatrix._42, ReturnMatrix._43);
@@ -268,7 +268,7 @@ void Transform::SetChild(Transform* value)
     Matrix TransMatrix, InverseMatrix;
     TransMatrix.SetTranslate(value->position);
     InverseMatrix = this->worldMatrix.Inverse();
-    if (InverseMatrix != NULL)
+    if (InverseMatrix != Matrix::zero)
     {
         Matrix ReturnMatrix = TransMatrix * InverseMatrix;
         value->SetPosition(ReturnMatrix._41, ReturnMatrix._42, ReturnMatrix._43);

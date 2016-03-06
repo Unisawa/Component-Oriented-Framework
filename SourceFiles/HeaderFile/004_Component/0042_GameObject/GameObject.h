@@ -136,7 +136,7 @@ private:
     std::string tag;                // タグ名
     bool        dontDestroyFlag;    // シーン読み込み時に自動でオブジェクトを削除しない
 
-    std::list<Component*>  pComponentList;
+    std::list<Component*> pComponentList;
 };
 
 #endif

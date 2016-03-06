@@ -22,15 +22,12 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "001_Manager/Manager.h"
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
-typedef DWORD COLOR;
+typedef unsigned long COLOR;
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,8 +37,9 @@ typedef DWORD COLOR;
 class Color
 {
 public:
-    Color() {}
-    Color(float R, float G, float B, float A) { r = R; g = G; b = B; a = A; }
+     Color();
+     Color(float R, float G, float B, float A);
+    ~Color();
 
     Color operator + (const Color &Vec) const { return Color(r + Vec.r, g + Vec.g, b + Vec.b, a + Vec.a); }
     Color operator - (const Color &Vec) const { return Color(r - Vec.r, g - Vec.g, b - Vec.b, a - Vec.a); }
@@ -56,6 +54,9 @@ public:
     void operator = (const Color &Vec) { r = Vec.r; g = Vec.g; b = Vec.b; a = Vec.a; }
 
     COLOR Trans();
+
+    Color GetGamma();
+    Color GetGrayScale();
 
     static Color black;
     static Color white;

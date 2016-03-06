@@ -34,6 +34,7 @@
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_DIRECTX
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -58,7 +59,7 @@ public:
     void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
     Color GetColor() const { return material.color; }
 
-    void    SetSize(float x, float y, float z) { size.x = x; size.y = y; }
+    void    SetSize(float x, float y) { size.x = x; size.y = y; }
     void    SetSize(const Vector2 &Vec)        { size = Vec; }
     Vector2 GetSize() const { return size; }
 
@@ -69,6 +70,7 @@ private:
 
     Vector2 size;    // 2Dƒ|ƒŠƒSƒ“‚Ì‘å‚«‚³
 };
+#endif
 
 #endif
 //===============================================================================================//

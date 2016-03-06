@@ -21,8 +21,9 @@
 #include "007_Scene/SceneTitle.h"
 #include "007_Scene/SceneGame.h"
 #include "007_Scene/SceneResult.h"
-#include "007_Scene/Fade.h"
-#include "008_Utility/Color.h"
+
+#include "007_Scene/0070_Fade/FadeDX.h"
+#include "007_Scene/0070_Fade/FadeGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -48,7 +49,7 @@ Fade*  SceneManager::pFade = NULL;
 =================================================================================================*/
 SceneManager::SceneManager()
 {
-    pScene = &Scene::GAME;
+    pScene = &Scene::TITLE;
 }
 
 /*===============================================================================================* 
@@ -83,7 +84,13 @@ void SceneManager::Init()
 
     // フェードフィルターの作成
     GameObject* pFadeGameObject = new GameObject("Fade Filter");
-    pFade = pFadeGameObject->AddComponent<Fade>();
+
+#ifdef USE_DIRECTX
+    pFade = pFadeGameObject->AddComponent<FadeDX>();
+#endif
+#ifdef USE_OPENGL
+    pFade = pFadeGameObject->AddComponent<FadeGL>();
+#endif
     pFade->SetColor(Color::white);
 
     // 初回起動時のシーンの初期化
@@ -107,8 +114,6 @@ void SceneManager::Uninit()
  *===============================================================================================*/
 void SceneManager::Update()
 {
-    DebugManagerDX::Print("【 現在のシーン: " + pScene->GetSceneName() + " 】");
-
     pScene->Update();
 
     // 画面遷移の状態管理
@@ -195,7 +200,7 @@ void SceneManager::LoadLevel(Scene* pNext, int IntervalFrame)
 }
 
 /*===============================================================================================* 
-  @Summary: すぐに画面遷移を行う Fade無し
+  @Summary: すぐに画面遷移を行う FadeDX無し
   @Details: None
  *===============================================================================================*/
 void SceneManager::LoadLevelQuick(Scene* pNext)
@@ -208,9 +213,13 @@ void SceneManager::LoadLevelQuick(Scene* pNext)
 }
 
 /*===============================================================================================* 
-  @Summary: 
-  @Details: 
+  @Summary: 現在のシーン名を返す
+  @Details: None
  *===============================================================================================*/
+std::string SceneManager::GetNowSceneName()
+{
+    return pScene->GetSceneName();
+}
 
 //===============================================================================================//
 //                                                                                               //
