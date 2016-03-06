@@ -14,6 +14,7 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
+#include "000_Main/Main.h"
 #include "001_Manager/Manager.h"
 #include "002_Constant/Constant.h"
 
@@ -22,6 +23,7 @@
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateNoneDX.h"
 #include "004_Component/0040_RenderDX/00402_ScreenState/ScreenStateDebugDX.h"
 #include "004_Component/0042_GameObject/GameObjectManager.h"
+#include "004_Component/0042_GameObject/Transform.h"
 
 #include "005_Debug/DebugManagerDX.h"
 #include "006_Tool/0060_Input/InputManager.h"

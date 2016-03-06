@@ -18,10 +18,10 @@
 #include "002_Constant/Constant.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/Render2DDX.h"
-#include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0040_RenderDX/00410_Base/RenderDX.h"
+#include "004_Component/0040_RenderDX/00410_Base/Render2DDX.h"
 #include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
+#include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
 //                                                                                               //

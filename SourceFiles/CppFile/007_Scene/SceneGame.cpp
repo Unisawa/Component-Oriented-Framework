@@ -31,8 +31,8 @@
 #include "004_Component/Component.h"
 #include "004_Component/0042_GameObject/Transform.h"
 #include "004_Component/0042_GameObject/GameObject.h"
-#include "004_Component/0040_RenderDX/Render2DDX.h"
-#include "004_Component/0040_RenderDX/Render3DDX.h"
+#include "004_Component/0040_RenderDX/00410_Base/Render2DDX.h"
+#include "004_Component/0040_RenderDX/00410_Base/Render3DDX.h"
 #include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 
 //***********************************************************************************************//

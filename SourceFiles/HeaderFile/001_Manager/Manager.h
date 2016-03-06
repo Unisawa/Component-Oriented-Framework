@@ -40,8 +40,6 @@
     #include "008_Utility/MatrixGL.h"
 #endif
 
-#include "004_Component/0042_GameObject/Transform.h"
-
 //***********************************************************************************************//
 //                                                                                               //
 //  @Class                                                                                       //

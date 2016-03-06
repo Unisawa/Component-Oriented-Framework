@@ -19,7 +19,7 @@
 
 //-----Object-----//
 #include "004_Component/0042_GameObject/Transform.h"
-#include "004_Component/0040_RenderDX/RenderDX.h"
+#include "004_Component/0040_RenderDX/00410_Base/RenderDX.h"
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
 #include "004_Component/0040_RenderDX/00400_Light/LightDXManager.h"
 #include "004_Component/0040_RenderDX/00401_Camera/CameraDX.h"

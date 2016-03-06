@@ -1,6 +1,6 @@
-/**************************************************************************************************
+﻿/**************************************************************************************************
 
- @File   : [ Render3DDX.h ] DirectX��3D�l�p�`�|���S����`�悷��Render�N���X
+ @File   : [ MeshDX.h ] スクリプトからメッシュを作成または変更できるようにするクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _RENDER3DDX_H_
-#define _RENDER3DDX_H_
+#ifndef _MESHDX_H_
+#define _MESHDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,7 +26,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
+#include "003_Object/Object.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,34 +40,23 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class Render3DDX : public RenderDX
+class MeshDX : public Object
 {
 public:
-             Render3DDX(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT3D_OPACITY_ONE);
-    virtual ~Render3DDX();
+             MeshDX();
+    virtual ~MeshDX();
 
-    virtual void Init()   override;
-    virtual void Uninit() override;
-    virtual void Update() override;
-    virtual void Draw()   override;
+    void CreateVertexBuffer();
+    void CreateIndexBuffer();
 
-    virtual void SetVertex() override;
+    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
+    LPDIRECT3DINDEXBUFFER9  pIndexBuffer;     // インテックスバッファ
 
-    //-----Setter, Getter-----//
-    void      SetSize(Vector3 value) { size = value; }
-    void      SetSize(float x, float y, float z) { size.x = x; size.y = y; size.z = z; }
-    Vector3   GetSize() { return size; }
+    int VertexNum;         // 頂点数
+    int VertexIndexNum;    // インデックス数
 
-    void  SetColor(Color value) { material.color = value; };
-    void  SetColor(float red, float green, float blue, float alpha) { material.color.r = red; material.color.g = green; material.color.b = blue; material.color.a = alpha; SetVertex(); }
-    Color GetColor() const { return material.color; }
-
-    static const std::string className;
-
-private:
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // ���_�o�b�t�@
-
-    Vector3     size;           // �|���S���̑傫��
+    int DivisionX;         // ポリゴン分割数
+    int DivisionY;         // ポリゴン分割数
 };
 #endif
 

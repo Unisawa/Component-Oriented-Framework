@@ -1,6 +1,6 @@
-/**************************************************************************************************
+ï»¿/**************************************************************************************************
 
- @File   : [ SceneTitle.cpp ] ƒ^ƒCƒgƒ‹ƒV[ƒ“‚ÌƒNƒ‰ƒX
+ @File   : [ MeshDX.cpp ] ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‹ã‚‰ãƒ¡ãƒƒã‚·ãƒ¥ã‚’ä½œæˆã¾ãŸã¯å¤‰æ›´ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹ã‚¯ãƒ©ã‚¹
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -14,117 +14,70 @@
 //***********************************************************************************************//
 
 //-----MainSetting-----//
+#include "000_Main/Main.h"
 #include "001_Manager/Manager.h"
-#include "002_Constant/Constant.h"
-
-//-----Manager-----//
-#include "006_Tool/0060_Input/InputManager.h"
-#include "004_Component/0040_RenderDX/RenderDXManager.h"
-#include "004_Component/0042_GameObject/GameObjectManager.h"
-#include "007_Scene/SceneManager.h"
-#include "007_Scene/SceneTitle.h"
-#include "007_Scene/SceneGame.h"
 
 //-----Object-----//
-#include "004_Component/Component.h"
-#include "004_Component/0042_GameObject/Transform.h"
-#include "004_Component/0042_GameObject/GameObject.h"
-#include "004_Component/0040_RenderDX/00410_Base/Render2DDX.h"
-
-#include "004_Component/0041_RenderGL/Render2DGL.h"
+#include "004_Component/0040_RenderDX/00410_Base/RenderDX.h"
+#include "004_Component/0040_RenderDX/00420_Mesh/MeshDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
 //                                                                                               //
 //***********************************************************************************************//
+#ifdef USE_DIRECTX
 
 //***********************************************************************************************//
 //                                                                                               //
 //  @Static Variable                                                                             //
 //                                                                                               //
 //***********************************************************************************************//
-static GameObject* pTemp = NULL;
 
 /*=================================================================================================
-  @Summary: ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+  @Summary: ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
 =================================================================================================*/
-SceneTitle::SceneTitle()
+MeshDX::MeshDX() : Object()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ƒfƒXƒgƒ‰ƒNƒ^
+  @Summary: ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
  *===============================================================================================*/
-SceneTitle::~SceneTitle()
+MeshDX::~MeshDX()
 {
-
+    // ãƒãƒƒãƒ•ã‚¡ã®å‰Šé™¤
+    SafeRelease(pVertexBuffer);
+    SafeRelease(pIndexBuffer);
 }
 
 /*===============================================================================================* 
-  @Summary: ‰Šú‰»ˆ—
+  @Summary: é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
   @Details: None
  *===============================================================================================*/
-void SceneTitle::Init()
+void MeshDX::CreateVertexBuffer()
 {
-    // GameObject‚Ì¶¬AƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì’Ç‰ÁƒeƒXƒg
-    GameObject* pGameObject0 = new GameObject("AAAAA");\
+    // é ‚ç‚¹æ•°ã®è¨ˆç®—
+    VertexNum = (DivisionX + 1) * (DivisionY + 1);
 
-    Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
-    pRender2D0->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF / 2));
-    pRender2D0->SetTexture("Field000.jpg");
-    pRender2D0->SetVertex();
-
-    GameObject* pGameObject1 = new GameObject("BBBBB");
-    pGameObject1->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
-
-    Render2DDX* pRender2D1 = pGameObject1->AddComponent<Render2DDX>();
-    pRender2D1->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF));
-    pRender2D1->SetTexture("Blade.png");
-    pRender2D1->SetVertex();
-
-    GameObject* pGameObject2 = new GameObject("CCCCC");
-    pGameObject2->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
-
-    Render2DDX* pRender2D2 = pGameObject2->AddComponent<Render2DDX>();
-    pRender2D2->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF));
-    pRender2D2->SetTexture("snow.tga");
-    pRender2D2->SetVertex();
-
-    pTemp = pGameObject0;
-
-    //GameObject* pGameObject9 = new GameObject;
-    //pGameObject9->SetName("OpenGL");
-    //pGameObject9->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
-    //Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
-    //pRender2D9->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF));
+    SafeRelease(pVertexBuffer);
+    RenderDXManager::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_3D) * VertexNum, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
 }
 
 /*===============================================================================================* 
-  @Summary: I—¹ˆ—
+  @Summary: ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
   @Details: None
  *===============================================================================================*/
-void SceneTitle::Uninit()
+void MeshDX::CreateIndexBuffer()
 {
-    GameObjectManager::ReleaseAllScene();
-}
+    // ã‚¤ãƒ³ãƒ†ãƒƒã‚¯ã‚¹æ•°ã®è¨ˆç®—
+    VertexIndexNum = (DivisionX + 1) * (DivisionY * 2) + (2 * DivisionY - 2);
 
-/*===============================================================================================* 
-  @Summary: XVˆ—
-  @Details: None
- *===============================================================================================*/
-void SceneTitle::Update()
-{
-    // “ü—ÍƒeƒXƒg
-    Keyboard* pKey = InputManager::GetKeyboard();
-
-    if (pKey->GetKeyboardTrigger(DIK_SPACE))
-    {
-        SceneManager::LoadLevel(&Scene::GAME);
-    }
+    SafeRelease(pIndexBuffer);
+    RenderDXManager::GetDevice()->CreateIndexBuffer(sizeof(WORD) * VertexIndexNum, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &pIndexBuffer, NULL);
 }
 
 /*===============================================================================================* 
@@ -132,6 +85,7 @@ void SceneTitle::Update()
   @Details: 
  *===============================================================================================*/
 
+#endif
 //===============================================================================================//
 //                                                                                               //
 //                                          @End of File                                         //
