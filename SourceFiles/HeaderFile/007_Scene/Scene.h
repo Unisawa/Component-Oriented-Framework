@@ -22,8 +22,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 
-//-----MainSetting-----//
-#include "001_Manager/Manager.h"
+//-----STL-----//
+#include <String>
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,6 +40,8 @@ class SceneTitle;
 class SceneGame;
 class SceneResult;
 
+class SceneOpenGL;
+
 class Scene
 {
 public:
@@ -55,6 +57,8 @@ public:
     static SceneTitle  TITLE;
     static SceneGame   GAME;
     static SceneResult RESULT;
+
+    static SceneOpenGL OPENGL;
 };
 
 #endif

@@ -131,12 +131,13 @@ void SceneGame::Init()
     MeshSphereDX* pMesh;
     GameObject* pGameObject5 = new GameObject("MeshSphereDX");
     pGameObject5->transform->SetScale(10.0f, 10.0f, 10.0f);
-    //unsigned int TextureID = pRender3D3->GetTextureID();
+
     pMesh = pGameObject5->AddComponent<MeshSphereDX>();
+    pMesh->SetUpSphere(20, 20, 1000.0f);
 
     //pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
     //pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
-    pMesh->SetTexture(pTexture);
+    pMesh->SetTexture("Universe002.jpg");
     //pRender3D3->SetVertex();
     //pTemp = pGameObject3;
 }

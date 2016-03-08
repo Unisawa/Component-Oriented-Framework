@@ -22,6 +22,8 @@
 #include "007_Scene/SceneGame.h"
 #include "007_Scene/SceneResult.h"
 
+#include "007_Scene/SceneOpenGL.h"
+
 //***********************************************************************************************//
 //                                                                                               //
 //  @Macro Definition                                                                            //
@@ -36,6 +38,8 @@
 SceneTitle  Scene::TITLE;
 SceneGame   Scene::GAME;
 SceneResult Scene::RESULT;
+
+SceneOpenGL Scene::OPENGL;
 
 /*===============================================================================================* 
   @Summary: 

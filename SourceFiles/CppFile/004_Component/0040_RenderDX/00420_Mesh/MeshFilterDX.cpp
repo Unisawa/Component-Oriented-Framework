@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ MeshFilterDX.cpp ] 
+ @File   : [ MeshFilterDX.cpp ] メッシュを描画するためのクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -43,7 +43,7 @@
 MeshFilterDX::MeshFilterDX(GameObject* pObject, std::string ComponentName) : Component(pObject, RENDERER, ComponentName)
 {
     pMesh       = new MeshDX();
-    pMeshRender = RequireComponent<MeshRenderDX>();
+    pMeshRender = RequireComponent<MeshRenderDX>();    // メッシュを描画するために必要
 }
 
 /*===============================================================================================* 

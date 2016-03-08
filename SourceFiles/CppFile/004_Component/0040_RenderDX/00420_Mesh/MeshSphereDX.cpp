@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ MeshSphereDX.cpp ] 
+ @File   : [ MeshSphereDX.cpp ] 球状のメッシュを生成するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -18,7 +18,6 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshFilterDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshSphereDX.h"
@@ -69,7 +68,7 @@ void MeshSphereDX::Init()
     SetUpVertex();
 
     pMeshRender->SetMesh(pMesh);
-    pMeshRender->SetCullType(RenderDX::CULLTYPE::CULLTYPE_NONE);
+    //pMeshRender->SetCullType(RenderDX::CULLTYPE::CULLTYPE_NONE);
 }
 
 /*===============================================================================================* 

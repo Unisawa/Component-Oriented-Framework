@@ -73,7 +73,7 @@ void SceneResult::Init()
 
     //Render2DDX* pRender2D0 = pObject[0]->AddComponent<Render2DDX>();
     //pRender2D0->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF));
-    //pRender2D0->SetTexture("Sphere000.jpg");
+    //pRender2D0->SetTexture("Field000.jpg");
     //pRender2D0->SetVertex();
 
     //pObject[1] = new GameObject("BBBBB");

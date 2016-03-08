@@ -1,6 +1,6 @@
-/**************************************************************************************************
+ï»¿/**************************************************************************************************
 
- @File   : [ Fade.cpp ] ‰æ–Ê‘S‘Ì‚ÌÆ“x‚ð•Ï‰»‚³‚¹‚éƒtƒF[ƒhƒNƒ‰ƒX
+ @File   : [ SceneOpenGL.cpp ] SceneOpenGL ã®ã‚¯ãƒ©ã‚¹
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,21 @@
 //                                                                                               //
 //***********************************************************************************************//
 
+//-----MainSetting-----//
+#include "001_Manager/Manager.h"
+#include "002_Constant/Constant.h"
+
+//-----Manager-----//
+#include "007_Scene/SceneManager.h"
+#include "007_Scene/SceneOpenGL.h"
+#include "007_Scene/SceneTitle.h"
+#include "004_Component/0042_GameObject/GameObjectManager.h"
+
 //-----Object-----//
-#include "007_Scene/0070_Fade/Fade.h"
+#include "004_Component/0042_GameObject/Transform.h"
+#include "004_Component/0042_GameObject/GameObject.h"
+
+#include "004_Component/0041_RenderGL/Render2DGL.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -29,51 +42,67 @@
 //***********************************************************************************************//
 
 /*=================================================================================================
-  @Summary: ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+  @Summary: ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
 =================================================================================================*/
-Fade::Fade(GameObject* pObject, std::string className) : MonoBehaviour(pObject, className)
-{
-    fadeTime  = 20;
-    fadeCount = 0;
-
-    fadeState = FADE::NONE;
-}
-
-/*===============================================================================================* 
-  @Summary: ƒfƒXƒgƒ‰ƒNƒ^
-  @Details: None
- *===============================================================================================*/
-Fade::~Fade()
+SceneOpenGL::SceneOpenGL()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: FadeIn‚ðŠJŽn‚·‚é
+  @Summary: ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
  *===============================================================================================*/
-void Fade::FadeIn()
+SceneOpenGL::~SceneOpenGL()
 {
-    if (fadeState == FADE::IDOL)
+
+}
+
+/*===============================================================================================* 
+  @Summary: åˆæœŸåŒ–å‡¦ç†
+  @Details: None
+ *===============================================================================================*/
+void SceneOpenGL::Init()
+{
+#ifdef USE_OPENGL
+    GameObject* pGameObejctGL = new GameObject;
+    pGameObejctGL->SetName("OpenGL");
+    pGameObejctGL->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_HEIGHT_HALF, 0.0f));
+
+    Render2DGL* pRender2D = pGameObejctGL->AddComponent<Render2DGL>();
+    pRender2D->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF));
+#endif
+}
+
+/*===============================================================================================* 
+  @Summary: çµ‚äº†å‡¦ç†
+  @Details: None
+ *===============================================================================================*/
+void SceneOpenGL::Uninit()
+{
+    GameObjectManager::ReleaseAllScene();
+}
+
+/*===============================================================================================* 
+  @Summary: æ›´æ–°å‡¦ç†
+  @Details: None
+ *===============================================================================================*/
+void SceneOpenGL::Update()
+{
+    // å…¥åŠ›ãƒ†ã‚¹ãƒˆ
+    Keyboard* pKey = InputManager::GetKeyboard();
+
+    if (pKey->GetKeyboardTrigger(DIK_SPACE))
     {
-        fadeState = FADE::FADEIN;
-        fadeCount = 0;
+        SceneManager::LoadLevel(&Scene::TITLE);
     }
 }
 
 /*===============================================================================================* 
-  @Summary: FadeOut‚ðŠJŽn‚·‚é
-  @Details: None
+  @Summary: 
+  @Details: 
  *===============================================================================================*/
-void Fade::FadeOut()
-{
-    if (fadeState == FADE::IDOL)
-    {
-        fadeState = FADE::FADEOUT;
-        fadeCount = 0;
-    }
-}
 
 //===============================================================================================//
 //                                                                                               //
