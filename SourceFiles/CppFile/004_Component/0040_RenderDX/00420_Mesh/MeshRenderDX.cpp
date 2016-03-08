@@ -1,6 +1,6 @@
-/**************************************************************************************************
+ï»¿/**************************************************************************************************
 
- @File   : [ Render2DDX.cpp ] DirectX‚Å2DŽlŠpŒ`ƒ|ƒŠƒSƒ“‚ð•`‰æ‚·‚éRenderƒNƒ‰ƒX
+ @File   : [ MeshRenderDX.cpp ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -15,11 +15,10 @@
 
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
-#include "002_Constant/Constant.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/RenderDX.h"
-#include "004_Component/0040_RenderDX/00410_Base/Render2DDX.h"
+#include "004_Component/0040_RenderDX/00420_Mesh/MeshDX.h"
+#include "004_Component/0040_RenderDX/00420_Mesh/MeshRenderDX.h"
 #include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
@@ -29,7 +28,7 @@
 //***********************************************************************************************//
 #ifdef USE_DIRECTX
 
-const std::string Render2DDX::className = "Render2DDX";
+const std::string MeshRenderDX::className = "MeshRenderDX";
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -38,125 +37,80 @@ const std::string Render2DDX::className = "Render2DDX";
 //***********************************************************************************************//
 
 /*=================================================================================================
-  @Summary: ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+  @Summary: ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
 =================================================================================================*/
-Render2DDX::Render2DDX(GameObject* pObject, GameObject::LAYER Layer) : RenderDX(pObject, className, Layer)
+MeshRenderDX::MeshRenderDX(GameObject* pObject, GameObject::LAYER Layer) : RenderDX(pObject, className, Layer)
 {
-    size = Vector2::one;
+    pMesh = NULL;
 }
 
 /*===============================================================================================* 
-  @Summary: ƒfƒXƒgƒ‰ƒNƒ^
+  @Summary: ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   @Details: None
  *===============================================================================================*/
-Render2DDX::~Render2DDX()
+MeshRenderDX::~MeshRenderDX()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: ‰Šú‰»ˆ—
+  @Summary: åˆæœŸåŒ–å‡¦ç†
   @Details: None
  *===============================================================================================*/
-void Render2DDX::Init()
+void MeshRenderDX::Init()
 {
-    // ’¸“_ƒoƒbƒtƒ@[‚ÌŠm•Û
-    RenderDXManager::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
 
-    SetVertex();
 }
 
 /*===============================================================================================* 
-  @Summary: I—¹ˆ—
+  @Summary: çµ‚äº†å‡¦ç†
   @Details: None
  *===============================================================================================*/
-void Render2DDX::Uninit()
+void MeshRenderDX::Uninit()
 {
     RenderDXManager::UnLinkList(this);
-
-    SafeRelease(pVertexBuffer);
 }
 
 /*===============================================================================================* 
-  @Summary: XVˆ—
+  @Summary: æ›´æ–°å‡¦ç†
   @Details: None
  *===============================================================================================*/
-void Render2DDX::Update()
+void MeshRenderDX::Update()
 {
 
 }
 
 /*===============================================================================================* 
-  @Summary: •`‰æˆ—
+  @Summary:æç”»å‡¦ç†
   @Details: None
  *===============================================================================================*/
-void Render2DDX::Draw()
+void MeshRenderDX::Draw()
 {
+    if (pMesh == NULL) return;
+
+    // ãƒ‡ãƒã‚¤ã‚¹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å–å¾—
     LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
-    // ƒ[ƒ‹ƒhs—ñ¶¬
-    transform->CreateWorldMatrix();
+    // ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®è¨ˆç®—
+    gameObject->transform->CreateWorldMatrix();
     pDevice->SetTransform(D3DTS_WORLD, &transform->GetWorldMatrix());
 
-    // •`‰æÝ’è
+    // æç”»è¨­å®š
     SetUpBlending();
     SetUpCulling();
     SetUpMaterial();
 
-    // ’¸“_ƒoƒbƒtƒ@‚Ì•`‰æÝ’è
-    pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(VERTEX_2D));
-    pDevice->SetFVF(FVF_VERTEX_2D);
+    // ãƒãƒƒãƒ•ã‚¡ã®æç”»è¨­å®š
+    pDevice->SetStreamSource(0, pMesh->pVertexBuffer, 0, sizeof(VERTEX_3D));
+    pDevice->SetIndices(pMesh->pIndexBuffer);
+    pDevice->SetFVF(FVF_VERTEX_3D);
 
-    // ƒ|ƒŠƒSƒ“‚Ì•`‰æ
-    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    // ãƒãƒªã‚´ãƒ³ã®æç”»
+    pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, pMesh->vertexIndexNum, 0, pMesh->vertexIndexNum - 2);
 
-    // ƒ}ƒeƒŠƒAƒ‹ƒŠƒZƒbƒg
+    // ãƒžãƒ†ãƒªã‚¢ãƒ«ãƒªã‚»ãƒƒãƒˆ
     ResetMaterial();
-}
-
-/*===============================================================================================* 
-  @Summary: ’¸“_î•ñ‚ÌXV
-  @Details: None
- *===============================================================================================*/
-void Render2DDX::SetVertex()
-{
-    VERTEX_2D* pVtx;
-
-    // ’¸“_ƒoƒbƒtƒ@—Ìˆæ‚ÌƒƒbƒN
-    pVertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
-
-    // ƒ|ƒŠƒSƒ“‚ÌˆÊ’uÀ•W
-    pVtx[0].pos.x = - size.x * 0.5f;
-    pVtx[0].pos.y =   size.y * 0.5f;
-    pVtx[0].pos.z =   0.0f;
-
-    pVtx[1].pos.x =   size.x * 0.5f;
-    pVtx[1].pos.y =   size.y * 0.5f;
-    pVtx[1].pos.z =   0.0f;
-
-    pVtx[2].pos.x = - size.x * 0.5f;
-    pVtx[2].pos.y = - size.y * 0.5f;
-    pVtx[2].pos.z =   0.0f;
-
-    pVtx[3].pos.x =   size.x * 0.5f;
-    pVtx[3].pos.y = - size.y * 0.5f;
-    pVtx[3].pos.z =   0.0f;
-
-    // ƒ|ƒŠƒSƒ“‚ÌƒJƒ‰[î•ñ
-    pVtx[0].col = material.color.Trans();
-    pVtx[1].col = material.color.Trans();
-    pVtx[2].col = material.color.Trans();
-    pVtx[3].col = material.color.Trans();
-
-    // ƒ|ƒŠƒSƒ“‚ÌƒeƒNƒXƒ`ƒƒÀ•W
-    pVtx[0].tex = Vector2(material.mainTextureOffset.x                              , material.mainTextureOffset.y);
-    pVtx[1].tex = Vector2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y);
-    pVtx[2].tex = Vector2(material.mainTextureOffset.x                              , material.mainTextureOffset.y + material.mainTextureScale.y);
-    pVtx[3].tex = Vector2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y + material.mainTextureScale.y);
-
-    // ’¸“_ƒoƒbƒtƒ@—Ìˆæ‚ÌƒAƒ“ƒƒbƒN
-    pVertexBuffer->Unlock();
 }
 
 /*===============================================================================================* 

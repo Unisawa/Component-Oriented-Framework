@@ -73,7 +73,7 @@ void SceneResult::Init()
 
     //Render2DDX* pRender2D0 = pObject[0]->AddComponent<Render2DDX>();
     //pRender2D0->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF));
-    //pRender2D0->SetTexture("Field000.jpg");
+    //pRender2D0->SetTexture("Sphere000.jpg");
     //pRender2D0->SetVertex();
 
     //pObject[1] = new GameObject("BBBBB");
@@ -176,7 +176,7 @@ void SceneResult::Update()
     //        Render2DDX* pRender2D2 = pObject[2]->AddComponent<Render2DDX>();
     //        pRender2D2->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF));
     //        pRender2D2->SetSortingOrder(1.0f);
-    //        pRender2D2->SetTexture("Field000.jpg");
+    //        pRender2D2->SetTexture("Sphere000.jpg");
     //        pRender2D2->SetVertex();
     //    }
     //}

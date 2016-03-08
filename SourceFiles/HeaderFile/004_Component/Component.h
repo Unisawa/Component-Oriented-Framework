@@ -65,7 +65,7 @@ public:
 
     virtual void Destroy(float time = 0.0f) override;
 
-    // コンポーネント関連
+    // コンポーネントの取得
     template <typename T> T* GetComponent()
     {
         std::list<Component*> pComponentList = gameObject->GetComponetList();
@@ -79,6 +79,28 @@ public:
         }
 
         return NULL;
+    }
+
+    // コンポーネントの自動追加
+    template <typename T> T* RequireComponent()
+    {
+        std::list<Component*> pComponentList = gameObject->GetComponetList();
+
+        for (auto Iterator = pComponentList.begin(); Iterator != pComponentList.end(); ++Iterator)
+        {
+            if (T::className == (*Iterator)->GetComponentName())
+            {
+                return (T*)(*Iterator);
+            }
+        }
+
+        // 所持していなければ追加する
+        T* pComponent = new T(gameObject);
+        pComponent->ComponentInit();
+
+        pComponentList.push_back(pComponent);
+
+        return pComponent;
     }
 
     void        SetComponentName(std::string value) { componentName = value; }

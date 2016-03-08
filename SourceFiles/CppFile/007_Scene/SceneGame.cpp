@@ -34,6 +34,7 @@
 #include "004_Component/0040_RenderDX/00410_Base/Render2DDX.h"
 #include "004_Component/0040_RenderDX/00410_Base/Render3DDX.h"
 #include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
+#include "004_Component/0040_RenderDX/00420_Mesh/MeshSphereDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -47,7 +48,6 @@
 //                                                                                               //
 //***********************************************************************************************//
 static GameObject* pTemp = NULL;
-//static Render3DDX* pRender3D3 = NULL;
 
 /*=================================================================================================
   @Summary: コンストラクタ
@@ -103,16 +103,18 @@ void SceneGame::Init()
     //Render2DGL* pRender2D9 = pGameObject9->AddComponent<Render2DGL>();
 
     // 3Dポリゴン描画テスト
-    //Texture* pTexture;
+    Texture* pTexture;
 
-    //GameObject* pGameObject3 = new GameObject("DDDDD");
+    Render3DDX* pRender3D3 = NULL;
 
-    //pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
-    //pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
-    ////pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
-    //pRender3D3->SetTexture("Field000.jpg");
-    //pRender3D3->SetVertex();
-    //pTexture = pRender3D3->GetTexture();
+    GameObject* pGameObject3 = new GameObject("DDDDD");
+
+    pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
+    pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
+    //pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
+    pRender3D3->SetTexture("Field000.jpg");
+    pRender3D3->SetVertex();
+    pTexture = pRender3D3->GetTexture();
 
     //GameObject* pGameObject4 = new GameObject("FFFFF");
     //unsigned int TextureID = pRender3D3->GetTextureID();
@@ -125,6 +127,17 @@ void SceneGame::Init()
     //pRender3D3->SetTexture(pTexture);
     //pRender3D3->SetVertex();
 
+    // Mesh
+    MeshSphereDX* pMesh;
+    GameObject* pGameObject5 = new GameObject("MeshSphereDX");
+    pGameObject5->transform->SetScale(10.0f, 10.0f, 10.0f);
+    //unsigned int TextureID = pRender3D3->GetTextureID();
+    pMesh = pGameObject5->AddComponent<MeshSphereDX>();
+
+    //pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
+    //pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
+    pMesh->SetTexture(pTexture);
+    //pRender3D3->SetVertex();
     //pTemp = pGameObject3;
 }
 
@@ -145,19 +158,6 @@ void SceneGame::Update()
 {
     // 入力テスト
     Keyboard* pKey = InputManager::GetKeyboard();
-
-    // ゲームオブジェクトの削除テスト
-    //if (pKey->GetKeyboardTrigger(DIK_K))
-    //{
-    //    pTemp->Destroy();
-    //}
-
-    //// コンポーネントの削除テスト
-    //if (pKey->GetKeyboardTrigger(DIK_L))
-    //{
-    //    Render2DDX* pRender = pTemp->GetComponent<Render2DDX>();
-    //    pRender->Destroy();
-    //}
 
     if (pKey->GetKeyboardTrigger(DIK_SPACE))
     {

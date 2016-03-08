@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ MeshDX.h ] スクリプトからメッシュを作成または変更できるようにするクラス
+ @File   : [ MeshFilterDX.h ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _MESHDX_H_
-#define _MESHDX_H_
+#ifndef _MESHFILTERDX_H_
+#define _MESHFILTERDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,7 +26,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "003_Object/Object.h"
+#include "004_Component/Component.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,25 +40,28 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class MeshDX : public Object
+class MeshDX;
+class MeshRenderDX;
+class Texture;
+
+class MeshFilterDX : public Component
 {
 public:
-             MeshDX();
-    virtual ~MeshDX();
+             MeshFilterDX(GameObject* pObject, std::string ComponentName);
+    virtual ~MeshFilterDX();
 
-    void CreateVertexBuffer();
-    void CreateIndexBuffer();
+    virtual void Init()   override {}
+    virtual void Uninit() override {}
+    virtual void Update() override {}
 
-    void ResetBufer(int DivX, int DivY);
+    //-----Setter, Getter-----//
+    void     SetTexture(std::string value);
+    void     SetTexture(Texture* value);
+    Texture* GetTexture();
 
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
-    LPDIRECT3DINDEXBUFFER9  pIndexBuffer;     // インテックスバッファ
-
-    int vertexNum;         // 頂点数
-    int vertexIndexNum;    // インデックス数
-
-    int divisionX;         // ポリゴン分割数
-    int divisionY;         // ポリゴン分割数
+protected:
+    MeshDX*       pMesh;
+    MeshRenderDX* pMeshRender;
 };
 #endif
 

@@ -26,7 +26,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/00410_Base/RenderDX.h"
+#include "004_Component/0040_RenderDX/RenderDX.h"
 #include "008_Utility/Vector2.h"
 
 //***********************************************************************************************//

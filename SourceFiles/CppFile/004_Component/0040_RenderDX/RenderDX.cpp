@@ -17,7 +17,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/00410_Base/RenderDX.h"
+#include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/RenderDXManager.h"
 #include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 
@@ -101,7 +101,7 @@ bool RenderDX::SortingOrderCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
   @Summary: Renderが持つブレンド設定を行う
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetBlending()
+void RenderDX::SetUpBlending()
 {
     LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
@@ -153,7 +153,7 @@ void RenderDX::SetBlending()
   @Summary: Renderが持つカリング設定を行う
   @Details: None
  *===============================================================================================*/
-void RenderDX::SetCulling()
+void RenderDX::SetUpCulling()
 {
     LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 
@@ -184,6 +184,30 @@ void RenderDX::SetCulling()
 }
 
 /*===============================================================================================* 
+  @Summary: Renderが持つマテリアルの設定を行う
+  @Details: None
+ *===============================================================================================*/
+void RenderDX::SetUpMaterial()
+{
+    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
+
+    // テクスチャのセット
+    pDevice->SetTexture(0, TextureDXManager::GetTexture(material.mainTextureID));
+}
+
+/*===============================================================================================* 
+  @Summary: マテリアル設定をリセットする
+  @Details: None
+ *===============================================================================================*/
+void RenderDX::ResetMaterial()
+{
+    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
+
+    // テクスチャのリセット
+    pDevice->SetTexture(0, TextureDXManager::GetTexture(NULL));
+}
+
+/*===============================================================================================* 
   @Summary: Layer (描画順) を変更する
   @Details: None
  *===============================================================================================*/
@@ -202,8 +226,12 @@ void RenderDX::SetLayer(GameObject::LAYER value)
  *===============================================================================================*/
 void RenderDX::SetTexture(std::string value)
 {
-    material.mainTexture   = TextureDXManager::Load(value);
-    material.mainTextureID = material.mainTexture->textureID;
+    material.mainTexture = TextureDXManager::Load(value);
+
+    if (material.mainTexture != NULL)
+    {
+        material.mainTextureID = material.mainTexture->textureID;
+    }
 }
 
 /*===============================================================================================* 

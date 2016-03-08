@@ -85,6 +85,7 @@ private:
     int         maxGameObjectNumber;
 
     bool isDebugMode;
+    bool isWireFrame;
 };
 #endif
 

@@ -59,6 +59,13 @@ void LightDXManager::Init()
     GameObject* pLightGameObject = new GameObject("Directional Light");
     pLightGameObject->DontDestroyOnLoad(true);
     pLightGameObject->AddComponent<LightDX>();
+
+    //LightDX* pLight;
+    //GameObject* pLightGameObject1 = new GameObject("Directional Light");
+    //pLightGameObject1->DontDestroyOnLoad(true);
+
+    //pLight = pLightGameObject1->AddComponent<LightDX>();
+    //pLight->SetDirection(D3DXVECTOR3(0.0f, 1.0f, -1.0f));
 }
 
 /*===============================================================================================* 
@@ -81,7 +88,7 @@ void LightDXManager::Uninit()
  *===============================================================================================*/
 void LightDXManager::Update()
 {
-    //UpdateAll();
+
 }
 
 /*===============================================================================================*

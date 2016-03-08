@@ -91,8 +91,8 @@ void Render2DGL::Draw()
     float y = this->gameObject->transform->GetPosition().y;
 
     // 描画設定
-    SetBlending();
-    SetCulling();
+    SetUpBlending();
+    SetUpCulling();
 
     // テクスチャセット
     //glBindTexture(GL_TEXTURE_2D, material.mainTextureID);

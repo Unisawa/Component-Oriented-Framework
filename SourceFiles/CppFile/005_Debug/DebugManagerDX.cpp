@@ -103,7 +103,9 @@ void DebugManagerDX::Init()
     selectGameObject       = NULL;
     selectGameObjectNumber = 0;
     maxGameObjectNumber    = 0;
+
     isDebugMode = false;
+    isWireFrame = false;
 
     freeRect.left   = (LONG) Constant::SCREEN_WIDTH / 3;
     freeRect.right  = (LONG) Constant::SCREEN_WIDTH;
@@ -172,6 +174,23 @@ void DebugManagerDX::Update()
         else
         {
             Manager::GetRenderDXManager()->ChangeState(&ScreenStateDX::none);
+        }
+    }
+
+    if (!isDebugMode) return;
+
+    // SelectGamaObjectの移動
+    if (pKey->GetKeyboardTrigger(DIK_1))
+    {
+        isWireFrame = isWireFrame ? false : true;
+
+        if (isWireFrame)
+        {
+            RenderDXManager::GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+        }
+        else
+        {
+            RenderDXManager::GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
         }
     }
 

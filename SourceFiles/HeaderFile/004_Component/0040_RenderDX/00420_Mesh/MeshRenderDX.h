@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ MeshDX.h ] スクリプトからメッシュを作成または変更できるようにするクラス
+ @File   : [ MeshRenderDX.h ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _MESHDX_H_
-#define _MESHDX_H_
+#ifndef _MESHRENDERDX_H_
+#define _MESHRENDERDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,7 +26,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "003_Object/Object.h"
+#include "004_Component/0040_RenderDX/RenderDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,25 +40,31 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class MeshDX : public Object
+class MeshDX;
+
+class MeshRenderDX : public RenderDX
 {
 public:
-             MeshDX();
-    virtual ~MeshDX();
+             MeshRenderDX(GameObject* pObject, GameObject::LAYER Layer = GameObject::LAYER::OBJECT3D_OPACITY_ONE);
+    virtual ~MeshRenderDX();
 
-    void CreateVertexBuffer();
-    void CreateIndexBuffer();
+    virtual void Init()   override;
+    virtual void Uninit() override;
+    virtual void Update() override;
+    virtual void Draw()   override;
 
-    void ResetBufer(int DivX, int DivY);
+    static const std::string className;
 
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
-    LPDIRECT3DINDEXBUFFER9  pIndexBuffer;     // インテックスバッファ
+    //-----Setter, Getter-----//
+    void     SetMesh(MeshDX* value) { pMesh = value; }
+    MeshDX*  GetMesh() { return pMesh; }
 
-    int vertexNum;         // 頂点数
-    int vertexIndexNum;    // インデックス数
+    void     SetTexture(std::string value);
+    void     SetTexture(Texture* value);
+    Texture* GetTexture() { return material.mainTexture; }
 
-    int divisionX;         // ポリゴン分割数
-    int divisionY;         // ポリゴン分割数
+private:
+    MeshDX* pMesh;
 };
 #endif
 

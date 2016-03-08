@@ -97,7 +97,7 @@ bool RenderGL::SortingOrderCompareGreater(RenderGL* RenderA, RenderGL* RenderB)
   @Summary: Renderが持つブレンド設定を行う
   @Details: None
  *===============================================================================================*/
-void RenderGL::SetBlending()
+void RenderGL::SetUpBlending()
 {
     // ブレンドモードのリセット (アルファブレンドを基本とする)
     glEnable(GL_BLEND);
@@ -135,7 +135,7 @@ void RenderGL::SetBlending()
   @Summary: Renderが持つカリング設定を行う
   @Details: None
  *===============================================================================================*/
-void RenderGL::SetCulling()
+void RenderGL::SetUpCulling()
 {
     //LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
 

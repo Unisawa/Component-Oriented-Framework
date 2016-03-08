@@ -60,6 +60,7 @@ public:
     virtual void Uninit() override;
     virtual void Update() override;
 
+    //-----Setter, Getter-----//
     void      SetLightType(LIGHTTYPE value);
     LIGHTTYPE GetLightType() { return lightType; }
 

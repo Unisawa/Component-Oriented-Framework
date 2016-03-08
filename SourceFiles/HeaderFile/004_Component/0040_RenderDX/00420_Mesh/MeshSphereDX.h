@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ MeshDX.h ] スクリプトからメッシュを作成または変更できるようにするクラス
+ @File   : [ MeshSphereDX.h ] 
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _MESHDX_H_
-#define _MESHDX_H_
+#ifndef _MESHFIELDDX_H_
+#define _MESHFIELDDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -26,7 +26,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "003_Object/Object.h"
+#include "004_Component/0040_RenderDX/00420_Mesh/MeshFilterDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -40,25 +40,27 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class MeshDX : public Object
+class MeshSphereDX : public MeshFilterDX
 {
 public:
-             MeshDX();
-    virtual ~MeshDX();
+             MeshSphereDX(GameObject* pObject);
+    virtual ~MeshSphereDX();
 
-    void CreateVertexBuffer();
-    void CreateIndexBuffer();
+    virtual void Init()   override;
+    virtual void Uninit() override;
+    virtual void Update() override;
 
-    void ResetBufer(int DivX, int DivY);
+    void  SetUpVertex();
+    void  SetUpSphere(int DivX, int DivY, float Radius);
 
-    LPDIRECT3DVERTEXBUFFER9 pVertexBuffer;    // 頂点バッファ
-    LPDIRECT3DINDEXBUFFER9  pIndexBuffer;     // インテックスバッファ
+    //-----Setter, Getter-----//
+    void  SetRadius(float value) { radius = value; }
+    float GetRadius() const { return radius; }
 
-    int vertexNum;         // 頂点数
-    int vertexIndexNum;    // インデックス数
+    static const std::string className;
 
-    int divisionX;         // ポリゴン分割数
-    int divisionY;         // ポリゴン分割数
+private:
+    float radius;    // 球の半径
 };
 #endif
 

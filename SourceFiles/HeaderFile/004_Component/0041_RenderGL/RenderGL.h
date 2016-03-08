@@ -82,8 +82,8 @@ public:
     static bool SortingOrderCompareLess(RenderGL* RenderA, RenderGL* RenderB);
     static bool SortingOrderCompareGreater(RenderGL* RenderA, RenderGL* RenderB);
 
-    void SetBlending();
-    void SetCulling();
+    void SetUpBlending();
+    void SetUpCulling();
 
     //-----Setter, Getter-----//
     void              SetLayer(GameObject::LAYER value);

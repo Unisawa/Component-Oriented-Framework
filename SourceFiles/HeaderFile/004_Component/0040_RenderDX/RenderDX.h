@@ -41,19 +41,19 @@
 //-----2DPolygon VertexInformation-----//
 typedef struct
 {
-    Vector3     pos;    // 頂点の位置座標
-    COLOR       col;    // 頂点カラー
-    D3DXVECTOR2 tex;    // テクスチャ座標
+    Vector3 pos;    // 頂点の位置座標
+    COLOR   col;    // 頂点カラー
+    Vector2 tex;    // テクスチャ座標
 
 }VERTEX_2D;
 
 //-----3DPolygon VertexInformation-----//
 typedef struct
 {
-    Vector3     pos;    // 頂点の位置座標
-    Vector3     nor;    // 法線ベクトル
-    COLOR       col;    // 頂点カラー
-    D3DXVECTOR2 tex;    // テクスチャ座標
+    Vector3 pos;    // 頂点の位置座標
+    Vector3 nor;    // 法線ベクトル
+    COLOR   col;    // 頂点カラー
+    Vector2 tex;    // テクスチャ座標
 
 }VERTEX_3D;
 
@@ -100,7 +100,7 @@ public:
     virtual void Update() = 0;
     virtual void Draw()   = 0;
 
-    virtual void SetVertex() = 0;
+    virtual void SetVertex() {}
 
     static bool ZSortCompareLess(RenderDX* RenderA, RenderDX* RenderB);
     static bool ZSortCompareGreater(RenderDX* RenderA, RenderDX* RenderB);
@@ -108,8 +108,11 @@ public:
     static bool SortingOrderCompareLess(RenderDX* RenderA, RenderDX* RenderB);
     static bool SortingOrderCompareGreater(RenderDX* RenderA, RenderDX* RenderB);
 
-    void SetBlending();
-    void SetCulling();
+    void SetUpBlending();
+    void SetUpCulling();
+
+    void SetUpMaterial();
+    void ResetMaterial();
 
     //-----Setter, Getter-----//
     void              SetLayer(GameObject::LAYER value);

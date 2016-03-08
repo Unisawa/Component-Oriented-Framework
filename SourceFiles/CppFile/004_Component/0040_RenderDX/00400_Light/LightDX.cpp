@@ -69,7 +69,7 @@ void LightDX::Init()
     lightParam.Diffuse  = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);    // 拡散反射光
     lightParam.Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);    // 鏡面反射
 
-    D3DXVec3Normalize((D3DXVECTOR3*)&lightParam.Direction, &D3DXVECTOR3(0.0f, -1.0f, 0.0f));    // 各値を正規化する
+    D3DXVec3Normalize((D3DXVECTOR3*)&lightParam.Direction, &D3DXVECTOR3(0.0f, -1.0f, 1.0f));    // 各値を正規化する
 
     // デバイスオブジェクトの取得
     LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();

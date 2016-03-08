@@ -17,9 +17,8 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/00410_Base/RenderDX.h"
+#include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/00410_Base/Render3DDX.h"
-#include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
 #include "004_Component/0042_GameObject/Transform.h"
 
 //***********************************************************************************************//
@@ -102,19 +101,19 @@ void Render3DDX::Draw()
     pDevice->SetTransform(D3DTS_WORLD, &transform->GetWorldMatrix());
 
     // 描画設定
-    SetBlending();
-    SetCulling();
+    SetUpBlending();
+    SetUpCulling();
+    SetUpMaterial();
 
     // 頂点バッファの描画設定
     pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(VERTEX_3D));
     pDevice->SetFVF(FVF_VERTEX_3D);
 
-    // テクスチャの読み込み ポリゴンの描画
-    pDevice->SetTexture(0, TextureDXManager::GetTexture(material.mainTextureID));
+    // ポリゴンの描画
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
-    // テクスチャリセット
-    pDevice->SetTexture(0, NULL);
+    // マテリアルリセット
+    ResetMaterial();
 }
 
 /*===============================================================================================* 
@@ -124,8 +123,6 @@ void Render3DDX::Draw()
 void Render3DDX::SetVertex()
 {
     VERTEX_3D* pVtx;
-    Vector3 Position = this->gameObject->transform->GetPosition();
-    Vector3 Scale    = this->gameObject->transform->GetScale();
 
     // 頂点バッファ領域のロック
     pVertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
@@ -160,10 +157,10 @@ void Render3DDX::SetVertex()
     pVtx[3].col = material.color.Trans();
 
     // ポリゴンのテクスチャ座標
-    pVtx[0].tex = D3DXVECTOR2(material.mainTextureOffset.x                              , material.mainTextureOffset.y);
-    pVtx[1].tex = D3DXVECTOR2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y);
-    pVtx[2].tex = D3DXVECTOR2(material.mainTextureOffset.x                              , material.mainTextureOffset.y + material.mainTextureScale.y);
-    pVtx[3].tex = D3DXVECTOR2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y + material.mainTextureScale.y);
+    pVtx[0].tex = Vector2(material.mainTextureOffset.x                              , material.mainTextureOffset.y);
+    pVtx[1].tex = Vector2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y);
+    pVtx[2].tex = Vector2(material.mainTextureOffset.x                              , material.mainTextureOffset.y + material.mainTextureScale.y);
+    pVtx[3].tex = Vector2(material.mainTextureOffset.x + material.mainTextureScale.x, material.mainTextureOffset.y + material.mainTextureScale.y);
 
     // 頂点バッファ領域のアンロック
     pVertexBuffer->Unlock();

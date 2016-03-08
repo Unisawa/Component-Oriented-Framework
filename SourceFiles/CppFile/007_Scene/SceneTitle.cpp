@@ -75,7 +75,7 @@ void SceneTitle::Init()
 
     Render2DDX* pRender2D0 = pGameObject0->AddComponent<Render2DDX>();
     pRender2D0->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF / 2));
-    pRender2D0->SetTexture("Field000.jpg");
+    pRender2D0->SetTexture("Sphere000.jpg");
     pRender2D0->SetVertex();
 
     GameObject* pGameObject1 = new GameObject("BBBBB");

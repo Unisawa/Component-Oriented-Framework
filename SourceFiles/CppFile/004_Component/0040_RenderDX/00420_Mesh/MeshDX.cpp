@@ -18,7 +18,7 @@
 #include "001_Manager/Manager.h"
 
 //-----Object-----//
-#include "004_Component/0040_RenderDX/00410_Base/RenderDX.h"
+#include "004_Component/0040_RenderDX/RenderDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshDX.h"
 
 //***********************************************************************************************//
@@ -40,7 +40,17 @@
 =================================================================================================*/
 MeshDX::MeshDX() : Object()
 {
+    pVertexBuffer = NULL;
+    pIndexBuffer  = NULL;
 
+    vertexNum      = 0;
+    vertexIndexNum = 0;
+
+    divisionX = 1;
+    divisionY = 1;
+
+    CreateVertexBuffer();
+    CreateIndexBuffer();
 }
 
 /*===============================================================================================* 
@@ -61,10 +71,10 @@ MeshDX::~MeshDX()
 void MeshDX::CreateVertexBuffer()
 {
     // 頂点数の計算
-    VertexNum = (DivisionX + 1) * (DivisionY + 1);
+    vertexNum = (divisionX + 1) * (divisionY + 1);
 
     SafeRelease(pVertexBuffer);
-    RenderDXManager::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_3D) * VertexNum, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
+    RenderDXManager::GetDevice()->CreateVertexBuffer(sizeof(VERTEX_3D) * vertexNum, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &pVertexBuffer, NULL);
 }
 
 /*===============================================================================================* 
@@ -74,11 +84,29 @@ void MeshDX::CreateVertexBuffer()
 void MeshDX::CreateIndexBuffer()
 {
     // インテックス数の計算
-    VertexIndexNum = (DivisionX + 1) * (DivisionY * 2) + (2 * DivisionY - 2);
+    vertexIndexNum = (divisionX + 1) * (divisionY * 2) + (2 * divisionY - 2);
 
     SafeRelease(pIndexBuffer);
-    RenderDXManager::GetDevice()->CreateIndexBuffer(sizeof(WORD) * VertexIndexNum, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &pIndexBuffer, NULL);
+    RenderDXManager::GetDevice()->CreateIndexBuffer(sizeof(WORD) * vertexIndexNum, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &pIndexBuffer, NULL);
 }
+
+/*===============================================================================================* 
+  @Summary: 分割数を変更してバッファを作り直す
+  @Details: None
+ *===============================================================================================*/
+void MeshDX::ResetBufer(int DivX, int DivY)
+{
+    divisionX = DivX;
+    divisionY = DivY;
+
+    CreateVertexBuffer();
+    CreateIndexBuffer();
+}
+
+/*===============================================================================================* 
+  @Summary: 
+  @Details: 
+ *===============================================================================================*/
 
 /*===============================================================================================* 
   @Summary: 
