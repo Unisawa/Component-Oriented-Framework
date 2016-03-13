@@ -101,9 +101,7 @@ void Render3DDX::Draw()
     pDevice->SetTransform(D3DTS_WORLD, &transform->GetWorldMatrix());
 
     // 描画設定
-    SetUpBlending();
-    SetUpCulling();
-    SetUpMaterial();
+    SetUpRendering();
 
     // 頂点バッファの描画設定
     pDevice->SetStreamSource(0, pVertexBuffer, 0, sizeof(VERTEX_3D));
@@ -112,8 +110,8 @@ void Render3DDX::Draw()
     // ポリゴンの描画
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
-    // マテリアルリセット
-    ResetMaterial();
+    // 描画設定リセット
+    ResetRendering();
 }
 
 /*===============================================================================================* 

@@ -108,11 +108,8 @@ public:
     static bool SortingOrderCompareLess(RenderDX* RenderA, RenderDX* RenderB);
     static bool SortingOrderCompareGreater(RenderDX* RenderA, RenderDX* RenderB);
 
-    void SetUpBlending();
-    void SetUpCulling();
-
-    void SetUpMaterial();
-    void ResetMaterial();
+    void SetUpRendering();
+    void ResetRendering();
 
     //-----Setter, Getter-----//
     void              SetLayer(GameObject::LAYER value);
@@ -130,6 +127,10 @@ public:
     void  SetSortingOrder(float value) { sortingOrder = value; }
     float GetSortingOrder() const { return sortingOrder; }
 
+    void  SetLightingOn()  { isLighiting = true; };
+    void  SetLightingOff() { isLighiting = false; };
+    bool  GetLighting()    { return isLighiting; }
+
     void     SetTexture(std::string value);
     void     SetTexture(Texture* value);
     Texture* GetTexture() { return material.mainTexture; }
@@ -142,12 +143,18 @@ public:
     Material          material;       // マテリアル情報
 
 private:
+    void SetUpBlending();
+    void SetUpCulling();
+    void SetUpMaterial();
+
     GameObject::LAYER layer;          // 描画順
     BLENDTYPE         blendType;      // 描画時のブレンド設定
     CULLTYPE          cullingType;    // 描画時のカリング設定
 
     float zDepth;                     // カメラからオブジェクトまでの距離 (Zソート時に利用)
     float sortingOrder;               // 同じレイヤー時の描画順番の制御に使用する
+
+    bool  isLighiting;                // 固定パイプライン使用時にライトの影響を受けるかどうか
 };
 #endif
 

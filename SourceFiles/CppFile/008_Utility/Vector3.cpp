@@ -65,6 +65,34 @@ void Vector3::Normalize()
 }
 
 /*===============================================================================================* 
+  @Summary: ベクトルの正規化を行う
+  @Details: None
+ *===============================================================================================*/
+Vector3 Vector3::Vec3Normalize(const Vector3* Vec)
+{
+    Vector3 NormalVec;
+
+    float Magnitude = sqrtf((Vec->x * Vec->x) + (Vec->y * Vec->y) + (Vec->z * Vec->z));
+
+    if (Magnitude != 0)
+    {
+        Magnitude = 1 / Magnitude;
+
+        NormalVec.x = Vec->x * Magnitude;
+        NormalVec.y = Vec->y * Magnitude;
+        NormalVec.z = Vec->z * Magnitude;
+    }
+    else
+    {
+        NormalVec.x = 0.0f;
+        NormalVec.y = 0.0f;
+        NormalVec.z = 0.0f;
+    }
+
+    return NormalVec;
+}
+
+/*===============================================================================================* 
   @Summary: D3DXVECTOR3型にVector3を変換する
   @Details: None
  *===============================================================================================*/

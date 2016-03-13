@@ -288,7 +288,6 @@ void RenderDXManager::DrawAll()
         if (Layer == GameObject::OBJECT2D_OPACITY_ONE)
         {
             pCameraDXManager->SetUpCamera2D();
-            pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
         }
 
         for (auto Iterator = pRenderDXList[Layer].begin(); Iterator != pRenderDXList[Layer].end(); ++Iterator)
@@ -299,8 +298,6 @@ void RenderDXManager::DrawAll()
             }
         }
     }
-
-    pD3DDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 /*===============================================================================================*

@@ -34,7 +34,8 @@
 #include "004_Component/0040_RenderDX/00410_Base/Render2DDX.h"
 #include "004_Component/0040_RenderDX/00410_Base/Render3DDX.h"
 #include "004_Component/0040_RenderDX/00403_Texture/TextureDXManager.h"
-#include "004_Component/0040_RenderDX/00420_Mesh/MeshSphereDX.h"
+#include "004_Component/0040_RenderDX/00421_MeshPolygon/MeshSphereDX.h"
+#include "004_Component/0040_RenderDX/00420_Mesh/MeshRenderDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -112,7 +113,7 @@ void SceneGame::Init()
     pRender3D3 = pGameObject3->AddComponent<Render3DDX>();
     pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
     //pRender3D3->SetColor(1.0f, 1.0f, 0.0f, 1.0f);
-    pRender3D3->SetTexture("Field000.jpg");
+    //pRender3D3->SetTexture("Field000.jpg");
     pRender3D3->SetVertex();
     pTexture = pRender3D3->GetTexture();
 
@@ -133,11 +134,12 @@ void SceneGame::Init()
     pGameObject5->transform->SetScale(10.0f, 10.0f, 10.0f);
 
     pMesh = pGameObject5->AddComponent<MeshSphereDX>();
-    pMesh->SetUpSphere(20, 20, 1000.0f);
+    pMesh->SetUpSphere(20, 20, 10.0f);
+    //pMesh->GetMeshRender()->SetLightingOff();
 
     //pRender3D3->SetSize(100.0f, 0.0f, 100.0f);
     //pRender3D3->SetColor(1.0f, 0.0f, 1.0f, 1.0f);
-    pMesh->SetTexture("Universe002.jpg");
+    //pMesh->SetTexture("Universe002.jpg");
     //pRender3D3->SetVertex();
     //pTemp = pGameObject3;
 }

@@ -55,6 +55,8 @@ struct Vector3
 
     void Normalize();
 
+    static Vector3 Vec3Normalize(const Vector3* Vec);
+
 #ifdef USE_DIRECTX
     D3DXVECTOR3 GetDX();
 #endif

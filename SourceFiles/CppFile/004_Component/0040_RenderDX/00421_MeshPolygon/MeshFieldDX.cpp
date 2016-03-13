@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ MeshFieldDX.cpp ] 
+ @File   : [ MeshFieldDX.cpp ] 面状のメッシュを生成するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -22,7 +22,7 @@
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshFilterDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshRenderDX.h"
-#include "004_Component/0040_RenderDX/00420_Mesh/MeshFieldDX.h"
+#include "004_Component/0040_RenderDX/00421_MeshPolygon/MeshFieldDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //

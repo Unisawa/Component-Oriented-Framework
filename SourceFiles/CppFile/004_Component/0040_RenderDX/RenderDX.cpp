@@ -45,6 +45,7 @@ RenderDX::RenderDX(GameObject* pObject, std::string ComponentName, GameObject::L
     sortingOrder = 0.0f;
     layer        = Layer;
     transform    = pObject->transform;
+    isLighiting  = true;
 
     blendType    = BLENDTYPE::BLENDTYPE_NORMAL;
     cullingType  = CULLTYPE::CULLTYPE_CCW;
@@ -95,6 +96,40 @@ bool RenderDX::SortingOrderCompareLess(RenderDX* RenderA, RenderDX* RenderB)
 bool RenderDX::SortingOrderCompareGreater(RenderDX* RenderA, RenderDX* RenderB)
 {
     return RenderA->GetSortingOrder() > RenderB->GetSortingOrder();
+}
+
+/*===============================================================================================* 
+  @Summary: Renderingの設定を行う
+  @Details: 描画する前に必ず呼ぶ関数
+ *===============================================================================================*/
+void RenderDX::SetUpRendering()
+{
+    // 描画設定
+    SetUpBlending();
+    SetUpCulling();
+    SetUpMaterial();
+
+    // ライト設定
+    if (isLighiting)
+    {
+        RenderDXManager::GetDevice()->SetRenderState(D3DRS_LIGHTING, TRUE);
+    }
+    else
+    {
+        RenderDXManager::GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+    }
+}
+
+/*===============================================================================================* 
+  @Summary: Renderingの設定を解除する
+  @Details: 描画し終わったら必ず呼ぶ関数
+ *===============================================================================================*/
+void RenderDX::ResetRendering()
+{
+    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
+
+    // テクスチャのリセット
+    pDevice->SetTexture(0, TextureDXManager::GetTexture(NULL));
 }
 
 /*===============================================================================================* 
@@ -193,18 +228,6 @@ void RenderDX::SetUpMaterial()
 
     // テクスチャのセット
     pDevice->SetTexture(0, TextureDXManager::GetTexture(material.mainTextureID));
-}
-
-/*===============================================================================================* 
-  @Summary: マテリアル設定をリセットする
-  @Details: None
- *===============================================================================================*/
-void RenderDX::ResetMaterial()
-{
-    LPDIRECT3DDEVICE9 pDevice = RenderDXManager::GetDevice();
-
-    // テクスチャのリセット
-    pDevice->SetTexture(0, TextureDXManager::GetTexture(NULL));
 }
 
 /*===============================================================================================* 

@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ MeshSphereDX.h ] 球状のメッシュを生成するクラス
+ @File   : [ MeshFieldDX.h ] 面状のメッシュを生成するクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -40,27 +40,22 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
-class MeshSphereDX : public MeshFilterDX
+class MeshFieldDX : public MeshFilterDX
 {
 public:
-             MeshSphereDX(GameObject* pObject);
-    virtual ~MeshSphereDX();
+             MeshFieldDX(GameObject* pObject);
+    virtual ~MeshFieldDX();
 
     virtual void Init()   override;
     virtual void Uninit() override;
     virtual void Update() override;
 
-    void  SetUpVertex();
-    void  SetUpSphere(int DivX, int DivY, float Radius);
-
-    //-----Setter, Getter-----//
-    void  SetRadius(float value) { radius = value; }
-    float GetRadius() const { return radius; }
+    void SetUpVertex();
 
     static const std::string className;
 
 private:
-    float radius;    // 球の半径
+
 };
 #endif
 

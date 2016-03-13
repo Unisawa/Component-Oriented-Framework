@@ -20,8 +20,9 @@
 //-----Object-----//
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshFilterDX.h"
-#include "004_Component/0040_RenderDX/00420_Mesh/MeshSphereDX.h"
 #include "004_Component/0040_RenderDX/00420_Mesh/MeshRenderDX.h"
+#include "004_Component/0040_RenderDX/00421_MeshPolygon/MeshSphereDX.h"
+#include "008_Utility/Vector3.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -44,7 +45,8 @@ const std::string MeshSphereDX::className = "MeshSphereDX";
 =================================================================================================*/
 MeshSphereDX::MeshSphereDX(GameObject* pObject) : MeshFilterDX(pObject, className)
 {
-    radius = 1.0f;
+    radius          = 1.0f;
+    normalDirection = -1.0f;
 }
 
 /*===============================================================================================* 
@@ -62,13 +64,11 @@ MeshSphereDX::~MeshSphereDX()
  *===============================================================================================*/
 void MeshSphereDX::Init()
 {
-    radius = 1.0f;
-
     pMesh->ResetBufer(10, 10);
     SetUpVertex();
 
     pMeshRender->SetMesh(pMesh);
-    //pMeshRender->SetCullType(RenderDX::CULLTYPE::CULLTYPE_NONE);
+    pMeshRender->SetCullType(RenderDX::CULLTYPE::CULLTYPE_CW);
 }
 
 /*===============================================================================================* 
@@ -124,6 +124,13 @@ void MeshSphereDX::SetUpVertex()
             pVtx[nCnt].pos.y = radius     * cosf(D3DX_PI + RadY);
             pVtx[nCnt].pos.z = cosf(RadX) * sinf(RadY) * radius;
 
+            // 法線の向き
+            pVtx[nCnt].nor = Vector3::Vec3Normalize(&pVtx[nCnt].pos) * normalDirection;
+            //Debug::Log("(%f, %f, %f)", pVtx[nCnt].nor.x, pVtx[nCnt].nor.y, pVtx[nCnt].nor.z);
+
+            // 色情報
+            pVtx[nCnt].col = pMeshRender->material.color.Trans();
+
             // テクスチャ座標
             pVtx[nCnt].tex = Vector2((float)(1.0f / pMesh->divisionX) * nDivX, (float)(1.0f / pMesh->divisionY) * nDivZ);
 
@@ -132,12 +139,6 @@ void MeshSphereDX::SetUpVertex()
         }
 
         RadY -= RadRadtioY;
-    }
-
-    for (int nLoop = 0; nLoop < nCnt; nLoop++)
-    {
-        pVtx[nLoop].col = pMeshRender->material.color.Trans();
-        pVtx[nLoop].nor = Vector3(0.0f, 1.0f, 0.0f);
     }
 
     // 頂点バッファ領域のアンロック

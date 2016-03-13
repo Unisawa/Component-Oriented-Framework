@@ -97,9 +97,7 @@ void MeshRenderDX::Draw()
     pDevice->SetTransform(D3DTS_WORLD, &transform->GetWorldMatrix());
 
     // 描画設定
-    SetUpBlending();
-    SetUpCulling();
-    SetUpMaterial();
+    SetUpRendering();
 
     // バッファの描画設定
     pDevice->SetStreamSource(0, pMesh->pVertexBuffer, 0, sizeof(VERTEX_3D));
@@ -109,8 +107,8 @@ void MeshRenderDX::Draw()
     // ポリゴンの描画
     pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, pMesh->vertexIndexNum, 0, pMesh->vertexIndexNum - 2);
 
-    // マテリアルリセット
-    ResetMaterial();
+    // 描画設定リセット
+    ResetRendering();
 }
 
 /*===============================================================================================* 

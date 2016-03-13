@@ -59,6 +59,8 @@ public:
     void     SetTexture(Texture* value);
     Texture* GetTexture();
 
+    MeshRenderDX* GetMeshRender() { return pMeshRender; }
+
 protected:
     MeshDX*       pMesh;
     MeshRenderDX* pMeshRender;
