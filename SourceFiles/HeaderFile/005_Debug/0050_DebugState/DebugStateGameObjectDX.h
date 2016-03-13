@@ -1,6 +1,6 @@
 ﻿/**************************************************************************************************
 
- @File   : [ DebugManagerDX.h ] DirectXのデバッグモードを制御するクラス
+ @File   : [ DebugStateGameObjectDX.h ] 現在表示しているGameObjectの一覧を表示するステートクラス
  @Auther : Unisawa
 
 **************************************************************************************************/
@@ -13,8 +13,8 @@
 //                                                                                               //
 //***********************************************************************************************//
 #pragma once
-#ifndef _DEBUGMANAGERDX_H_
-#define _DEBUGMANAGERDX_H_
+#ifndef _DEBUGSTATEGAMEOBJECTDX_H_
+#define _DEBUGSTATEGAMEOBJECTDX_H_
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -24,6 +24,7 @@
 
 //-----MainSetting-----//
 #include "001_Manager/Manager.h"
+#include "005_Debug/0050_DebugState/DebugStateDX.h"
 
 //***********************************************************************************************//
 //                                                                                               //
@@ -37,63 +38,40 @@
 //  @Class                                                                                       //
 //                                                                                               //
 //***********************************************************************************************//
+class DebugManagerDX;
 class GameObject;
-class DebugStateDX;
 
-class DebugManagerDX
+class DebugStateGameObjectDX : public DebugStateDX
 {
 public:
-     DebugManagerDX();
-    ~DebugManagerDX();
+             DebugStateGameObjectDX() : DebugStateDX() {}
+    virtual ~DebugStateGameObjectDX() {}
 
-    static DebugManagerDX* Create();
+    virtual void Init(DebugManagerDX* pDebugManagerDX);
+    virtual void Uninit(DebugManagerDX* pDebugManagerDX);
+    virtual void Update(DebugManagerDX* pDebugManagerDX);
+    virtual void Draw(DebugManagerDX* pDebugManagerDX);
 
-    void Init();
-    void Uninit();
-    void Update();
-    void Draw();
-
-    static void CheckFPS(DWORD NowTime);
-    static void AddframeCount();
-
-    static void Print(std::string String, ...);
-
-    void ChangeState(DebugStateDX* pState);
-
-    //-----Setter, Getter-----//
-    void SetDebugMode(bool value) { isDebugMode = value; }
-    bool IsDebugMode() const { return isDebugMode; }
-
-    LPD3DXFONT GetDebugFont() const { return pDebugFont; }
-
-    RECT GetRectBottom()   const { return freeRect; }
-    RECT GetRectLeftUp()   const { return hierarchyRect; }
-    RECT GetRectLeftDown() const { return inspectorRect; }
-
-    std::string GetFreeMessege() const { return messegeFree; }
+    void CheckGameObject();
+    void CheckGameObjectChild(GameObject* value);
+    void MoveGameObject();
 
 private:
-    void SetFreeMessege();
-    void SelectDebugState();
-    void ChangeDebugMode();
+    std::string messegeHierarchy;
+    std::string messegeInspector;
 
-    static DWORD currentTime;
-    static DWORD lastTimeFPS;
-    static DWORD frameCount;
-    static int   countFPS;
+    RECT        hierarchyRect;
+    RECT        inspectorRect;
 
-    static std::string messegeFree;
+    LPD3DXFONT  pDebugFont;
+    D3DXCOLOR   textColor;
+    std::string indentSpace;
 
-    LPD3DXFONT pDebugFont;
+    GameObject* selectGameObject;
+    int         selectGameObjectNumber;
+    int         selectGameObjectCount;
+    int         maxGameObjectNumber;
 
-    RECT       freeRect;
-    RECT       hierarchyRect;
-    RECT       inspectorRect;
-
-    DebugStateDX* pDebugStateDX;
-
-    bool isDebugMode;
-    bool isWireFrame;
 };
 #endif
 

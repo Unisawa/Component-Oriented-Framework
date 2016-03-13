@@ -95,6 +95,8 @@ public:
     static void      SetClearColor(D3DXCOLOR Color) { clearColor = Color; }
     static D3DXCOLOR GetClearColor() { return clearColor; }
     
+    static std::list<RenderDX*>* GetRenderDXList() { return pRenderDXList; }
+
     static DebugManagerDX*  GetDebugManagerDX()  { return pDebugManagerDX; }
 
     static LightDXManager*   GetLightDXManager()   { return pLightDXManager; }

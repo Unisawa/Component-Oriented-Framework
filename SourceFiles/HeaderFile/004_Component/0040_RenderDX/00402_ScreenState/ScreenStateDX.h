@@ -47,7 +47,7 @@ public:
              ScreenStateDX() {}
     virtual ~ScreenStateDX() {}
 
-    virtual void BeginDraw(RenderDXManager* pRender) {}
+    virtual void BeginDraw(RenderDXManager* pRender) = 0;
     virtual void EndDraw(RenderDXManager* pRender) { pRender->SetDefaultViewPort(); }
 
     static ScreenStateNoneDX  none;
