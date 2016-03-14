@@ -21,6 +21,7 @@
 #include "007_Scene/SceneTitle.h"
 #include "007_Scene/SceneGame.h"
 #include "007_Scene/SceneResult.h"
+#include "007_Scene/SceneOpenGL.h"
 
 #include "007_Scene/0070_Fade/FadeDX.h"
 #include "007_Scene/0070_Fade/FadeGL.h"
@@ -50,6 +51,10 @@ Fade*  SceneManager::pFade = NULL;
 SceneManager::SceneManager()
 {
     pScene = &Scene::TITLE;
+
+#ifdef USE_OPENGL
+    pScene = &Scene::OPENGL;
+#endif
 }
 
 /*===============================================================================================* 

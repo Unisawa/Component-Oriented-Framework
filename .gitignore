@@ -1,7 +1,6 @@
 # .cpp‚Æ.hˆÈŠO‚ğignore‚Éİ’è
 
 # Files
-Resources/
 Debug/
 Release/
 
@@ -15,3 +14,7 @@ Release/
 *.filters
 *.user
 *.opensdf
+*.cd
+
+# Git
+*.md

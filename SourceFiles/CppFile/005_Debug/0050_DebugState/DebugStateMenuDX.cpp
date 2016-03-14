@@ -64,6 +64,9 @@ void DebugStateMenuDX::Init(DebugManagerDX* pDebugManagerDX)
     messegeMenu += "\n 【 F1 : Debug Mode End 】\n";
     messegeMenu += "  (デバッグモードを終了する)\n\n";
 
+    messegeMenu += " 【 1 : WireFrame Draw 】\n";
+    messegeMenu += "  (ポリゴンをワイヤーフレームで表示する)\n\n";
+
     pDebugManagerDX->SetDebugMode(false);
 }
 

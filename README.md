@@ -1,5 +1,5 @@
 # Component-Oriented
-これは、C++かつコンポーネント指向でDirectX + OpenGLのGame Frameworkを現在製作しているプログラムです。  
+これは、C++かつコンポーネント指向でDirectX or OpenGLのGame Frameworkを現在製作しているプログラムです。  
 Unityに影響を受けて、日頃ゲーム製作をしているDirectX9でUnityっぽいシステム(コンポーネント指向)を真似してみようと思いついたのが発端です。  
 Unityのリファレンスを参考に変数、関数を設定しています  
 
@@ -21,6 +21,7 @@ Unityのリファレンスを参考に変数、関数を設定しています
 画面遷移機構 + Fade  
 テクスチャ読み込み  
 Vector, Matrixクラスの追加  
+Mesh-頂点設定による多様なポリゴン生成  
 
 # 今後追加する機能
 DirectX-シェーダ (Phong, Toon)  
@@ -32,6 +33,5 @@ DirectX-シェーダ (Phong, Toon)
 パーティクルシステム  
 当たり判定  
 剛体  
-Mesh-頂点設定による多様なポリゴン生成  
 
 その他随時追加していきます。

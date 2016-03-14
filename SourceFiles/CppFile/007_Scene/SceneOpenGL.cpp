@@ -72,6 +72,7 @@ void SceneOpenGL::Init()
 
     Render2DGL* pRender2D = pGameObejctGL->AddComponent<Render2DGL>();
     pRender2D->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF));
+    pRender2D->SetColor(0.0f, 1.0f, 0.0f, 1.0f);
 #endif
 }
 

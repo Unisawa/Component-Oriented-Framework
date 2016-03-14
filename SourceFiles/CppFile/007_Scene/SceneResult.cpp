@@ -68,19 +68,20 @@ SceneResult::~SceneResult()
  *===============================================================================================*/
 void SceneResult::Init()
 {
+#ifdef USE_DIRECTX
     // GameObjectの生成、コンポーネントの追加テスト
     //pObject[0] = new GameObject("AAAAA");
 
     //Render2DDX* pRender2D0 = pObject[0]->AddComponent<Render2DDX>();
     //pRender2D0->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF, Constant::SCREEN_WIDTH_HALF));
-    //pRender2D0->SetTexture("Field000.jpg");
+    //pRender2D0->SetTexture("FractalField000.bmp");
     //pRender2D0->SetVertex();
 
     //pObject[1] = new GameObject("BBBBB");
     //pObject[1]->transform->SetPosition(Vector3(-Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
 
     //Render2DDX* pRender2D1 = pObject[1]->AddComponent<Render2DDX>();
-    //pRender2D1->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF));
+    //pRender2D1->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF / 2));
     //pRender2D1->SetTexture("Blade.png");
     //pRender2D1->SetVertex();
 
@@ -88,8 +89,8 @@ void SceneResult::Init()
     //pObject[2]->transform->SetPosition(Vector3(Constant::SCREEN_WIDTH_HALF / 2, 0.0f, 0.0f));
 
     //Render2DDX* pRender2D2 = pObject[2]->AddComponent<Render2DDX>();
-    //pRender2D2->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF));
-    //pRender2D2->SetTexture("snow.tga");
+    //pRender2D2->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF / 2));
+    //pRender2D2->SetTexture("Knife.png");
     //pRender2D2->SetVertex();
 
     //pObject[3] = new GameObject("DDDDD");
@@ -98,6 +99,7 @@ void SceneResult::Init()
     //pRender2D3->SetSize(Vector2(Constant::SCREEN_WIDTH_HALF / 2, Constant::SCREEN_WIDTH_HALF / 2));
     //pRender2D3->SetTexture("Knife.png");
     //pRender2D3->SetVertex();
+#endif
 }
 
 /*===============================================================================================* 
